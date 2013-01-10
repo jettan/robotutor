@@ -1,0 +1,33 @@
+Must:
+	Lecture scripts
+		Text
+		Behaviours
+		Slides
+	Random pose changes
+	Audio streaming to speakers
+	Teacher override
+	Point at slides
+	Don't fall off platform
+	Hold quizzes
+		Clicker support
+		Respond to answers
+	
+	
+Should:
+	Lecture script GUI
+	Recognise raised hands
+	Noise level detection
+	Mood indicator
+	
+Could:
+	Remote image processing
+	Laptop recognition
+	Food recognition
+	Cluster quiz answers
+	Subtitles
+	
+Would:
+	World peace
+	
+
+

@@ -1,0 +1,44 @@
+Script engine: Anass + Maarten
+Design script grammar    2
+Implement parser         3
+Design script engine API 1
+Implement script engine  4
+
+Pose changes: Pim + Hans
+Design poses in choreographe  3
+Implement random pose changer 2
+
+Audio streaming: Maarten + Jethro
+Access robot (telnet/ssh)              2*
+Research audio streaming/alternatives  3
+Install pulseaudio                     2
+Set up pulseaudio                      2
+
+Teacher interaction: Anass + Hans
+Recognize voices           4
+Implement teacher override 2
+
+Slides: Jethro + Pim
+Research slides control   2
+Point at slides           2
+
+Quizzes: Anass + Jethro + Maarten
+Research clicker system   4
+Implement clicker support 4
+Design feedback mechanism 3
+Implement feedback system 1
+Clicker localisation      1
+
+Remote Control GUI: Hans + Jethro
+Design RC GUI           3
+Implement RC GUI        5
+
+Class interaction: Anass + Hans + Pim
+Noise detection         2 (Pim)
+Noise handling          2 (Pim)
+Raised hand recognition 4 (Hans)
+Design mood poses       2 (Anass)
+Mood indicator          2 (Anass)
+
+
+
