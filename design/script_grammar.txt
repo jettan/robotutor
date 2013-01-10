@@ -1,0 +1,17 @@
+The script grammar consists of normal written text to be synthesized by the robot,
+with the possibility to embed commands in the text.
+The commands will be executed at the time the robot reaches that point in the speech synthesising.
+
+It is not possible to embed commands in the middle of a word.
+When that happens, the command will be executed at the end of the word.
+
+Commands are started by an opening curly bracket '{' and the name of the command.
+Commands may optionally be followed by a colon ':' and a comma separated argument list.
+Commands are always closed by a closing curly bracket '}'.
+
+Command names may include lowercase alphanumerical characters, digits and spaces.
+Arguments may include any characters, although commas, backslashes and closing curly brackets have to be escaped
+by prepending them with a backslash.
+Prepending any other character with a backslash will result in that character as if no backslash was used.
+
+An example of a valid command is: {pose:stand} or {slide:5}, or {next slide}.
