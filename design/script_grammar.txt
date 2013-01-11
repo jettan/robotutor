@@ -11,12 +11,16 @@ and commands can be executed at the proper time with minimal effort on part of t
 It also avoids the need to learn advanced scripting languages such as Python.
 
 Commands are started by an opening curly bracket '{' and the name of the command.
-The command name may optionally be followed by a colon ':' and a comma separated argument list.
+The command name may optionally be followed by a pipe character '|' and pipe separated argument list.
 Commands are always closed by a closing curly bracket '}'.
 
 Command names may include lowercase alphabetical characters, digits and spaces.
-Arguments may include any characters, although commas, backslashes and closing curly brackets
-have to be escaped by prepending them with a backslash.
-Other characters may also be escaped this way, although it is not necessary.
+Arguments themselves are parsed as scripts again,
+which means that arguments can themselves include commands.
+In this manner, commands can be used to conditionally execute other commands.
 
-Examples of valid commands are: {pose:stand} or {slide:5}, or {next slide}. The exact list of commands is not known yet.
+To prevent characters from having special meaning they can be escaped by prepending a backslash.
+This is only required for curly brackets, the pipe character and literal backslashes.
+Prepending any other character with a backslash is allowed, but not required.
+
+Examples of valid commands are: {pose|stand} or {slide|5}, or {next slide}. The exact list of commands is not known yet.
