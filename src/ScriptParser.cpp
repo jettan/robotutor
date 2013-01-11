@@ -5,30 +5,26 @@ namespace robotutor {
 /**
  * Constructor for the ScriptParser.
  */
-ScriptParser::ScriptParser() : state(PARSE_STATE_SENTENCE) {
+ScriptParser::ScriptParser() : state(PARSE_STATE_TEXT) {
 }
 
 /**
- * Consumes a char from the script, adding it to either a sentence or a command based on the current state.
+ * Consumes a char from the script, adding it to either a script text or a command based on the current state.
  * \param c is the char that is consumed.
  */
 void ScriptParser::consume(char c) {
 	
 	switch (c) {
-		case '.': // end of sentence, add to sentences and clear the sentence string
-			sentence += c;
-			script.sentences.push_back(sentence);
-			//std::cout << sentence << std::endl;
-			sentence = "";
-			break;;
 		case '{': // starting a new command, change state
 			state = PARSE_STATE_COMMAND;
 			break;
 		case ':': // parsing arguments for the command, change state
-			state = PARSE_STATE_ARGS;
+			if (state == PARSE_STATE_COMMAND)
+				state = PARSE_STATE_ARGS;
 			break;
 		case ',': // argument separator
-			command.args.push_back(arg);
+			if (state == PARSE_STATE_ARGS)
+				command.args.push_back(arg);
 			//std::cout << "arg:" << arg << std::endl;
 			arg = "";
 			break;
@@ -39,7 +35,7 @@ void ScriptParser::consume(char c) {
 				//std::cout << "arg:" << arg << std::endl;
 			}
 
-			state = PARSE_STATE_SENTENCE;
+			state = PARSE_STATE_TEXT;
 
 			//std::cout << "command:" << cmd << std::endl;
 			command.cmd = cmd;
@@ -50,7 +46,7 @@ void ScriptParser::consume(char c) {
 			break;
 		default: // add char to string according to state
 			switch (state) {
-				case PARSE_STATE_SENTENCE:	sentence += c; break;
+				case PARSE_STATE_TEXT:		text += c; break;
 				case PARSE_STATE_COMMAND:	cmd += c; break;
 				case PARSE_STATE_ARGS:		arg += c; break;
 			}

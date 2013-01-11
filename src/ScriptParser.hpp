@@ -13,12 +13,12 @@ struct Command {
 };
 
 struct Script {
-	std::vector<std::string> sentences;
+	std::string text;
 	std::vector<Command> commands;
 };
 
 enum ParseState {
-	PARSE_STATE_SENTENCE,
+	PARSE_STATE_TEXT,
 	PARSE_STATE_COMMAND,
 	PARSE_STATE_ARGS,
 };
@@ -26,7 +26,7 @@ enum ParseState {
 class ScriptParser {
 	protected:
 		Script script;
-		std::string sentence;
+		std::string text;
 		std::string cmd;
 		std::string arg;
 		Command command;
@@ -42,6 +42,8 @@ class ScriptParser {
 			while (start != end) {
 				consume(*start++);
 			}
+
+			script.text = text;
 		}
 
 	private:
