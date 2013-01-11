@@ -2,9 +2,16 @@
 
 namespace robotutor {
 
+/**
+ * Constructor for the ScriptParser.
+ */
 ScriptParser::ScriptParser() : state(PARSE_STATE_SENTENCE) {
 }
 
+/**
+ * Consumes a char from the script, adding it to either a sentence or a command based on the current state.
+ * \param c is the char that is consumed.
+ */
 void ScriptParser::consume(char c) {
 	
 	switch (c) {
@@ -51,6 +58,9 @@ void ScriptParser::consume(char c) {
 	}
 }
 
+/**
+ * Returns the parsed script.
+ */
 Script ScriptParser::getScript() {
 	return script;
 }
