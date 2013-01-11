@@ -5,11 +5,11 @@ namespace robotutor {
 
 class ScriptEngine {
 
-		load(Script script);
-		step();
-		start();
-		stop();
-		reset();
+		void load(Script script);
+		void step();
+		void start();
+		void stop();
+		void reset();
 
         /*public:
 		bookmarkHandler();
@@ -19,6 +19,6 @@ class ScriptEngine {
 		onstopHook();
 		onresetHook();
 		onBookmark(); */
-}
+};
 
 }

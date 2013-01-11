@@ -9,11 +9,11 @@ class RoboTutor {
 		ScriptEngine engine;
 
 	private:
-		start();
-		stop();
+		void start();
+		void stop();
 
-		pause();
-		resume();
-}
+		void pause();
+		void resume();
+};
 
 }

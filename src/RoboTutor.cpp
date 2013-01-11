@@ -22,5 +22,5 @@ namespace robotutor {
 
 int main () {
 	std::cout << "Testing de includes.." << std::endl;
-	return 0
+	return 0;
 }
