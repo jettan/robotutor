@@ -1,0 +1,9 @@
+To communicate between the robot and the laptop,
+sockets from the boost asio library will be used.
+This communication is a 2-way communication (i.e. the laptop can let the robot do something AND the other way around).
+The messages are of json format.
+Messages used by this communication are started with the length of the message in 4 bytes,
+and followed by the content of the message.
+Within the content of the message, the type of the content is specified first (speech/quiz/slide).
+The length of the message has to be in network byte order.
+
