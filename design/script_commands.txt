@@ -1,0 +1,51 @@
+{prev slide}
+Go to the previous slide.
+
+{next slide}
+Go to the next slide.
+
+{wait quiz}
+Let the robot wait for quiz that is ongoing.
+
+{checkpoint|resume phrase}
+Interrupts the script and makes a checkpoint.
+If resume phrase was given as an argument,
+the robot will later continue using the resume phrase.
+Default: no resume phrase.
+
+{wait audio|level}
+Let the robot wait for audio input with optional amplitude argument.
+Level in dB, default: 50.
+
+{wait word|word}
+Let the robot wait for spoken word input with optional argument the word to recognise.
+If word is not provided, then any word that can be recognised will be accepted.
+
+{pose|behaviourfile}
+Let the robot pose according to the given behaviour file.
+The behaviour file is always located in the same folder.
+If no behaviour file is specified, it will take the DEFAULT behaviour file.
+
+{random pose|on}
+Switch for letting the robot do natural random poses when presenting.
+Can be on or off.
+
+{slide|num}
+Let the robot control the slides.
+num is the specific slide number or can be +something or -something.
+Default: num = +1.
+example:
+  {slide|5} <--- Go to slide number 5.
+  {slide|+1} <-- Go to the next slide.
+  {slide|-2} <-- Go 2 slides back.
+
+{if quiz|score|action1|action2}
+Conditional command to let the robot do action1 on quiz results at a certain score percentage and higher.
+Optional argument action2 can be provided to let the robot perform if the percentage has not been reached.
+
+{detect hands|timeout}
+Let the robot try to detect raised hands.
+Optional timeout argument can be provided to stop if specified time has passed and nothing has been detected.
+If timeout is leaved blank, timeout will be default set on 10 secs.
+
+
