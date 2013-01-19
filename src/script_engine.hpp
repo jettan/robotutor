@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ScriptParser.hpp"
+#include "script_parser.hpp"
 
 namespace robotutor {
 
