@@ -40,19 +40,35 @@ namespace robotutor {
 			enum {
 				STATE_START,
 				STATE_NAME,
-				STATE_ARGS
+				STATE_ARGS,
+				STATE_DONE
 			} state_;
 			
 		public:
 			/// The resulting command.
 			executable::SharedPtr command;
 			
+			/// Construct a command parser.
 			CommandParser();
 			
+			/// Parse one character of input.
+			/**
+			 * \param c The input character.
+			 * \return bool True if the parser is done.
+			 */
 			bool consume(char c);
 			
+			/// Inform the parser that there is no more input.
+			/**
+			 * \return True if the parser is in a valid stop state.
+			 */
+			bool finish();
+			
 		protected:
-			void flush_();
+			
+			/// Flush the command name buffer.
+			void flush_name_();
+			/// Flush the argument buffer.
 			void flush_arg_();
 	};
 	
@@ -62,19 +78,34 @@ namespace robotutor {
 	 */
 	class TextParser {
 		protected:
+			/// The state of the parser.
 			enum {
 				STATE_TEXT,
 				STATE_COMMAND
 			} state_;
 			
+			/// Parser for embedded commands.
 			CommandParser arg_parser_;
 			
 		public:
+			/// The text executable.
 			executable::Text text;
 			
+			/// Construct a text parser.
 			TextParser();
 			
+			/// Parse one character of input.
+			/**
+			 * \param c The input character.
+			 * \return bool True if the parser is done.
+			 */
 			bool consume(char c);
+			
+			/// Inform the parser that there is no more input.
+			/**
+			 * \return True if the parser is in a valid stop state.
+			 */
+			bool finish();
 	};
 	
 	/// Parse an input sequence.

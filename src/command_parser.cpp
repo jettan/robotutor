@@ -5,11 +5,17 @@ namespace robotutor {
 	
 	using namespace parser;
 	
+	/// Construct a command parser.
 	CommandParser::CommandParser() {
 		state_ = STATE_START;
 		name_.reserve(30);
 	}
 	
+	/// Parse one character of input.
+	/**
+	 * \param c The input character.
+	 * \return bool True if the parser is done.
+	 */
 	bool CommandParser::consume(char c) {
 		switch (state_) {
 			// Not parsing anything yet.
@@ -38,7 +44,7 @@ namespace robotutor {
 					
 				// A closing curly bracket closes the command.
 				} else if (c == '}') {
-					flush_();
+					state_ = STATE_DONE;
 					return true;
 					
 				// Lower case alpha characters, digits and normal spaces can be part of the name.
@@ -61,7 +67,7 @@ namespace robotutor {
 				// Closing bracket ends the command.
 				} else if (c == '}') {
 					flush_arg_();
-					flush_();
+					state_ = STATE_DONE;
 					return true;
 					
 				// The rest is fed to the argument parser.
@@ -69,16 +75,32 @@ namespace robotutor {
 					arg_parser_.consume(c);
 					return false;
 				}
+				
+			// Done parsing, stop feeding us.
+			case STATE_DONE:
+				throw std::runtime_error("Input received after command parsing finished.");
 		}
 	}
 	
-	void CommandParser::flush_arg_() {
-		args_.push_back(arg_parser_.executable);
-		arg_parser_ = ExecutableParser();
+	/// Inform the parser that there is no more input.
+	/**
+	 * \return True if the parser is in a valid stop state.
+	 */
+	bool CommandParser::finish() {
+		if (state_ == STATE_DONE) {
+			command = executable::CommandFactory::create(name_, args_);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	void CommandParser::flush_() {
-		command = executable::CommandFactory::create(name_, args_);
+	/// Flush the argument buffer.
+	void CommandParser::flush_arg_() {
+		// Add the parsed argument to our list.
+		args_.push_back(arg_parser_.executable);
+		// Create a new argument parser.
+		arg_parser_ = ExecutableParser();
 	}
 
 }
