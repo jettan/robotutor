@@ -5,20 +5,61 @@
 #include <stdexcept>
 #include <iterator>
 
+#include <boost/scoped_ptr.hpp>
+
 #ifndef ROBOTUTOR_SCRIPT_PARSER_HPP_
 #define ROBOTUTOR_SCRIPT_PARSER_HPP_
 
 #include "executable.hpp"
 
 namespace robotutor {
-	/// Parser for executables.
+	
+	class TextParser;
+	class CommandParser;
+	class ExecutableParser;
+	
+	/// Parser for text executables.
 	/**
-	 * This parser will read the next executable from the input.
+	 * This parser will read an entire text executable from the input.
 	 */
-	class ExecutableParser {
+	class TextParser {
+		protected:
+			/// The state of the parser.
+			enum {
+				STATE_TEXT,
+				STATE_COMMAND
+			} state_;
+			
+			/// Parser for embedded commands.
+			boost::scoped_ptr<CommandParser> arg_parser_;
+			
+			/// The text executable.
+			boost::shared_ptr<executable::Text> result_;
+			
 		public:
-			executable::SharedPtr executable;
+			/// Construct a text parser.
+			TextParser();
+			
+			/// Get the parse result.
+			/**
+			 * May only be called after a call to finish().
+			 * 
+			 * \return A shared pointer holding the parsed executable.
+			 */
+			boost::shared_ptr<executable::Text> result();
+			
+			/// Parse one character of input.
+			/**
+			 * \param c The input character.
+			 * \return bool True if the parser is done.
+			 */
 			bool consume(char c);
+			
+			/// Inform the parser that there is no more input.
+			/**
+			 * \return True if the parser is in a valid stop state.
+			 */
+			bool finish();
 	};
 	
 	/// Parser for commands.
@@ -34,7 +75,7 @@ namespace robotutor {
 			executable::ArgList args_;
 			
 			/// Parser for arguments.
-			ExecutableParser arg_parser_;
+			boost::scoped_ptr<ExecutableParser> arg_parser_;
 			
 			/// State of the parser.
 			enum {
@@ -44,12 +85,20 @@ namespace robotutor {
 				STATE_DONE
 			} state_;
 			
-		public:
 			/// The resulting command.
-			executable::SharedPtr command;
+			executable::SharedPtr result_;
 			
+		public:
 			/// Construct a command parser.
 			CommandParser();
+			
+			/// Get the parse result.
+			/**
+			 * May only be called after a call to finish().
+			 * 
+			 * \return A shared pointer holding the parsed executable.
+			 */
+			executable::SharedPtr result();
 			
 			/// Parse one character of input.
 			/**
@@ -65,34 +114,32 @@ namespace robotutor {
 			bool finish();
 			
 		protected:
-			
 			/// Flush the command name buffer.
 			void flush_name_();
 			/// Flush the argument buffer.
 			void flush_arg_();
 	};
 	
-	/// Parser for text executables.
+	/// Parser for executables.
 	/**
-	 * This parser will read and entire text executable from the input.
+	 * This parser will read the next executable from the input.
 	 */
-	class TextParser {
+	class ExecutableParser {
 		protected:
-			/// The state of the parser.
-			enum {
-				STATE_TEXT,
-				STATE_COMMAND
-			} state_;
+			/// Parser that secretly does all the work.
+			TextParser text_parser_;
 			
-			/// Parser for embedded commands.
-			CommandParser arg_parser_;
+			/// Shared pointer to hold the result.
+			executable::SharedPtr result_;
 			
 		public:
-			/// The text executable.
-			executable::Text text;
-			
-			/// Construct a text parser.
-			TextParser();
+			/// Get the parse result.
+			/**
+			 * May only be called after a call to finish().
+			 * 
+			 * \return A shared pointer holding the parsed executable.
+			 */
+			executable::SharedPtr result();
 			
 			/// Parse one character of input.
 			/**
@@ -107,6 +154,7 @@ namespace robotutor {
 			 */
 			bool finish();
 	};
+	
 	
 	/// Parse an input sequence.
 	/**

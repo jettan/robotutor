@@ -39,7 +39,7 @@ namespace robotutor {
 				// Pipe symbol starts the argument list.
 				if (c == '|') {
 					state_ = STATE_ARGS;
-					arg_parser_ = ExecutableParser();
+					arg_parser_.reset(new ExecutableParser());
 					return false;
 					
 				// A closing curly bracket closes the command.
@@ -62,6 +62,7 @@ namespace robotutor {
 				// Pipe symbol seperates arguments.
 				if (c == '|') {
 					flush_arg_();
+					arg_parser_.reset(new ExecutableParser());
 					return false;
 					
 				// Closing bracket ends the command.
@@ -72,7 +73,7 @@ namespace robotutor {
 					
 				// The rest is fed to the argument parser.
 				} else {
-					arg_parser_.consume(c);
+					arg_parser_->consume(c);
 					return false;
 				}
 				
@@ -88,7 +89,7 @@ namespace robotutor {
 	 */
 	bool CommandParser::finish() {
 		if (state_ == STATE_DONE) {
-			command = executable::CommandFactory::create(name_, args_);
+			result_ = executable::CommandFactory::create(name_, args_);
 			return true;
 		} else {
 			return false;
@@ -98,9 +99,8 @@ namespace robotutor {
 	/// Flush the argument buffer.
 	void CommandParser::flush_arg_() {
 		// Add the parsed argument to our list.
-		args_.push_back(arg_parser_.executable);
-		// Create a new argument parser.
-		arg_parser_ = ExecutableParser();
+		arg_parser_->finish();
+		args_.push_back(arg_parser_->result());
 	}
 
 }

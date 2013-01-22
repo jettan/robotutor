@@ -35,16 +35,23 @@ namespace robotutor {
 		 * the executables are executed when a bookmark is encountered.
 		 */
 		struct Text : public Executable {
+			/// Shared pointer type.
+			typedef boost::shared_ptr<Text> SharedPtr;
+			
 			/// The text to synthesize.
 			std::string text;
 			
 			bool step();
 		};
 		
-		class Command : public Executable {
-			public:
-				std::string name;
-				bool step();
+		
+		/// Base class for executable commands.
+		struct Command : public Executable {
+			/// Shared pointer type.
+			typedef boost::shared_ptr<Command> SharedPtr;
+			
+			/// The name of the command.
+			std::string name;
 		};
 		
 		/// Create a command from a name and an argument list.

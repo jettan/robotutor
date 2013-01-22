@@ -1,5 +1,4 @@
 #include <string>
-#include <algorithm>
 
 #ifndef ROBOTUTOR_PARSER_COMMON_HPP_
 #define ROBOTUTOR_PARSER_COMMON_HPP_
