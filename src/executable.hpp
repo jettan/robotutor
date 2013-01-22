@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <map>
 
 #include <boost/shared_ptr.hpp>
@@ -54,25 +55,51 @@ namespace robotutor {
 			std::string name;
 		};
 		
+		/// Write a text executable to a stream.
+		/**
+		 * \param stream The stream to write to.
+		 * \param text   The text command to write.
+		 */
+		std::ostream & operator << (std::ostream & stream, executable::Text const & text);
+		
+		/// Write a command to a stream.
+		/**
+		 * \param stream The stream to write to.
+		 * \param text   The text command to write.
+		 */
+		std::ostream & operator << (std::ostream & stream, executable::Command const & command);
+		
+		/// Write any executable to a stream.
+		/**
+		 * \param stream The stream to write to.
+		 * \param text   The text command to write.
+		 */
+		std::ostream & operator << (std::ostream & stream, executable::Executable const & command);
+		
 		/// Create a command from a name and an argument list.
 		class CommandFactory {
 			protected:
 				/// Function type for creator functions.
-				typedef boost::function<SharedPtr (ArgList const & arguments)> creator;
+				typedef boost::function<Command::SharedPtr (std::string const &, ArgList const & arguments)> Creator;
 				
 				/// Map type for the creator map.
-				typedef std::map<std::string, creator> CreatorMap;
+				typedef std::map<std::string, Creator> CreatorMap;
 				
 				/// Map holding creator functions.
-				static CreatorMap creators;
+				CreatorMap creators_;
 				
 			public:
 				
 				/// Create a command from a name and argument list.
-				SharedPtr static create(std::string name, ArgList args) {
-					CreatorMap::iterator creator = creators.find(name);
-					if (creator == creators.end()) throw std::runtime_error("Command `" + name + "' not found.");
-					return creator->second(args);
+				Command::SharedPtr create(std::string const & name, ArgList const & args) {
+					CreatorMap::iterator creator = creators_.find(name);
+					if (creator == creators_.end()) throw std::runtime_error("Command `" + name + "' not found.");
+					return creator->second(name, args);
+				}
+				
+				/// Register a creator.
+				void add(std::string const & name, Creator creator) {
+					creators_[name] = creator;
 				}
 		};
 		

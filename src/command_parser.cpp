@@ -6,9 +6,19 @@ namespace robotutor {
 	using namespace parser;
 	
 	/// Construct a command parser.
-	CommandParser::CommandParser() {
+	CommandParser::CommandParser(executable::CommandFactory & factory) : factory_(factory) {
 		state_ = STATE_START;
 		name_.reserve(30);
+	}
+	
+	/// Get the parse result.
+	/**
+	 * May only be called after a call to finish().
+	 * 
+	 * \return A shared pointer holding the parsed executable.
+	 */
+	executable::Command::SharedPtr CommandParser::result() {
+		return result_;
 	}
 	
 	/// Parse one character of input.
@@ -39,7 +49,7 @@ namespace robotutor {
 				// Pipe symbol starts the argument list.
 				if (c == '|') {
 					state_ = STATE_ARGS;
-					arg_parser_.reset(new ExecutableParser());
+					arg_parser_.reset(new ExecutableParser(factory_));
 					return false;
 					
 				// A closing curly bracket closes the command.
@@ -62,7 +72,7 @@ namespace robotutor {
 				// Pipe symbol seperates arguments.
 				if (c == '|') {
 					flush_arg_();
-					arg_parser_.reset(new ExecutableParser());
+					arg_parser_.reset(new ExecutableParser(factory_));
 					return false;
 					
 				// Closing bracket ends the command.
@@ -89,7 +99,7 @@ namespace robotutor {
 	 */
 	bool CommandParser::finish() {
 		if (state_ == STATE_DONE) {
-			result_ = executable::CommandFactory::create(name_, args_);
+			result_ = factory_.create(name_, args_);
 			return true;
 		} else {
 			return false;

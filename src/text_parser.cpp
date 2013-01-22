@@ -8,7 +8,7 @@ namespace robotutor {
 	using namespace parser;
 	
 	/// Construct a text parser.
-	TextParser::TextParser() {
+	TextParser::TextParser(executable::CommandFactory & factory) : factory_(factory) {
 		result_ = boost::make_shared<executable::Text>();
 		state_  = STATE_TEXT;
 		result_->text.reserve(1024);
@@ -20,7 +20,7 @@ namespace robotutor {
 	 * 
 	 * \return A shared pointer holding the parsed executable.
 	 */
-	executable::SharedPtr ExecutableParser::result() {
+	executable::Text::SharedPtr TextParser::result() {
 		return result_;
 	}
 	
@@ -36,7 +36,7 @@ namespace robotutor {
 				// An opening curly bracket starts a command.
 				if (c == '{') {
 					state_ = STATE_COMMAND;
-					arg_parser_.reset(new CommandParser());
+					arg_parser_.reset(new CommandParser(factory_));
 					arg_parser_->consume(c);
 					return false;
 					

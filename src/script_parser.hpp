@@ -30,15 +30,21 @@ namespace robotutor {
 				STATE_COMMAND
 			} state_;
 			
+			/// Factory to create commands.
+			executable::CommandFactory & factory_;
+			
 			/// Parser for embedded commands.
 			boost::scoped_ptr<CommandParser> arg_parser_;
 			
 			/// The text executable.
-			boost::shared_ptr<executable::Text> result_;
+			executable::Text::SharedPtr result_;
 			
 		public:
 			/// Construct a text parser.
-			TextParser();
+			/**
+			 * \param factory The command factory to use to instantiate commands found in the text.
+			 */
+			TextParser(executable::CommandFactory & factory);
 			
 			/// Get the parse result.
 			/**
@@ -46,7 +52,7 @@ namespace robotutor {
 			 * 
 			 * \return A shared pointer holding the parsed executable.
 			 */
-			boost::shared_ptr<executable::Text> result();
+			executable::Text::SharedPtr result();
 			
 			/// Parse one character of input.
 			/**
@@ -74,6 +80,9 @@ namespace robotutor {
 			/// Buffer for arguments.
 			executable::ArgList args_;
 			
+			/// Factory to create commands.
+			executable::CommandFactory & factory_;
+			
 			/// Parser for arguments.
 			boost::scoped_ptr<ExecutableParser> arg_parser_;
 			
@@ -86,11 +95,14 @@ namespace robotutor {
 			} state_;
 			
 			/// The resulting command.
-			executable::SharedPtr result_;
+			executable::Command::SharedPtr result_;
 			
 		public:
 			/// Construct a command parser.
-			CommandParser();
+			/**
+			 * \param factory The command factory to use to create the command.
+			 */
+			CommandParser(executable::CommandFactory & factory);
 			
 			/// Get the parse result.
 			/**
@@ -98,7 +110,7 @@ namespace robotutor {
 			 * 
 			 * \return A shared pointer holding the parsed executable.
 			 */
-			executable::SharedPtr result();
+			executable::Command::SharedPtr result();
 			
 			/// Parse one character of input.
 			/**
@@ -133,6 +145,12 @@ namespace robotutor {
 			executable::SharedPtr result_;
 			
 		public:
+			/// Construct an executable parser.
+			/**
+			 * \param factory The command factory to use for encountered commands.
+			 */
+			ExecutableParser(executable::CommandFactory & factory);
+			
 			/// Get the parse result.
 			/**
 			 * May only be called after a call to finish().
@@ -190,7 +208,7 @@ namespace robotutor {
 	 */
 	template<typename Parser>
 	bool parse(Parser & parser, std::streambuf & streambuf) {
-		return parse(parser, std::istreambuf_iterator<char>(streambuf), std::istreambuf_iterator<char>());
+		return parse(parser, std::istreambuf_iterator<char>(&streambuf), std::istreambuf_iterator<char>());
 	}
 	
 	/// Parse an input stream.
@@ -200,7 +218,7 @@ namespace robotutor {
 	 * \return True if the parser has finished processing input.
 	 */
 	template<typename Parser>
-	bool parse(Parser & parser, std::istream stream) {
+	bool parse(Parser & parser, std::istream & stream) {
 		return parse(parser, *stream.rdbuf());
 	}
 	
