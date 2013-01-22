@@ -1,3 +1,6 @@
+#include <string>
+#include <algorithm>
+
 #ifndef ROBOTUTOR_PARSER_COMMON_HPP_
 #define ROBOTUTOR_PARSER_COMMON_HPP_
 
@@ -59,7 +62,7 @@ namespace robotutor {
 			for (i = s.begin();
 				 i != s.end() && isSpace(*i);
 				 ++i);
-			std::erase(s.begin(), i);
+			s.erase(s.begin(), i);
 		}
 		
 		/// Trim trailing spaces from a string.
@@ -69,17 +72,18 @@ namespace robotutor {
 		inline void trimr(std::string & s) {
 			std::string::reverse_iterator ri;
 			for (ri = s.rbegin();
-				 ri != s.rend() && isSpace(*i);
+				 ri != s.rend() && isSpace(*ri);
 				 ++ri);
-			std::erase(ri.base(), s.end());
+			s.erase(ri.base(), s.end());
 		}
 		
 		/// Trim trailing and leading spaces from a string.
 		/**
 		 * \param input The string.
 		 */
-		inline void trim(std::string s) {
-			trimr(triml(s));
+		inline void trim(std::string & s) {
+			triml(s);
+			trimr(s);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 #include "script_parser.hpp"
+#include "parser_common.hpp"
 
 namespace robotutor {
 	
@@ -16,7 +17,7 @@ namespace robotutor {
 	 * \return bool True if the parser is done.
 	 */
 	bool TextParser::consume(char c) {
-		switch (state) {
+		switch (state_) {
 			// Parsing normal text.
 			case STATE_TEXT:
 				// An opening curly bracket starts a command.
