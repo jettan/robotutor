@@ -1,4 +1,5 @@
 #include "executable.hpp"
+#include "script_engine.hpp"
 
 namespace robotutor {
 	
@@ -42,6 +43,6 @@ namespace robotutor {
 			}
 		}
 		
-		bool Text::step() {}
+		bool Text::step(ScriptEngine & engine) {}
 	}
 }

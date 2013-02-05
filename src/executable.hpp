@@ -10,6 +10,8 @@
 
 namespace robotutor {
 	
+	class ScriptEngine;
+	
 	namespace executable {
 		
 		class Executable;
@@ -26,7 +28,7 @@ namespace robotutor {
 				virtual ~Executable() {};
 				
 				/// Execute one step.
-				virtual bool step() = 0;
+				virtual bool step(ScriptEngine & engine) = 0;
 			
 		};
 		
@@ -42,7 +44,7 @@ namespace robotutor {
 			/// The text to synthesize.
 			std::string text;
 			
-			bool step();
+			bool step(ScriptEngine & engine);
 		};
 		
 		
