@@ -1,9 +1,10 @@
-CXXFLAGS_EXTRA :=
-LDFLAGS_EXTRA  :=
+CXXFLAGS_EXTRA := -std=c++11
+LDFLAGS_EXTRA  := -pthread
 
 parser_OBJS    := executable text_parser command_parser executable_parser test
-robotutor_OBJS := $(parser_OBJS)
-robotutor_LIBS :=
+server_OBJS    := server
+robotutor_OBJS := $(parser_OBJS) $(server_OBJS)
+robotutor_LIBS := boost_system
 
 default: robotutor
 
