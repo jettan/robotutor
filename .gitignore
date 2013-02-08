@@ -5,3 +5,4 @@ robotutor
 Release/
 client/ipch/*
 *.sdf
+.DS_Store
