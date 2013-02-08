@@ -17,7 +17,7 @@ namespace robotutor {
 				return result;
 			}
 			
-			bool step() {
+			bool step(ScriptEngine &) {
 				return true;
 			}
 		};
