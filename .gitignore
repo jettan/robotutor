@@ -1,9 +1,9 @@
-doc/*
-build/*
+build/
 Debug/
+doc/*
 robotutor
 Release/
-client/ipch/*
+ipch/
 *.sdf
 .DS_Store
 
