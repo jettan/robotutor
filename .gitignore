@@ -1,5 +1,7 @@
 doc/*
 build/*
+Debug/
 robotutor
+Release/
 client/ipch/*
 *.sdf
