@@ -11,6 +11,8 @@
 #include <iostream>
 #include <tchar.h>
 #include <windows.h>
+#include "conio.h"
+#include <string>
 
 //#import "libid:2DF8D04C-5BFA-101B-BDE5-00AA0044DE52" \
 //	rename("RGB", "MSORGB") \
@@ -35,6 +37,7 @@ using namespace VBIDE;
 	rename("RGB", "VisioRGB")
 
 #include "PPTController.h"
+#include "Client.h"
 
 
 
