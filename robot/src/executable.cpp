@@ -15,6 +15,7 @@ namespace robotutor {
 			for (int i = 0; i < text.arguments.size(); ++i) {
 				stream << "\n" << *text.arguments[i];
 			}
+			return stream;
 		}
 		
 		/// Write a command to a stream.
@@ -41,8 +42,11 @@ namespace robotutor {
 			} else if (executable::Command const * command = dynamic_cast<executable::Command const *>(&executable)) {
 				return stream << *command;
 			}
+			return stream;
 		}
 		
-		bool Text::step(ScriptEngine & engine) {}
+		bool Text::step(ScriptEngine & engine) {
+			return true;
+		}
 	}
 }

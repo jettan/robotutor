@@ -27,7 +27,8 @@ namespace robotutor {
 			/// The state of the parser.
 			enum {
 				STATE_TEXT,
-				STATE_COMMAND
+				STATE_COMMAND,
+				STATE_DONE
 			} state_;
 			
 			/// Factory to create commands.

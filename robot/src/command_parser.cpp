@@ -69,21 +69,19 @@ namespace robotutor {
 				
 			// Currently parsing arguments.
 			case STATE_ARGS:
-				// Pipe symbol seperates arguments.
-				if (c == '|') {
-					flush_arg_();
-					arg_parser_.reset(new ExecutableParser(factory_));
-					return false;
-					
-				// Closing bracket ends the command.
-				} else if (c == '}') {
-					flush_arg_();
-					state_ = STATE_DONE;
-					return true;
-					
-				// The rest is fed to the argument parser.
+				if (arg_parser_->consume(c)) {
+					arg_parser_->finish();
+					args_.push_back(arg_parser_->result());
+					if (c == '}') {
+						state_ = STATE_DONE;
+						return true;
+					} else if (c == '|') {
+						arg_parser_.reset(new ExecutableParser(factory_));
+						return false;
+					} else {
+						throw std::runtime_error("Unexpected character finished command argument.");
+					}
 				} else {
-					arg_parser_->consume(c);
 					return false;
 				}
 				
@@ -98,6 +96,7 @@ namespace robotutor {
 	 * \return True if the parser is in a valid stop state.
 	 */
 	bool CommandParser::finish() {
+		trim(name_);
 		if (state_ == STATE_DONE) {
 			result_ = factory_.create(name_, args_);
 			return true;
@@ -106,11 +105,4 @@ namespace robotutor {
 		}
 	}
 	
-	/// Flush the argument buffer.
-	void CommandParser::flush_arg_() {
-		// Add the parsed argument to our list.
-		arg_parser_->finish();
-		args_.push_back(arg_parser_->result());
-	}
-
 }

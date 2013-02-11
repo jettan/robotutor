@@ -38,7 +38,8 @@ int main() {
 	try {
 		robotutor::parse(parser, std::cin);
 		parser.finish();
-		std::cout << *parser.result();
+		executable::SharedPtr script = parser.result();
+		std::cout << *script;
 	} catch (std::exception const & e) {
 		std::cerr << "Error during parsing: " << e.what() << "." << std::endl;
 	}

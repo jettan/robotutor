@@ -1,4 +1,5 @@
 #include <boost/make_shared.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "script_parser.hpp"
 #include "parser_common.hpp"
@@ -40,6 +41,11 @@ namespace robotutor {
 					arg_parser_->consume(c);
 					return false;
 					
+				// A colon or closing curly bracket ends the text.
+				} else if (c == '|' || c == '}') {
+					state_ = STATE_DONE;
+					return true;
+					
 				// The rest is text.
 				} else {
 					result_->text.push_back(c);
@@ -49,11 +55,17 @@ namespace robotutor {
 			// Parsing a command.
 			case STATE_COMMAND:
 				if (arg_parser_->consume(c)) {
+					std::cout << "Finished reading command." << std::endl;
 					state_ = STATE_TEXT;
 					arg_parser_->finish();
 					result_->arguments.push_back(arg_parser_->result());
+					result_->text += "\\mrk=" + boost::lexical_cast<std::string>(result_->arguments.size()) + "\\";
 				}
 				return false;
+				
+			// Done parsing, stop feeding us.
+			case STATE_DONE:
+				throw std::runtime_error("Input received after command parsing finished.");
 		}
 	}
 	
@@ -66,7 +78,7 @@ namespace robotutor {
 		trim(result_->text);
 		
 		// Not finished if we're still parsing a command.
-		return state_ == STATE_TEXT;
+		return state_ == STATE_TEXT || state_ == STATE_DONE;
 	}
 
 }
