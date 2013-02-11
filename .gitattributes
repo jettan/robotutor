@@ -1,0 +1,3 @@
+*.hpp text=auto
+*.cpp text=auto
+Makefile text=auto
