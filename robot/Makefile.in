@@ -1,0 +1,42 @@
+all_programs :=
+
+.PHONY: clean
+
+define component_template
+$$(build_dir)/$$($1_DIR): | $$(build_dir)
+	test -d $$@ || mkdir $$@
+
+$$(build_dir)/$$($1_DIR)/%.o: $$(source_dir)/$$($1_DIR)/%.cpp | $$(build_dir)/$$($1_DIR)
+	$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
+endef
+
+define program_template
+$$($1_BIN): $$(call for_components,$1,component_objects)
+	$$(CXX) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -o '$$@' $$^ $$(call for_components,$1,component_libs)
+	
+all_programs += $1
+endef
+
+define clean_template
+	test -f '$1' && rm '$1' || true
+endef
+
+component_objects = $($1_OBJS:%=$(build_dir)/$($1_DIR)/%.o)
+component_libs    = $($1_LIBS:%=-l%)
+for_components    = $(foreach component,$($1_COMPONENTS),$(call $2,$(component)))
+define_component  = $(eval $(call component_template,$1))
+define_components = $(foreach component,$1,$(call define_component,$(component)))
+define_program    = $(eval $(call program_template,$1))
+
+$(build_dir):
+	test -d $@ || mkdir $@
+
+clean:
+	test -d "$(build_dir)" && rm -r "$(build_dir)" || true
+	$(foreach program,$(all_programs), $(call clean_template,$($(program)_BIN)))
+
+component-%:
+	$(info $(call component_template,$(@:component-%=%)))
+
+program-%:
+	$(info $(call program_template,$(@:program-%=%)))

@@ -2,7 +2,7 @@
 #include <boost/make_shared.hpp>
 
 #include "executable.hpp"
-#include "script_parser.hpp"
+#include "parser/script_parser.hpp"
 
 
 namespace robotutor {

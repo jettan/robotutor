@@ -7,11 +7,11 @@
 #include <alcommon/almodule.h>
 #include <alproxies/altexttospeechproxy.h>
 
-#include "executable.hpp"
+#include "../executable.hpp"
 
 namespace AL {
 	class ALBroker;
-	class ALMomeoryProxy;
+	class ALMemoryProxy;
 }
 
 namespace robotutor {
@@ -35,13 +35,13 @@ namespace robotutor {
 		unsigned int last_sentence;
 		/// Job id with the speech engine.
 		int job_id;
-	}
+	};
 	
 	/// Speech engine to execute executable::Text.
 	class SpeechEngine : public AL::ALModule {
 		public:
 			/// Callback type for the command callback.
-			typedef boost::function<void () (executable::SharedPtr)> Callback;
+			typedef boost::function<void (executable::SharedPtr)> Callback;
 			
 			/// The callback to execute when a command is encountered.
 			Callback command_callback;
@@ -54,7 +54,7 @@ namespace robotutor {
 			AL::ALTextToSpeechProxy tts_;
 			
 			/// Vector containing job IDs
-			std::vector<Speechontext> stack_;
+			std::vector<SpeechContext> stack_;
 			
 		public:
 			/// Construct the speech engine.
@@ -95,5 +95,5 @@ namespace robotutor {
 			
 			/// Called when word is finished.
 			void onWordPos(std::string const & eventName, int const & value, std::string const & subscriberIndentifier);
-	}
+	};
 }

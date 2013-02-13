@@ -10,7 +10,7 @@
 #ifndef ROBOTUTOR_SCRIPT_PARSER_HPP_
 #define ROBOTUTOR_SCRIPT_PARSER_HPP_
 
-#include "executable.hpp"
+#include "../executable.hpp"
 
 namespace robotutor {
 	

@@ -1,9 +1,14 @@
+#include <alcommon/albroker.h>
+#include <alproxies/almemoryproxy.h>
+
 #include "speech_engine.hpp"
 
 
 namespace robotutor {
 	/// Construct the speech engine.
-	SpeechEngine::SpeechEngine(boost::shared_ptr<AL::ALBroker> broker, std::string const & name) {
+	SpeechEngine::SpeechEngine(boost::shared_ptr<AL::ALBroker> broker, std::string const & name) :
+		AL::ALModule(broker, name)
+	{
 		setModuleDescription("RoboTutor speech engine");
 		
 		functionName("onBookmark", getName(), "Handle bookmarks.");
@@ -36,8 +41,8 @@ namespace robotutor {
 	 */
 	void SpeechEngine::execute(executable::Text::SharedPtr text) {
 		tts_.stopAll();
-		int job_id = tts_.post.start(text.text);
-		stack.push_back(SpeechContext(text, job_id));
+		int job_id = tts_.post.say(text->text);
+		stack_.push_back(SpeechContext(text, job_id));
 	}
 	
 	/// Stop execution.
