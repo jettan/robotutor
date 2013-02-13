@@ -10,7 +10,8 @@
 #ifndef ROBOTUTOR_SCRIPT_PARSER_HPP_
 #define ROBOTUTOR_SCRIPT_PARSER_HPP_
 
-#include "../executable.hpp"
+#include "../command/command.hpp"
+#include "../command/text_command.hpp"
 
 namespace robotutor {
 	
@@ -32,20 +33,20 @@ namespace robotutor {
 			} state_;
 			
 			/// Factory to create commands.
-			executable::CommandFactory & factory_;
+			command::Factory & factory_;
 			
 			/// Parser for embedded commands.
 			boost::scoped_ptr<CommandParser> arg_parser_;
 			
 			/// The text executable.
-			executable::Text::SharedPtr result_;
+			command::Text::SharedPtr result_;
 			
 		public:
 			/// Construct a text parser.
 			/**
 			 * \param factory The command factory to use to instantiate commands found in the text.
 			 */
-			TextParser(executable::CommandFactory & factory);
+			TextParser(command::Factory & factory);
 			
 			/// Get the parse result.
 			/**
@@ -53,7 +54,7 @@ namespace robotutor {
 			 * 
 			 * \return A shared pointer holding the parsed executable.
 			 */
-			executable::Text::SharedPtr result();
+			command::Text::SharedPtr result();
 			
 			/// Parse one character of input.
 			/**
@@ -79,10 +80,10 @@ namespace robotutor {
 			std::string name_;
 			
 			/// Buffer for arguments.
-			executable::ArgList args_;
+			command::ArgList args_;
 			
 			/// Factory to create commands.
-			executable::CommandFactory & factory_;
+			command::Factory & factory_;
 			
 			/// Parser for arguments.
 			boost::scoped_ptr<ExecutableParser> arg_parser_;
@@ -96,14 +97,14 @@ namespace robotutor {
 			} state_;
 			
 			/// The resulting command.
-			executable::Command::SharedPtr result_;
+			command::SharedPtr result_;
 			
 		public:
 			/// Construct a command parser.
 			/**
 			 * \param factory The command factory to use to create the command.
 			 */
-			CommandParser(executable::CommandFactory & factory);
+			CommandParser(command::Factory & factory);
 			
 			/// Get the parse result.
 			/**
@@ -111,7 +112,7 @@ namespace robotutor {
 			 * 
 			 * \return A shared pointer holding the parsed executable.
 			 */
-			executable::Command::SharedPtr result();
+			command::SharedPtr result();
 			
 			/// Parse one character of input.
 			/**
@@ -143,14 +144,14 @@ namespace robotutor {
 			TextParser text_parser_;
 			
 			/// Shared pointer to hold the result.
-			executable::SharedPtr result_;
+			command::SharedPtr result_;
 			
 		public:
 			/// Construct an executable parser.
 			/**
 			 * \param factory The command factory to use for encountered commands.
 			 */
-			ExecutableParser(executable::CommandFactory & factory);
+			ExecutableParser(command::Factory & factory);
 			
 			/// Get the parse result.
 			/**
@@ -158,7 +159,7 @@ namespace robotutor {
 			 * 
 			 * \return A shared pointer holding the parsed executable.
 			 */
-			executable::SharedPtr result();
+			command::SharedPtr result();
 			
 			/// Parse one character of input.
 			/**

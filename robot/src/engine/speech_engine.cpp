@@ -39,19 +39,19 @@ namespace robotutor {
 	 * The previous command is interrupted and will be resumed when this one finishes.
 	 * \param text The text to execute.
 	 */
-	void SpeechEngine::execute(executable::Text::SharedPtr text) {
+	void SpeechEngine::executeCommand(command::Text::SharedPtr text) {
 		tts_.stopAll();
 		int job_id = tts_.post.say(text->text);
 		stack_.push_back(SpeechContext(text, job_id));
 	}
 	
 	/// Stop execution.
-	void SpeechEngine::stop() {
+	void SpeechEngine::stopCommand() {
 		tts_.stopAll();
 	}
 	
 	/// Resume execution.
-	void SpeechEngine::resume() {
+	void SpeechEngine::resumeCommand() {
 		if (stack_.size()) {
 			resumeContext_(stack_.back());
 		}
@@ -59,7 +59,7 @@ namespace robotutor {
 	
 	/// Reset the engine.
 	void SpeechEngine::reset() {
-		stop();
+		stopCommand();
 		stack_.clear();
 	}
 	

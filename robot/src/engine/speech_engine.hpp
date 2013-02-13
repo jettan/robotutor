@@ -7,7 +7,7 @@
 #include <alcommon/almodule.h>
 #include <alproxies/altexttospeechproxy.h>
 
-#include "../executable.hpp"
+#include "../command/text_command.hpp"
 
 namespace AL {
 	class ALBroker;
@@ -20,7 +20,7 @@ namespace robotutor {
 	struct SpeechContext {
 		
 		/// Construct a speech engine context.
-		SpeechContext(executable::Text::SharedPtr text, int job_id)
+		SpeechContext(command::Text::SharedPtr text, int job_id)
 			: text(text)
 			, last_word(0)
 			, last_sentence(0)
@@ -28,7 +28,7 @@ namespace robotutor {
 			{}
 		
 		/// The text belonging to this context.
-		executable::Text::SharedPtr text;
+		command::Text::SharedPtr text;
 		/// The position of the last word.
 		unsigned int last_word;
 		/// The position of the last sentence.
@@ -37,11 +37,11 @@ namespace robotutor {
 		int job_id;
 	};
 	
-	/// Speech engine to execute executable::Text.
+	/// Speech engine to execute command::Text.
 	class SpeechEngine : public AL::ALModule {
 		public:
 			/// Callback type for the command callback.
-			typedef boost::function<void (executable::SharedPtr)> Callback;
+			typedef boost::function<void (command::SharedPtr)> Callback;
 			
 			/// The callback to execute when a command is encountered.
 			Callback command_callback;
@@ -71,13 +71,13 @@ namespace robotutor {
 			 * The previous command is interrupted and will be resumed when this one finishes.
 			 * \param text The text to execute.
 			 */
-			void execute(executable::Text::SharedPtr text);
+			void executeCommand(command::Text::SharedPtr text);
 			
 			/// Stop execution.
-			void stop();
+			void stopCommand();
 			
 			/// Resume execution.
-			void resume();
+			void resumeCommand();
 			
 			/// Reset the engine.
 			void reset();

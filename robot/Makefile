@@ -7,9 +7,13 @@ LDFLAGS_EXTRA  += -L /opt/naoqi-sdk/lib/naoqi
 source_dir     := src
 build_dir      := build
 
-common_OBJS    := executable test
+common_OBJS    := test
 common_LIBS    :=
 common_DIR     := .
+
+command_OBJS   := command text_command
+command_LIBS   :=
+command_DIR    := command
 
 parser_OBJS    := text_parser command_parser executable_parser
 parser_LIBS    :=
@@ -24,7 +28,7 @@ server_OBJS    := server
 server_LIBS    := boost_system
 server_DIR     := server
 
-robotutor_COMPONENTS := common parser engine server
+robotutor_COMPONENTS := common parser engine server command
 robotutor_BIN        := robotutor
 
 .PHONY: default
@@ -33,5 +37,5 @@ default: $(robotutor_BIN)
 include Makefile.in
 
 
-$(call define_components,common parser engine server)
+$(call define_components,common command parser engine server)
 $(call define_program,robotutor)

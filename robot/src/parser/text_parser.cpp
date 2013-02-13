@@ -9,8 +9,8 @@ namespace robotutor {
 	using namespace parser;
 	
 	/// Construct a text parser.
-	TextParser::TextParser(executable::CommandFactory & factory) : factory_(factory) {
-		result_ = boost::make_shared<executable::Text>();
+	TextParser::TextParser(command::Factory & factory) : factory_(factory) {
+		result_ = boost::make_shared<command::Text>();
 		state_  = STATE_TEXT;
 		result_->text.reserve(1024);
 	}
@@ -21,7 +21,7 @@ namespace robotutor {
 	 * 
 	 * \return A shared pointer holding the parsed executable.
 	 */
-	executable::Text::SharedPtr TextParser::result() {
+	command::Text::SharedPtr TextParser::result() {
 		return result_;
 	}
 	

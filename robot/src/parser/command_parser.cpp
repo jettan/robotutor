@@ -6,7 +6,7 @@ namespace robotutor {
 	using namespace parser;
 	
 	/// Construct a command parser.
-	CommandParser::CommandParser(executable::CommandFactory & factory) : factory_(factory) {
+	CommandParser::CommandParser(command::Factory & factory) : factory_(factory) {
 		state_ = STATE_START;
 		name_.reserve(30);
 	}
@@ -17,7 +17,7 @@ namespace robotutor {
 	 * 
 	 * \return A shared pointer holding the parsed executable.
 	 */
-	executable::Command::SharedPtr CommandParser::result() {
+	command::SharedPtr CommandParser::result() {
 		return result_;
 	}
 	

@@ -1,23 +1,30 @@
 #include <iostream>
 #include <boost/make_shared.hpp>
 
-#include "executable.hpp"
+#include "command/command.hpp"
 #include "parser/script_parser.hpp"
 
 
 namespace robotutor {
 	
-	namespace executable {
+	namespace command {
 		
 		struct Generic : public Command {
-			static Command::SharedPtr create(std::string const & name, ArgList const & arguments) {
-				Command::SharedPtr result = boost::make_shared<Generic>();
-				result->name      = name;
+			
+			std::string name_;
+			
+			static SharedPtr create(std::string const & name, ArgList const & arguments) {
+				auto result  = boost::make_shared<Generic>();
+				result->name_     = name;
 				result->arguments = arguments;
 				return result;
 			}
 			
-			bool step(ScriptEngine &) {
+			std::string const name() const {
+				return name_;
+			}
+			
+			bool run(ScriptEngine &) {
 				return true;
 			}
 		};
@@ -30,15 +37,15 @@ namespace robotutor {
 using namespace robotutor;
 
 int main() {
-	executable::CommandFactory commands;
-	commands.add("aap", executable::Generic::create);
-	commands.add("mies", executable::Generic::create);
+	command::Factory commands;
+	commands.add("aap", command::Generic::create);
+	commands.add("mies", command::Generic::create);
 	robotutor::ExecutableParser parser(commands);
 	
 	try {
 		robotutor::parse(parser, std::cin);
 		parser.finish();
-		executable::SharedPtr script = parser.result();
+		command::SharedPtr script = parser.result();
 		std::cout << *script;
 	} catch (std::exception const & e) {
 		std::cerr << "Error during parsing: " << e.what() << "." << std::endl;

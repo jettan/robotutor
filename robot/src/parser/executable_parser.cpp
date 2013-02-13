@@ -7,7 +7,7 @@ namespace robotutor {
 	/**
 	 * \param factory The command factory to use for encountered commands.
 	 */
-	ExecutableParser::ExecutableParser(executable::CommandFactory & factory) : text_parser_(factory) {};
+	ExecutableParser::ExecutableParser(command::Factory & factory) : text_parser_(factory) {};
 	
 	/// Get the parse result.
 	/**
@@ -15,7 +15,7 @@ namespace robotutor {
 	 * 
 	 * \return A shared pointer holding the parsed executable.
 	 */
-	executable::SharedPtr ExecutableParser::result() {
+	command::SharedPtr ExecutableParser::result() {
 		return result_;
 	}
 	
