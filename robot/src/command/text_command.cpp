@@ -11,7 +11,7 @@ namespace robotutor {
 		 */
 		void Text::write(std::ostream & stream) const {
 			stream << text;
-			for (auto argument : arguments) stream << "\n" << argument;
+			for (auto argument : arguments) stream << "\n" << *argument;
 		}
 		
 		/// Run the command.

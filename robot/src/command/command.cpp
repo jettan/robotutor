@@ -10,7 +10,7 @@ namespace robotutor {
 		 * */
 		void Command::write(std::ostream & stream) const {
 			stream << "{" << name();
-			for (auto argument : arguments) stream << "|"  << argument;
+			for (auto argument : arguments) stream << "|"  << *argument;
 			stream << "}";
 		}
 		

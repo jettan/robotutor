@@ -2,7 +2,8 @@
 #include <boost/make_shared.hpp>
 
 #include "command/command.hpp"
-#include "parser/script_parser.hpp"
+#include "parser/parse.hpp"
+#include "parser/command_parser.hpp"
 
 
 namespace robotutor {
@@ -40,7 +41,7 @@ int main() {
 	command::Factory commands;
 	commands.add("aap", command::Generic::create);
 	commands.add("mies", command::Generic::create);
-	robotutor::ExecutableParser parser(commands);
+	robotutor::CommandParser parser(commands);
 	
 	try {
 		robotutor::parse(parser, std::cin);

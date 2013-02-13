@@ -15,7 +15,7 @@ command_OBJS   := command text_command
 command_LIBS   :=
 command_DIR    := command
 
-parser_OBJS    := text_parser command_parser executable_parser
+parser_OBJS    := command_parser
 parser_LIBS    :=
 parser_DIR     := parser
 
