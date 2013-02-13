@@ -3,6 +3,8 @@ CXXFLAGS_EXTRA := -std=c++11 -I/opt/naoqi-sdk/include -Wall
 LDFLAGS_EXTRA  := -pthread
 LDFLAGS_EXTRA  += -L /opt/naoqi-sdk/lib
 LDFLAGS_EXTRA  += -L /opt/naoqi-sdk/lib/naoqi
+LDFLAGS_EXTRA  += -Wl,-rpath=/opt/naoqi-sdk/lib
+LDFLAGS_EXTRA  += -Wl,-rpath=/opt/naoqi-sdk/lib/naoqi
 
 source_dir     := src
 build_dir      := build
