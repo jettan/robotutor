@@ -110,7 +110,7 @@ namespace robotutor {
 		
 		// If we read exactly one command, just return that instead.
 		if (text_->text == "\\mrk=1\\") {
-			result_ = result_->arguments[0];
+			result_ = text_->arguments[0];
 		} else {
 			result_ = text_;
 		}
