@@ -12,9 +12,6 @@ namespace robotutor {
 		 * the embedded commands are executed when a bookmark is encountered.
 		 */
 		struct Text : public Command {
-			/// Shared pointer type.
-			typedef std::shared_ptr<Text> SharedPtr;
-			
 			/// The text to synthesize.
 			std::string const text;
 			
@@ -40,7 +37,7 @@ namespace robotutor {
 			/**
 			 * \return The name of the command.
 			 */
-			std::string const name() const { return "Text"; }
+			std::string name() const { return "text"; }
 			
 			/// Run the command.
 			/**
@@ -55,5 +52,25 @@ namespace robotutor {
 			void write(std::ostream & stream) const;
 		};
 		
+		/// Command to stop the program execution.
+		struct Stop : public Command {
+			
+			/// Create a stop command.
+			static SharedPtr create(std::string && name, ArgList && arguments) {
+				return std::make_shared<Stop>();
+			}
+			
+			/// Get the name of the command.
+			/**
+			 * \return The name of the command.
+			 */
+			std::string name() const { return "stop"; }
+			
+			/// Run the command.
+			/**
+			 * \param engine The script engine to use for executing the command.
+			 */
+			bool run(ScriptEngine & engine) const;
+		};
 	}
 }

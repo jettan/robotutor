@@ -6,9 +6,8 @@
 
 namespace robotutor {
 	/// Construct the speech engine.
-	SpeechEngine::SpeechEngine(ScriptEngine & parent, boost::shared_ptr<AL::ALBroker> broker, std::string const & name) :
-		AL::ALModule(broker, name),
-		parent_(parent)
+	SpeechEngine::SpeechEngine(boost::shared_ptr<AL::ALBroker> broker, std::string const & name) :
+		AL::ALModule(broker, name)
 	{
 		setModuleDescription("RoboTutor Interrupting Speech Engine");
 		
@@ -17,19 +16,30 @@ namespace robotutor {
 		
 		functionName("onWordPos", getName(), "Handle word positions.");
 		BIND_METHOD(SpeechEngine::onWordPos);
-		
+	}
+	
+	/// Deconstruct the speech engine.
+	SpeechEngine::~SpeechEngine() {
+		memory_->unsubscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName());
+		memory_->unsubscribeToEvent("ALTextToSpeech/PositionOfCurrentWord", getName());
+	}
+	
+	/// Create a speech engine.
+	boost::shared_ptr<SpeechEngine> SpeechEngine::create(ScriptEngine & parent, boost::shared_ptr<AL::ALBroker> broker, std::string const & name) {
+		boost::shared_ptr<SpeechEngine> result = ALModule::createModule<SpeechEngine>(broker, name);
+		result->parent_ = &parent;
+		return result;
+	}
+	
+	/// Initialize the module.
+	void SpeechEngine::init() {
 		memory_ = getParentBroker()->getMemoryProxy();
 		tts_ = AL::ALTextToSpeechProxy(getParentBroker());
 		tts_.enableNotifications();
 		
 		memory_->subscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName(), "onBookmark");
 		memory_->subscribeToEvent("ALTextToSpeech/PositionOfCurrentWord", getName(), "onWordPos");
-	}
-	
-	/// Deconstruct the speech engine.
-	SpeechEngine::~SpeechEngine() {
-		memory_->unsubscribeToEvent("ALTextToSpeech/CurrentBookMark"    , getName());
-		memory_->unsubscribeToEvent("ALTextToSpeech/PositionOfCurrentWord", getName());
+		
 	}
 	
 	/// Execute a text command.
@@ -37,7 +47,7 @@ namespace robotutor {
 	 * The previous command is interrupted and will be resumed when this one finishes.
 	 * \param text The text to execute.
 	 */
-	void SpeechEngine::executeCommand(command::Text::SharedPtr text) {
+	void SpeechEngine::executeCommand(std::shared_ptr<command::Text const> text) {
 		tts_.stopAll();
 		stack.push_back(SpeechContext(text));
 		tts_.post.say(text->text);
@@ -72,7 +82,7 @@ namespace robotutor {
 			resumeCommand();
 		// Other bookmarks are command callbacks.
 		} else {
-			stack.back().text->arguments[value - 1]->run(parent_); // Bookmarks are 1 based.
+			stack.back().text->arguments[value - 1]->run(*parent_); // Bookmarks are 1 based.
 		}
 	}
 	

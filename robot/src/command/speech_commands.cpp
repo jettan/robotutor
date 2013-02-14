@@ -1,6 +1,7 @@
 #include <ostream>
 
-#include "text_command.hpp"
+#include "speech_commands.hpp"
+#include "../engine/script_engine.hpp"
 
 namespace robotutor {
 	namespace command {
@@ -19,6 +20,16 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool Text::run(ScriptEngine & engine) const {
+			engine.speech->executeCommand(std::dynamic_pointer_cast<Text const>(shared_from_this()));
+			return true;
+		}
+		
+		/// Run the command.
+		/**
+		 * \param engine The script engine to use for executing the command.
+		 */
+		bool Stop::run(ScriptEngine & engine) const {
+			engine.speech->stopCommand();
 			return true;
 		}
 	}

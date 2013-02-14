@@ -7,7 +7,7 @@
 #include <alcommon/almodule.h>
 #include <alproxies/altexttospeechproxy.h>
 
-#include "../command/text_command.hpp"
+#include "../command/speech_commands.hpp"
 
 namespace AL {
 	class ALBroker;
@@ -21,13 +21,13 @@ namespace robotutor {
 	/// Speech engine context.
 	struct SpeechContext {
 		/// Construct a speech engine context.
-		SpeechContext(command::Text::SharedPtr text) :
+		SpeechContext(std::shared_ptr<command::Text const> text) :
 			text(text),
 			start(0),
 			last_word(0) {}
 		
 		/// The text belonging to this context.
-		command::Text::SharedPtr text;
+		std::shared_ptr<command::Text const> text;
 		/// The position where the syntheses started.
 		unsigned int start;
 		/// The position of the last word.
@@ -36,7 +36,6 @@ namespace robotutor {
 	
 	/// Speech engine to execute command::Text.
 	class SpeechEngine : public AL::ALModule {
-		friend class ScriptEngine;
 		
 		public:
 			/// Callback type for the command callback.
@@ -50,7 +49,7 @@ namespace robotutor {
 			
 		protected:
 			/// Reference to the parent script engine.
-			ScriptEngine & parent_;
+			ScriptEngine * parent_;
 			
 			/// Memory proxy to receive callbacks.
 			boost::shared_ptr<AL::ALMemoryProxy> memory_;
@@ -60,17 +59,23 @@ namespace robotutor {
 			
 		public:
 			/// Construct the speech engine.
-			SpeechEngine(ScriptEngine & parent, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
+			SpeechEngine(boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
 			/// Deconstruct the speech engine.
 			virtual ~SpeechEngine();
+			
+			/// Create a speech engine.
+			static boost::shared_ptr<SpeechEngine> create(ScriptEngine & parent, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
 			/// Execute a text command.
 			/**
 			 * The previous command is interrupted and will be resumed when this one finishes.
 			 * \param text The text to execute.
 			 */
-			void executeCommand(command::Text::SharedPtr text);
+			void executeCommand(std::shared_ptr<command::Text const> text);
+			
+			/// Initialize the module.
+			void init();
 			
 			/// Stop execution.
 			void stopCommand();
@@ -81,7 +86,6 @@ namespace robotutor {
 			/// Reset the engine.
 			void reset();
 			
-		public:
 			/// Called when a bookmark is encountered.
 			void onBookmark(std::string const & eventName, int const & value, std::string const & subscriberIndentifier);
 			

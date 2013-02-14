@@ -13,7 +13,7 @@ common_OBJS    := main
 common_LIBS    :=
 common_DIR     := .
 
-command_OBJS   := command text_command
+command_OBJS   := command speech_commands
 command_LIBS   :=
 command_DIR    := command
 

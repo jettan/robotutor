@@ -7,6 +7,6 @@ namespace robotutor {
 	 * \param broker The ALBroker to use for communicating with naoqi.
 	 */
 	ScriptEngine::ScriptEngine(boost::shared_ptr<AL::ALBroker> broker) :
-		speech_engine(*this, broker, "RTISE") {}
+		speech(SpeechEngine::create(*this, broker, "RTISE")) {}
 	
 }

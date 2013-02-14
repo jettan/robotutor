@@ -9,7 +9,7 @@
 #include <memory>
 
 #include "../command/command.hpp"
-#include "../command/text_command.hpp"
+#include "../command/speech_commands.hpp"
 
 namespace robotutor {
 	

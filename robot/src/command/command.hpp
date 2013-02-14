@@ -16,45 +16,47 @@ namespace robotutor {
 	/// Namespace to contain all commands.
 	namespace command {
 		
-		/// Abstract base class for all commands.
-		struct Command;
+		class Command;
+		class CommandFactory;
 		
 		/// Shared pointer for executables.
-		typedef std::shared_ptr<Command> SharedPtr;
+		typedef std::shared_ptr<Command const> SharedPtr;
 		
 		/// Argument list, containing shared pointers to commands.
 		typedef std::vector<SharedPtr> ArgList;
 		
 		/// Base class for executables.
-		struct Command {
-			
-			/// Arguments for the command.
-			ArgList const arguments;
-			
-			/// Construct a command.
-			Command(ArgList const & arguments) : arguments(arguments) {}
-			
-			/// Construct a command.
-			Command(ArgList && arguments) : arguments(std::move(arguments)) {}
-			
-			/// Virtual destructor.
-			virtual ~Command() {};
-			
-			/// Get the name of the command.
-			/**
-			 * \return The name of the command.
-			 */
-			virtual std::string const name() const = 0;
-			
-			/// Execute one step.
-			virtual bool run(ScriptEngine & engine) const = 0;
-			
-			/// Write the command to a stream.
-			/**
-			 * \param stream The stream to write to.
-			 */
-			virtual void write(std::ostream & stream) const;
-			
+		class Command : public std::enable_shared_from_this<Command> {
+			public:
+				/// Arguments for the command.
+				ArgList const arguments;
+				
+				/// Construct a command without arguments.
+				Command() {}
+				
+				/// Construct a command with arguments.
+				Command(ArgList const & arguments) : arguments(arguments) {}
+				
+				/// Construct a command with arguments.
+				Command(ArgList && arguments) : arguments(std::move(arguments)) {}
+				
+				/// Virtual destructor.
+				virtual ~Command() {};
+				
+				/// Get the name of the command.
+				/**
+				 * \return The name of the command.
+				 */
+				virtual std::string name() const = 0;
+				
+				/// Execute one step.
+				virtual bool run(ScriptEngine & engine) const = 0;
+				
+				/// Write the command to a stream.
+				/**
+				 * \param stream The stream to write to.
+				 */
+				virtual void write(std::ostream & stream) const;
 		};
 		
 		
@@ -97,6 +99,17 @@ namespace robotutor {
 				 */
 				void add(std::string const & name, Creator creator) {
 					creators_[name] = creator;
+				}
+				
+				/// Register a command.
+				/**
+				 * The type parameter must have a static create function of the right type.
+				 *
+				 * \param name The name of the command.
+				 */
+				template<typename T>
+				void add(std::string const & name) {
+					creators_[name] = &T::create;
 				}
 		};
 		

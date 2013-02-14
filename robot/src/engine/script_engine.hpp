@@ -17,7 +17,7 @@ namespace robotutor {
 	class ScriptEngine {
 		public:
 			/// The text-to-speech engine.
-			SpeechEngine speech_engine;
+			boost::shared_ptr<SpeechEngine> speech;
 			
 			/// Construct the script engine.
 			/**

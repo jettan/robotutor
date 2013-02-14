@@ -3,15 +3,22 @@
 #include <stdexcept>
 
 #include <alcommon/albroker.h>
+#include <alcommon/albrokermanager.h>
 
 #include "parser/command_parser.hpp"
 #include "parser/parse.hpp"
 #include "engine/script_engine.hpp"
 
+#include <unistd.h>
+
 
 using namespace robotutor;
 
 command::Factory factory;
+
+void registerCommands() {
+	factory.add<command::Stop>("stop");
+}
 
 command::SharedPtr parseStream(std::istream & stream) {
 	CommandParser parser(factory);
@@ -28,6 +35,7 @@ command::SharedPtr parseFile(std::string const & name) {
 int main(int argc, char ** argv) {
 	
 	// Try to parse the script.
+	registerCommands();
 	command::SharedPtr script;
 	try {
 		CommandParser parser(factory);
@@ -37,7 +45,6 @@ int main(int argc, char ** argv) {
 		} else  {
 			script = parseStream(std::cin);
 		}
-		script = parser.result();
 	} catch (std::exception const & e) {
 		std::cerr << "Failed to parse input: " << e.what() << std::endl;
 		return -1;
@@ -49,6 +56,8 @@ int main(int argc, char ** argv) {
 	boost::shared_ptr<AL::ALBroker> broker;
 	try {
 		broker = AL::ALBroker::createBroker("robotutor", "0.0.0.0", 54000, "127.0.0.1", 9559);
+		AL::ALBrokerManager::setInstance(broker->fBrokerManager.lock());
+		AL::ALBrokerManager::getInstance()->addBroker(broker);
 	} catch (...) {
 		// Documentation doesn't tell us what to catch.....
 		std::cerr << "Failed to connect to robot." << std::endl;
@@ -57,7 +66,8 @@ int main(int argc, char ** argv) {
 	
 	// Execute the script.
 	ScriptEngine engine(broker);
-	//engine.run(script);
+	engine.run(script);
 	
+	usleep(10 * 1000 * 1000);
 	return 0;
 }
