@@ -6,9 +6,9 @@
 
 namespace robotutor {
 	/// Construct the speech engine.
-	SpeechEngine::SpeechEngine(ScriptEngine & script_engine, boost::shared_ptr<AL::ALBroker> broker, std::string const & name) :
+	SpeechEngine::SpeechEngine(ScriptEngine & parent, boost::shared_ptr<AL::ALBroker> broker, std::string const & name) :
 		AL::ALModule(broker, name),
-		script_engine_(script_engine)
+		parent_(parent)
 	{
 		setModuleDescription("RoboTutor Interrupting Speech Engine");
 		
@@ -29,7 +29,7 @@ namespace robotutor {
 	/// Deconstruct the speech engine.
 	SpeechEngine::~SpeechEngine() {
 		memory_->unsubscribeToEvent("ALTextToSpeech/CurrentBookMark"    , getName());
-		memory_->unsubscribeToEvent("ALTextToSpeech/CurrentWordPosition", getName());
+		memory_->unsubscribeToEvent("ALTextToSpeech/PositionOfCurrentWord", getName());
 	}
 	
 	/// Execute a text command.
@@ -72,7 +72,7 @@ namespace robotutor {
 			resumeCommand();
 		// Other bookmarks are command callbacks.
 		} else {
-			stack.back().text->arguments[value - 1]->run(script_engine_); // Bookmarks are 1 based.
+			stack.back().text->arguments[value - 1]->run(parent_); // Bookmarks are 1 based.
 		}
 	}
 	

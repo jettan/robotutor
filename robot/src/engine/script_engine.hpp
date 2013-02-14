@@ -29,7 +29,7 @@ namespace robotutor {
 			/**
 			 * \param command The command to run.
 			 */
-			void executeCommand(command::SharedPtr command) {
+			void run(command::SharedPtr command) {
 				command->run(*this);
 			}
 	};

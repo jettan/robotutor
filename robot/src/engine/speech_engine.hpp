@@ -36,6 +36,8 @@ namespace robotutor {
 	
 	/// Speech engine to execute command::Text.
 	class SpeechEngine : public AL::ALModule {
+		friend class ScriptEngine;
+		
 		public:
 			/// Callback type for the command callback.
 			typedef boost::function<void (command::SharedPtr)> Callback;
@@ -48,7 +50,7 @@ namespace robotutor {
 			
 		protected:
 			/// Reference to the parent script engine.
-			ScriptEngine & script_engine_;
+			ScriptEngine & parent_;
 			
 			/// Memory proxy to receive callbacks.
 			boost::shared_ptr<AL::ALMemoryProxy> memory_;
@@ -58,7 +60,7 @@ namespace robotutor {
 			
 		public:
 			/// Construct the speech engine.
-			SpeechEngine(ScriptEngine & script_engine, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
+			SpeechEngine(ScriptEngine & parent, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
 			/// Deconstruct the speech engine.
 			virtual ~SpeechEngine();

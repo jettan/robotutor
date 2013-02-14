@@ -9,7 +9,7 @@ LDFLAGS_EXTRA  += -Wl,-rpath=/opt/naoqi-sdk/lib/naoqi
 source_dir     := src
 build_dir      := build
 
-common_OBJS    := test
+common_OBJS    := main
 common_LIBS    :=
 common_DIR     := .
 
