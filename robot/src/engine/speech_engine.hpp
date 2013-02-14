@@ -16,25 +16,22 @@ namespace AL {
 
 namespace robotutor {
 	
+	class ScriptEngine;
+	
 	/// Speech engine context.
 	struct SpeechContext {
-		
 		/// Construct a speech engine context.
-		SpeechContext(command::Text::SharedPtr text, int job_id)
-			: text(text)
-			, last_word(0)
-			, last_sentence(0)
-			, job_id(job_id)
-			{}
+		SpeechContext(command::Text::SharedPtr text) :
+			text(text),
+			start(0),
+			last_word(0) {}
 		
 		/// The text belonging to this context.
 		command::Text::SharedPtr text;
+		/// The position where the syntheses started.
+		unsigned int start;
 		/// The position of the last word.
 		unsigned int last_word;
-		/// The position of the last sentence.
-		unsigned int last_sentence;
-		/// Job id with the speech engine.
-		int job_id;
 	};
 	
 	/// Speech engine to execute command::Text.
@@ -46,25 +43,25 @@ namespace robotutor {
 			/// The callback to execute when a command is encountered.
 			Callback command_callback;
 			
+			/// Stack of speech contexts.
+			std::vector<SpeechContext> stack;
+			
 		protected:
+			/// Reference to the parent script engine.
+			ScriptEngine & script_engine_;
+			
 			/// Memory proxy to receive callbacks.
 			boost::shared_ptr<AL::ALMemoryProxy> memory_;
 			
 			/// TTS proxy to do the actual synthesizing.
 			AL::ALTextToSpeechProxy tts_;
 			
-			/// Vector containing job IDs
-			std::vector<SpeechContext> stack_;
-			
 		public:
 			/// Construct the speech engine.
-			SpeechEngine(boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
+			SpeechEngine(ScriptEngine & script_engine, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
 			/// Deconstruct the speech engine.
 			virtual ~SpeechEngine();
-			
-			/// Initialize the naoqi module.
-			virtual void init();
 			
 			/// Execute a text command.
 			/**
@@ -81,13 +78,6 @@ namespace robotutor {
 			
 			/// Reset the engine.
 			void reset();
-			
-		protected:
-			/// Resume a speech context.
-			/**
-			 * \param context The context to resume.
-			 */
-			void resumeContext_(SpeechContext & context);
 			
 		public:
 			/// Called when a bookmark is encountered.

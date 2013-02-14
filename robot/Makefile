@@ -21,7 +21,7 @@ parser_OBJS    := command_parser
 parser_LIBS    :=
 parser_DIR     := parser
 
-engine_OBJS    := speech_engine
+engine_OBJS    := speech_engine script_engine
 engine_LIBS    := alcommon alproxies alvalue alsoap alerror althread
 engine_LIBS    += qi rttools boost_filesystem
 engine_DIR     := engine
