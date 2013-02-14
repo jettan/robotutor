@@ -132,7 +132,7 @@ namespace robotutor {
 	/// Flush the recently parsed command.
 	void CommandParser::flushCommand_() {
 		trim(command_name_);
-		commands_.push_back(factory_.create(command_name_, command_args_));
+		commands_.push_back(factory_.create(std::move(command_name_), std::move(command_args_)));
 		text_ += "\\mrk=" + boost::lexical_cast<std::string>(commands_.size()) + "\\";
 		command_name_.clear();
 		command_args_.clear();

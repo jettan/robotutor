@@ -69,7 +69,7 @@ namespace robotutor {
 		class Factory {
 			protected:
 				/// Function type for creator functions.
-				typedef std::function<SharedPtr (std::string const &, ArgList const & arguments)> Creator;
+				typedef std::function<SharedPtr (std::string &&, ArgList && arguments)> Creator;
 				
 				/// Map type for the creator map.
 				typedef std::map<std::string, Creator> CreatorMap;
@@ -84,10 +84,10 @@ namespace robotutor {
 				 * \param name The name of the command.
 				 * \param args The argument list for the command.
 				 */
-				SharedPtr create(std::string const & name, ArgList const & args) {
+				SharedPtr create(std::string && name, ArgList && args) {
 					CreatorMap::iterator creator = creators_.find(name);
 					if (creator == creators_.end()) throw std::runtime_error("Command `" + name + "' not found.");
-					return creator->second(name, args);
+					return creator->second(std::move(name), std::move(args));
 				}
 				
 				/// Register a creator.
