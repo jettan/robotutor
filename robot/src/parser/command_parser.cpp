@@ -1,4 +1,5 @@
-#include <boost/make_shared.hpp>
+#include <memory>
+
 #include <boost/lexical_cast.hpp>
 
 #include "command_parser.hpp"
@@ -10,11 +11,49 @@ namespace robotutor {
 	
 	/// Construct a text parser.
 	CommandParser::CommandParser(command::Factory & factory) : factory_(factory) {
-		text_ = boost::make_shared<command::Text>();
-		state_  = STATE_TEXT;
-		text_->text.reserve(1024);
-		command_name_.reserve(32);
-		command_args_.reserve(16);
+		reset();
+	}
+	
+	/// Reset the parser so that it can parse a new command.
+	void CommandParser::reset() {
+		state_ = STATE_TEXT;
+		text_         .reserve(1024);
+		text_         .clear();
+		commands_     .reserve(128);
+		commands_     .clear();
+		command_name_ .reserve(32);
+		command_name_ .clear();
+		command_args_ .reserve(16);
+		command_args_ .clear();
+	}
+	
+	/// Get the parse result.
+	/**
+	 * May throw an exception if the parser is not in a valid state to return a result.
+	 * If no exception is thrown, the parser is reset as if a call to reset() has been made.
+	 * 
+	 * \return A shared pointer holding the parsed executable.
+	 */
+	command::SharedPtr CommandParser::result() {
+		// Make sure the parser isn't in the middle of something.
+		if (state_ != STATE_TEXT && state_ != STATE_DONE) {
+			throw std::runtime_error("Parser requires more input before returning a result.");
+		}
+		
+		// Strip trailing and leading spaces from the string.
+		trim(text_);
+		
+		command::SharedPtr result;
+		// If we read exactly one command, just return that instead.
+		if (text_ == "\\mrk=1\\") {
+			result = commands_[0];
+		// Otherwise, return a real text command.
+		} else {
+			result = std::make_shared<command::Text>(text_, commands_);
+		}
+		
+		reset();
+		return result;
 	}
 	
 	/// Parse one character of input.
@@ -38,7 +77,7 @@ namespace robotutor {
 					
 				// The rest is text.
 				} else {
-					text_->text.push_back(c);
+					text_.push_back(c);
 					return false;
 				}
 				
@@ -69,7 +108,6 @@ namespace robotutor {
 			// Parsing command arguments in sub-parser.
 			case STATE_COMMAND_ARGS:
 				if (arg_parser_->consume(c)) {
-					arg_parser_->finish();
 					command_args_.push_back(arg_parser_->result());
 					if (c == '}') {
 						flushCommand_();
@@ -94,29 +132,10 @@ namespace robotutor {
 	/// Flush the recently parsed command.
 	void CommandParser::flushCommand_() {
 		trim(command_name_);
-		text_->arguments.push_back(factory_.create(command_name_, command_args_));
-		text_->text += "\\mrk=" + boost::lexical_cast<std::string>(text_->arguments.size()) + "\\";
+		commands_.push_back(factory_.create(command_name_, command_args_));
+		text_ += "\\mrk=" + boost::lexical_cast<std::string>(commands_.size()) + "\\";
 		command_name_.clear();
 		command_args_.clear();
 	}
 	
-	/// Inform the parser that there is no more input.
-	/**
-	 * \return True if the parser is in a valid stop state.
-	 */
-	bool CommandParser::finish() {
-		// Strip trailing and leading spaces from the string.
-		trim(text_->text);
-		
-		// If we read exactly one command, just return that instead.
-		if (text_->text == "\\mrk=1\\") {
-			result_ = text_->arguments[0];
-		} else {
-			result_ = text_;
-		}
-		
-		// Not finished if we're still parsing a command.
-		return state_ == STATE_TEXT || state_ == STATE_DONE;
-	}
-
 }

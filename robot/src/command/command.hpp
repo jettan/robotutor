@@ -4,9 +4,9 @@
 #include <vector>
 #include <map>
 #include <ostream>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
+#include <memory>
+#include <functional>
+#include <stdexcept>
 
 
 namespace robotutor {
@@ -20,7 +20,7 @@ namespace robotutor {
 		struct Command;
 		
 		/// Shared pointer for executables.
-		typedef boost::shared_ptr<Command> SharedPtr;
+		typedef std::shared_ptr<Command> SharedPtr;
 		
 		/// Argument list, containing shared pointers to commands.
 		typedef std::vector<SharedPtr> ArgList;
@@ -29,7 +29,13 @@ namespace robotutor {
 		struct Command {
 			
 			/// Arguments for the command.
-			ArgList arguments;
+			ArgList const arguments;
+			
+			/// Construct a command.
+			Command(ArgList const & arguments) : arguments(arguments) {}
+			
+			/// Construct a command.
+			Command(ArgList && arguments) : arguments(std::move(arguments)) {}
 			
 			/// Virtual destructor.
 			virtual ~Command() {};
@@ -41,7 +47,7 @@ namespace robotutor {
 			virtual std::string const name() const = 0;
 			
 			/// Execute one step.
-			virtual bool run(ScriptEngine & engine) = 0;
+			virtual bool run(ScriptEngine & engine) const = 0;
 			
 			/// Write the command to a stream.
 			/**
@@ -63,7 +69,7 @@ namespace robotutor {
 		class Factory {
 			protected:
 				/// Function type for creator functions.
-				typedef boost::function<SharedPtr (std::string const &, ArgList const & arguments)> Creator;
+				typedef std::function<SharedPtr (std::string const &, ArgList const & arguments)> Creator;
 				
 				/// Map type for the creator map.
 				typedef std::map<std::string, Creator> CreatorMap;

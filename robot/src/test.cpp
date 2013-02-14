@@ -1,5 +1,5 @@
 #include <iostream>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 #include "command/command.hpp"
 #include "parser/parse.hpp"
@@ -12,20 +12,25 @@ namespace robotutor {
 		
 		struct Generic : public Command {
 			
-			std::string name_;
+			std::string const name_;
+			
+			Generic(std::string const & name, ArgList const & arguments) :
+				Command(arguments),
+				name_(name) {}
+			
+			Generic(std::string && name, ArgList && arguments) :
+				Command(std::move(arguments)),
+				name_(std::move(name)) {}
 			
 			static SharedPtr create(std::string const & name, ArgList const & arguments) {
-				auto result  = boost::make_shared<Generic>();
-				result->name_     = name;
-				result->arguments = arguments;
-				return result;
+				return std::make_shared<Generic>(name, arguments);
 			}
 			
 			std::string const name() const {
 				return name_;
 			}
 			
-			bool run(ScriptEngine &) {
+			bool run(ScriptEngine &) const {
 				return true;
 			}
 		};
@@ -45,7 +50,6 @@ int main() {
 	
 	try {
 		robotutor::parse(parser, std::cin);
-		parser.finish();
 		command::SharedPtr script = parser.result();
 		std::cout << *script;
 	} catch (std::exception const & e) {

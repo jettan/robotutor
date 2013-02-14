@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 #include "command.hpp"
 
@@ -12,10 +13,28 @@ namespace robotutor {
 		 */
 		struct Text : public Command {
 			/// Shared pointer type.
-			typedef boost::shared_ptr<Text> SharedPtr;
+			typedef std::shared_ptr<Text> SharedPtr;
 			
 			/// The text to synthesize.
-			std::string text;
+			std::string const text;
+			
+			/// Construct a text command.
+			/**
+			 * \param text The text to say.
+			 * \param arguments The embedded commands.
+			 */
+			Text(std::string const & text, ArgList const & arguments) :
+				Command(arguments),
+				text(text) {}
+			
+			/// Construct a text command.
+			/**
+			 * \param text The text to say.
+			 * \param commands The embedded commands.
+			 */
+			Text(std::string && text, ArgList && commands) :
+				Command(std::move(arguments)),
+				text(std::move(text)) {}
 			
 			/// Get the name of the command.
 			/**
@@ -27,7 +46,7 @@ namespace robotutor {
 			/**
 			 * \param engine The script engine to use for executing the command.
 			 */
-			bool run(ScriptEngine & engine);
+			bool run(ScriptEngine & engine) const;
 			
 			/// Write the command to a stream.
 			/**

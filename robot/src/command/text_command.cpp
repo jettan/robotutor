@@ -18,7 +18,7 @@ namespace robotutor {
 		/**
 		 * \param engine The script engine to use for executing the command.
 		 */
-		bool Text::run(ScriptEngine & engine) {
+		bool Text::run(ScriptEngine & engine) const {
 			return true;
 		}
 	}

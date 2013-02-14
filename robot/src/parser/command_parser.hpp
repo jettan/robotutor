@@ -30,6 +30,12 @@ namespace robotutor {
 			/// Factory to create commands.
 			command::Factory & factory_;
 			
+			/// Buffer for the text contents.
+			std::string text_;
+			
+			/// Buffer for embedded commands.
+			command::ArgList commands_;
+			
 			/// Name of the command currently being parsed.
 			std::string command_name_;
 			
@@ -39,12 +45,6 @@ namespace robotutor {
 			/// Parser for embedded commands.
 			std::unique_ptr<CommandParser> arg_parser_;
 			
-			/// The text executable used as buffer.
-			command::Text::SharedPtr text_;
-			
-			/// The parse result.
-			command::SharedPtr result_;
-			
 		public:
 			/// Construct a text parser.
 			/**
@@ -52,13 +52,17 @@ namespace robotutor {
 			 */
 			CommandParser(command::Factory & factory);
 			
+			/// Reset the parser so that it can parse a new command.
+			void reset();
+			
 			/// Get the parse result.
 			/**
-			 * May only be called after a call to finish().
+			 * May throw an exception if the parser is not in a valid state to return a result.
+			 * If no exception is thrown, the parser is reset.
 			 * 
 			 * \return A shared pointer holding the parsed executable.
 			 */
-			command::SharedPtr result() const { return result_; }
+			command::SharedPtr result();
 			
 			/// Parse one character of input.
 			/**
@@ -66,12 +70,6 @@ namespace robotutor {
 			 * \return bool True if the parser is done.
 			 */
 			bool consume(char c);
-			
-			/// Inform the parser that there is no more input.
-			/**
-			 * \return True if the parser is in a valid stop state.
-			 */
-			bool finish();
 			
 		protected:
 			/// Flush the recently parsed command.
