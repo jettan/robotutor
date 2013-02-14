@@ -1,5 +1,5 @@
 CXX            := c++
-CXXFLAGS_EXTRA := -std=c++11 -I/opt/naoqi-sdk/include -Wall
+CXXFLAGS_EXTRA := -std=c++11 -I/opt/naoqi-sdk/include -Wall -MP -MMD
 LDFLAGS_EXTRA  := -pthread
 LDFLAGS_EXTRA  += -L /opt/naoqi-sdk/lib
 LDFLAGS_EXTRA  += -L /opt/naoqi-sdk/lib/naoqi
