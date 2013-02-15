@@ -1,10 +1,10 @@
 build/
 Debug/
-doc/*
+doc/
 robotutor
 Release/
 ipch/
 *.sdf
 .DS_Store
-
+Makefile.local
 *.suo

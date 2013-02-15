@@ -1,10 +1,13 @@
+NAOQI_PATH := /opt/naoqi-sdk
+-include Makefile.local
+
 CXX            := c++
-CXXFLAGS_EXTRA := -std=c++11 -I/opt/naoqi-sdk/include -Wall -MP -MMD
+CXXFLAGS_EXTRA := -std=c++11 -I$(NAOQI_PATH)/include -Wall -MP -MMD
 LDFLAGS_EXTRA  := -pthread
-LDFLAGS_EXTRA  += -L /opt/naoqi-sdk/lib
-LDFLAGS_EXTRA  += -L /opt/naoqi-sdk/lib/naoqi
-LDFLAGS_EXTRA  += -Wl,-rpath=/opt/naoqi-sdk/lib
-LDFLAGS_EXTRA  += -Wl,-rpath=/opt/naoqi-sdk/lib/naoqi
+LDFLAGS_EXTRA  += -L $(NAOQI_PATH)/lib
+LDFLAGS_EXTRA  += -L $(NAOQI_PATH)/lib/naoqi
+LDFLAGS_EXTRA  += -Wl,-rpath=$(NAOQI_PATH)/lib
+LDFLAGS_EXTRA  += -Wl,-rpath=$(NAOQI_PATH)/lib/naoqi
 
 source_dir     := src
 build_dir      := build
