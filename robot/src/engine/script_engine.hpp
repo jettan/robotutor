@@ -1,7 +1,7 @@
 #pragma once
 #include "../command/command.hpp"
 #include "speech_engine.hpp"
-
+#include "../server/server.hpp"
 
 namespace AL {
 	class ALBroker;
@@ -18,12 +18,14 @@ namespace robotutor {
 		public:
 			/// The text-to-speech engine.
 			boost::shared_ptr<SpeechEngine> speech;
+			Server server;
+			
 			
 			/// Construct the script engine.
 			/**
 			 * \param broker The ALBroker to use for communicating with naoqi.
 			 */
-			ScriptEngine(boost::shared_ptr<AL::ALBroker> broker);
+			ScriptEngine(boost::shared_ptr<AL::ALBroker> broker, boost::asio::io_service & ios);
 			
 			/// Run a command with the script engine.
 			/**

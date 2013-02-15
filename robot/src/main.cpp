@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
+#include <thread>
 
 #include <alcommon/albroker.h>
 #include <alcommon/albrokermanager.h>
@@ -36,6 +37,29 @@ int main(int argc, char ** argv) {
 	
 	// Try to parse the script.
 	registerCommands();
+	
+	
+	// Try to create a broker.
+	boost::shared_ptr<AL::ALBroker> broker;
+	try {
+		broker = AL::ALBroker::createBroker("robotutor", "0.0.0.0", 54000, "192.168.1.101", 9559);
+		AL::ALBrokerManager::setInstance(broker->fBrokerManager.lock());
+		AL::ALBrokerManager::getInstance()->addBroker(broker);
+	} catch (...) {
+		// Documentation doesn't tell us what to catch.....
+		std::cerr << "Failed to connect to robot." << std::endl;
+		return -2;
+	}
+	
+	boost::asio::io_service ios;
+	
+	// Execute the script.
+	ScriptEngine engine(broker, ios);
+	
+	std::thread thread([&ios] () {
+		ios.run();
+	});
+
 	command::SharedPtr script;
 	try {
 		CommandParser parser(factory);
@@ -51,23 +75,12 @@ int main(int argc, char ** argv) {
 	}
 	
 	std::cout << *script << std::endl;
-	
-	// Try to create a broker.
-	boost::shared_ptr<AL::ALBroker> broker;
-	try {
-		broker = AL::ALBroker::createBroker("robotutor", "0.0.0.0", 54000, "127.0.0.1", 9559);
-		AL::ALBrokerManager::setInstance(broker->fBrokerManager.lock());
-		AL::ALBrokerManager::getInstance()->addBroker(broker);
-	} catch (...) {
-		// Documentation doesn't tell us what to catch.....
-		std::cerr << "Failed to connect to robot." << std::endl;
-		return -2;
-	}
-	
-	// Execute the script.
-	ScriptEngine engine(broker);
 	engine.run(script);
 	
 	usleep(10 * 1000 * 1000);
+	
+	ios.stop();
+	thread.join();
 	return 0;
 }
+
