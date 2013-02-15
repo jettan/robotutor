@@ -1,8 +1,8 @@
 #include <string>
 #include <vector>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
+#include <functional>
+#include <memory>
+#include <mutex>
 
 #include <alcommon/almodule.h>
 #include <alproxies/altexttospeechproxy.h>
@@ -39,13 +39,16 @@ namespace robotutor {
 		
 		public:
 			/// Callback type for the command callback.
-			typedef boost::function<void (command::SharedPtr)> Callback;
+			typedef std::function<void (command::SharedPtr)> Callback;
 			
 			/// The callback to execute when a command is encountered.
 			Callback command_callback;
 			
 			/// Stack of speech contexts.
 			std::vector<SpeechContext> stack;
+			
+			/// Job ID of the currently running task.
+			int job_id_;
 			
 		protected:
 			/// Reference to the parent script engine.
@@ -56,6 +59,12 @@ namespace robotutor {
 			
 			/// TTS proxy to do the actual synthesizing.
 			AL::ALTextToSpeechProxy tts_;
+			
+			/// If true, the TTS engine is busy.
+			bool playing_;
+			
+			/// Mutex to lock when processing callbacks.
+			std::mutex callback_mutex;
 			
 		public:
 			/// Construct the speech engine.
@@ -91,5 +100,8 @@ namespace robotutor {
 			
 			/// Called when word is finished.
 			void onWordPos(std::string const & eventName, int const & value, std::string const & subscriberIndentifier);
+			
+			/// Called when the TTS engine is done.
+			void onTextDone(std::string const & eventName, bool const & value, std::string const & subsciberIdentifier);
 	};
 }
