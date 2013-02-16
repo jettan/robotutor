@@ -19,6 +19,7 @@ command::Factory factory;
 
 void registerCommands() {
 	factory.add<command::Stop>("stop");
+	factory.add<command::Execute>("execute");
 }
 
 command::SharedPtr parseStream(std::istream & stream) {

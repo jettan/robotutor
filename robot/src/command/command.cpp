@@ -24,6 +24,16 @@ namespace robotutor {
 			return stream;
 		}
 		
+		/// Run the command.
+		/**
+		 * \param engine The engine to use when run a command.
+		 */
+		bool Execute::run(ScriptEngine & engine) const {
+			for (auto arg : arguments) {
+				arg->run(engine);
+			}
+			return false;
+		}
 		
 	}
 }

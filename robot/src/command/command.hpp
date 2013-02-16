@@ -49,7 +49,10 @@ namespace robotutor {
 				 */
 				virtual std::string name() const = 0;
 				
-				/// Execute one step.
+				/// Run the command.
+				/**
+				 * \param engine The engine to use when run a command.
+				 */
 				virtual bool run(ScriptEngine & engine) const = 0;
 				
 				/// Write the command to a stream.
@@ -57,6 +60,30 @@ namespace robotutor {
 				 * \param stream The stream to write to.
 				 */
 				virtual void write(std::ostream & stream) const;
+		};
+		
+		/// Command to execute other commands.
+		struct Execute : public Command {
+			
+			/// Construct the command.
+			Execute() : Command() {};
+			
+			/// Construct the command.
+			Execute(ArgList && arguments) : Command(std::move(arguments)) {};
+			
+			/// Create the command.
+			static SharedPtr create(std::string && name, ArgList && arguments) {
+				return std::make_shared<Execute>(std::move(arguments));
+			}
+			
+			/// Get the name of the command.
+			/**
+			 * \return The name of the command.
+			 */
+			std::string name() const { return "execute"; };
+			
+			/// Execute one step.
+			bool run(ScriptEngine & engine) const;
 		};
 		
 		
