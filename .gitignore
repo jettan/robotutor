@@ -7,4 +7,6 @@ ipch/
 *.sdf
 .DS_Store
 Makefile.local
+client/RCF/
+client/boost/
 *.suo

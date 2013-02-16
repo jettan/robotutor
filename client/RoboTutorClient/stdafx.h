@@ -7,12 +7,11 @@
 
 #include "targetver.h"
 
-#include <stdio.h>
-#include <iostream>
-#include <tchar.h>
-#include <windows.h>
-#include "conio.h"
 #include <string>
+#include <vector>
+#define _WINSOCKAPI_    // stops windows.h including winsock.h
+#include <windows.h>
+#include <tchar.h>
 
 //#import "libid:2DF8D04C-5BFA-101B-BDE5-00AA0044DE52" \
 //	rename("RGB", "MSORGB") \
@@ -36,9 +35,12 @@ using namespace VBIDE;
 #import "C:\\Program Files\\Microsoft Office\\Office12\\MSPPT.OLB" \
 	rename("RGB", "VisioRGB")
 
-#include "PPTController.h"
-#include "Client.h"
+#include <RCF/RCF.hpp>
+#include <RCF/Idl.hpp>
+#include <SF/vector.hpp>
 
+#include "PPTInterface.h"
+#include "PPTController.h"
 
 
 // TODO: reference additional headers your program requires here
