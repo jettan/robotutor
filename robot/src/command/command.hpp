@@ -29,7 +29,7 @@ namespace robotutor {
 		class Command : public std::enable_shared_from_this<Command> {
 			public:
 				/// Arguments for the command.
-				ArgList const arguments;
+				ArgList arguments;
 				
 				/// Construct a command without arguments.
 				Command() {}
