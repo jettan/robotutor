@@ -31,10 +31,7 @@ namespace robotutor {
 			command::Factory & factory_;
 			
 			/// Buffer for the text contents.
-			std::string text_;
-			
-			/// Buffer for embedded commands.
-			command::ArgList commands_;
+			command::Text text_;
 			
 			/// Name of the command currently being parsed.
 			std::string command_name_;
@@ -72,6 +69,9 @@ namespace robotutor {
 			bool consume(char c);
 			
 		protected:
+			/// Flush the last read sentence.
+			void flushSentence_();
+			
 			/// Flush the recently parsed command.
 			void flushCommand_();
 	};

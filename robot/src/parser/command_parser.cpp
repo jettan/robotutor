@@ -9,6 +9,25 @@ namespace robotutor {
 	
 	using namespace parser;
 	
+	namespace {
+		/// Check if a character ends a sentence.
+		/**
+		 * \param c The character to check.
+		 * \return True if the character ends a sentence.
+		 */
+		bool endsSentence(char c) {
+			switch (c) {
+				case '.':
+				case '!':
+				case '?':
+				case ';':
+					return true;
+				default:
+					return false;
+			}
+		}
+	}
+	
 	/// Construct a text parser.
 	CommandParser::CommandParser(command::Factory & factory) : factory_(factory) {
 		reset();
@@ -17,10 +36,10 @@ namespace robotutor {
 	/// Reset the parser so that it can parse a new command.
 	void CommandParser::reset() {
 		state_ = STATE_TEXT;
-		text_         .reserve(1024);
-		text_         .clear();
-		commands_     .reserve(128);
-		commands_     .clear();
+		text_.sentences.clear();
+		text_.arguments.clear();
+		text_.sentences.push_back(std::string());
+		text_.sentences.back().reserve(128);
 		command_name_ .reserve(32);
 		command_name_ .clear();
 		command_args_ .reserve(16);
@@ -40,16 +59,17 @@ namespace robotutor {
 			throw std::runtime_error("Parser requires more input before returning a result.");
 		}
 		
-		// Strip trailing and leading spaces from the string.
-		trim(text_);
+		// Flush the final sentence and remove the last empty sentence.
+		flushSentence_();
+		text_.sentences.pop_back();
 		
 		command::SharedPtr result;
 		// If we read exactly one command, just return that instead.
-		if (text_ == "\\mrk=1\\") {
-			result = commands_[0];
+		if (text_.sentences.front() == "\\mrk=1\\") {
+			result = text_.arguments[0];
 		// Otherwise, return a real text command.
 		} else {
-			result = std::make_shared<command::Text>(text_, commands_);
+			result = std::make_shared<command::Text>(std::move(text_));
 		}
 		
 		reset();
@@ -77,7 +97,8 @@ namespace robotutor {
 					
 				// The rest is text.
 				} else {
-					text_.push_back(c);
+					text_.sentences.back().push_back(c);
+					if (endsSentence(c)) flushSentence_();
 					return false;
 				}
 				
@@ -129,11 +150,21 @@ namespace robotutor {
 		}
 	}
 	
+	/// Flush the last read sentence
+	void CommandParser::flushSentence_() {
+		trim(text_.sentences.back());
+		// Only add a new sentence if the previous was non-empty.
+		if (text_.sentences.back().size()) {
+			text_.sentences.push_back(std::string());
+			text_.sentences.back().reserve(128);
+		}
+	}
+	
 	/// Flush the recently parsed command.
 	void CommandParser::flushCommand_() {
 		trim(command_name_);
-		commands_.push_back(factory_.create(std::move(command_name_), std::move(command_args_)));
-		text_ += "\\mrk=" + boost::lexical_cast<std::string>(commands_.size()) + "\\";
+		text_.arguments.push_back(factory_.create(std::move(command_name_), std::move(command_args_)));
+		text_.sentences.back() += "\\mrk=" + boost::lexical_cast<std::string>(text_.arguments.size()) + "\\";
 		command_name_.clear();
 		command_args_.clear();
 	}

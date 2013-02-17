@@ -11,8 +11,8 @@ namespace robotutor {
 		 * \param stream The stream to write to.
 		 */
 		void Text::write(std::ostream & stream) const {
-			stream << text;
-			for (auto argument : arguments) stream << "\n" << *argument;
+			for (auto & sentence : sentences) stream << sentence << " ";
+			for (auto & argument : arguments) stream << "\n" << *argument;
 		}
 		
 		/// Run the command.
@@ -20,7 +20,7 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool Text::run(ScriptEngine & engine) const {
-			engine.speech->executeCommand(std::dynamic_pointer_cast<Text const>(shared_from_this()));
+			engine.speech->interrupt(std::dynamic_pointer_cast<Text const>(shared_from_this()));
 			return true;
 		}
 		
@@ -29,7 +29,7 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool Stop::run(ScriptEngine & engine) const {
-			engine.speech->stopCommand();
+			engine.speech->pause();
 			return true;
 		}
 	}

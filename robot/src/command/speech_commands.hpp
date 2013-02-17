@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <vector>
 #include <memory>
 
 #include "command.hpp"
@@ -12,26 +14,32 @@ namespace robotutor {
 		 * the embedded commands are executed when a bookmark is encountered.
 		 */
 		struct Text : public Command {
+			/// Shared pointer type.
+			typedef std::shared_ptr<Text const> SharedPtr;
+			
 			/// The text to synthesize.
-			std::string const text;
+			std::vector<std::string> sentences;
+			
+			/// Construct an empty text command.
+			Text() {}
 			
 			/// Construct a text command.
 			/**
 			 * \param text The text to say.
 			 * \param arguments The embedded commands.
 			 */
-			Text(std::string const & text, ArgList const & arguments) :
+			Text(std::vector<std::string> const & sentences, ArgList const & arguments) :
 				Command(arguments),
-				text(text) {}
+				sentences(sentences) {}
 			
 			/// Construct a text command.
 			/**
 			 * \param text The text to say.
 			 * \param commands The embedded commands.
 			 */
-			Text(std::string && text, ArgList && commands) :
+			Text(std::vector<std::string> && sentences, ArgList && commands) :
 				Command(std::move(arguments)),
-				text(std::move(text)) {}
+				sentences(std::move(sentences)) {}
 			
 			/// Get the name of the command.
 			/**
