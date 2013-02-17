@@ -36,6 +36,7 @@ namespace robotutor {
 	/// Reset the parser so that it can parse a new command.
 	void CommandParser::reset() {
 		state_ = STATE_TEXT;
+		ignoreSpace_ = true;
 		text_.sentences.clear();
 		text_.arguments.clear();
 		text_.sentences.push_back(std::string());
@@ -82,6 +83,11 @@ namespace robotutor {
 	 * \return bool True if the parser is done.
 	 */
 	bool CommandParser::consume(char c) {
+		
+		// Ignore whitespace until the first non-whitespace character.
+		if (ignoreSpace_ && isSpace(c)) return false;
+		else ignoreSpace_ = false;
+		
 		switch (state_) {
 			// Parsing normal text.
 			case STATE_TEXT:
@@ -158,13 +164,20 @@ namespace robotutor {
 			text_.sentences.push_back(std::string());
 			text_.sentences.back().reserve(128);
 		}
+		ignoreSpace_ = true;
 	}
 	
 	/// Flush the recently parsed command.
 	void CommandParser::flushCommand_() {
 		trim(command_name_);
 		text_.arguments.push_back(factory_.create(std::move(command_name_), std::move(command_args_)));
-		text_.sentences.back() += "\\mrk=" + boost::lexical_cast<std::string>(text_.arguments.size()) + "\\";
+		
+		// If there are atleast two sentence, and the last sentence is empty,
+		// add the command bookmark to the sencond last sentence.
+		auto sentence = text_.sentences.rbegin();
+		if (!sentence->size() && text_.sentences.size() >= 2) ++sentence;
+		*sentence += "\\mrk=" + boost::lexical_cast<std::string>(text_.arguments.size()) + "\\";
+		
 		command_name_.clear();
 		command_args_.clear();
 	}

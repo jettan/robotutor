@@ -42,6 +42,9 @@ namespace robotutor {
 			/// Parser for embedded commands.
 			std::unique_ptr<CommandParser> arg_parser_;
 			
+			/// If true, the parser ignores whitespace.
+			bool ignoreSpace_;
+			
 		public:
 			/// Construct a text parser.
 			/**
