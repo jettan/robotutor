@@ -35,16 +35,16 @@ namespace robotutor {
 	
 	/// Reset the parser so that it can parse a new command.
 	void CommandParser::reset() {
-		state_ = STATE_TEXT;
-		ignoreSpace_ = true;
+		state_            = STATE_TEXT;
+		sentenceNonEmpty_ = false;
+		textNonEmpty_     = false;
 		text_.sentences.clear();
 		text_.arguments.clear();
 		text_.sentences.push_back(std::string());
-		text_.sentences.back().reserve(128);
-		command_name_ .reserve(32);
-		command_name_ .clear();
-		command_args_ .reserve(16);
-		command_args_ .clear();
+		command_name_.reserve(32);
+		command_name_.clear();
+		command_args_.reserve(16);
+		command_args_.clear();
 	}
 	
 	/// Get the parse result.
@@ -66,7 +66,7 @@ namespace robotutor {
 		
 		command::SharedPtr result;
 		// If we read exactly one command, just return that instead.
-		if (text_.sentences.front() == "\\mrk=1\\") {
+		if (!textNonEmpty_ && text_.arguments.size() == 1) {
 			result = text_.arguments[0];
 		// Otherwise, return a real text command.
 		} else {
@@ -83,11 +83,6 @@ namespace robotutor {
 	 * \return bool True if the parser is done.
 	 */
 	bool CommandParser::consume(char c) {
-		
-		// Ignore whitespace until the first non-whitespace character.
-		if (ignoreSpace_ && isSpace(c)) return false;
-		else ignoreSpace_ = false;
-		
 		switch (state_) {
 			// Parsing normal text.
 			case STATE_TEXT:
@@ -104,6 +99,7 @@ namespace robotutor {
 				// The rest is text.
 				} else {
 					text_.sentences.back().push_back(c);
+					sentenceNonEmpty_ = sentenceNonEmpty_ || !isSpace(c);
 					if (endsSentence(c)) flushSentence_();
 					return false;
 				}
@@ -123,8 +119,15 @@ namespace robotutor {
 					return false;
 					
 				// Lower case alpha characters, digits and normal spaces can be part of the name.
-				} else if (isLowerAlpha(c) || isDigit(c) || c == ' ') {
+				} else if (isLowerAlpha(c) || isDigit(c)) {
 					command_name_.push_back(c);
+					return false;
+					
+				// Fold any whitespace into a single space.
+				} else if (isSpace(c)) {
+					if (!command_name_.size() || !isSpace(command_name_.back())) {
+						command_name_.push_back(' ');
+					}
 					return false;
 					
 				// Anything else is bogus.
@@ -158,13 +161,12 @@ namespace robotutor {
 	
 	/// Flush the last read sentence
 	void CommandParser::flushSentence_() {
-		trim(text_.sentences.back());
-		// Only add a new sentence if the previous was non-empty.
-		if (text_.sentences.back().size()) {
+		textNonEmpty_ = textNonEmpty_ || sentenceNonEmpty_;
+		// Only add a new sentence if the last one is non empty.
+		if (sentenceNonEmpty_) {
 			text_.sentences.push_back(std::string());
-			text_.sentences.back().reserve(128);
 		}
-		ignoreSpace_ = true;
+		sentenceNonEmpty_ = false;
 	}
 	
 	/// Flush the recently parsed command.
@@ -172,10 +174,12 @@ namespace robotutor {
 		trim(command_name_);
 		text_.arguments.push_back(factory_.create(std::move(command_name_), std::move(command_args_)));
 		
-		// If there are atleast two sentence, and the last sentence is empty,
-		// add the command bookmark to the sencond last sentence.
+		// If the last sentence is empty, add the command bookmark to the sencond last sentence.
 		auto sentence = text_.sentences.rbegin();
-		if (!sentence->size() && text_.sentences.size() >= 2) ++sentence;
+		if (!sentenceNonEmpty_) {
+			if (text_.sentences.size() < 2) text_.sentences.push_back(std::string());
+			sentence = text_.sentences.rbegin() + 1;
+		}
 		*sentence += "\\mrk=" + boost::lexical_cast<std::string>(text_.arguments.size()) + "\\";
 		
 		command_name_.clear();
