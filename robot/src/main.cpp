@@ -35,15 +35,17 @@ command::SharedPtr parseFile(std::string const & name) {
 }
 
 int main(int argc, char ** argv) {
+	// Get nao host from command line.
+	std::string nao_host = "localhost";
+	if (argc > 1) nao_host = argv[1];
 	
-	// Try to parse the script.
+	// Register all commands.
 	registerCommands();
-	
 	
 	// Try to create a broker.
 	boost::shared_ptr<AL::ALBroker> broker;
 	try {
-		broker = AL::ALBroker::createBroker("robotutor", "0.0.0.0", 54000, "192.168.1.101", 9559);
+		broker = AL::ALBroker::createBroker("robotutor", "0.0.0.0", 54000, nao_host, 9559);
 		AL::ALBrokerManager::setInstance(broker->fBrokerManager.lock());
 		AL::ALBrokerManager::getInstance()->addBroker(broker);
 	} catch (...) {
@@ -54,19 +56,27 @@ int main(int argc, char ** argv) {
 	
 	boost::asio::io_service ios;
 	
-	// Execute the script.
-	ScriptEngine engine(broker, ios);
-	
-	std::thread thread([&ios] () {
+	// Run the io service.
+	auto iosRun = [&ios] () {
 		ios.run();
-	});
-
+	};
+	
+	// Stop the io service when the speech engine is done.
+	auto onDone = [&ios] (SpeechEngine &) {
+		ios.stop();
+	};
+	
+	// Initialize the script engine.
+	ScriptEngine engine(broker, ios);
+	engine.speech->on_done.connect(onDone);
+	std::thread thread(iosRun);
+	
 	command::SharedPtr script;
 	try {
 		CommandParser parser(factory);
 		// If a command line argument is given, it's an input file to read.
-		if (argc == 2) {
-			script = parseFile(argv[1]);
+		if (argc > 2) {
+			script = parseFile(argv[2]);
 		} else  {
 			script = parseStream(std::cin);
 		}
@@ -74,14 +84,13 @@ int main(int argc, char ** argv) {
 		std::cerr << "Failed to parse input: " << e.what() << std::endl;
 		return -1;
 	}
+	std::cout << *script;
 	
-	std::cout << *script << std::endl;
 	engine.run(script);
-	
-	usleep(10 * 1000 * 1000);
-	
-	ios.stop();
 	thread.join();
+	
+	usleep(1000 * 1000);
+	
 	return 0;
 }
 

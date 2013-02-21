@@ -29,7 +29,7 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool Stop::run(ScriptEngine & engine) const {
-			engine.speech->pause();
+			engine.speech->reset();
 			return true;
 		}
 	}

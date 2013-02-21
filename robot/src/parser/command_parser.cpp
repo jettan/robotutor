@@ -38,13 +38,16 @@ namespace robotutor {
 		state_            = STATE_TEXT;
 		sentenceNonEmpty_ = false;
 		textNonEmpty_     = false;
+		
+		command_name_.clear();
+		command_args_.clear();
+		
 		text_.sentences.clear();
 		text_.arguments.clear();
+		text_.marks.clear();
+		
 		text_.sentences.push_back(std::string());
-		command_name_.reserve(32);
-		command_name_.clear();
-		command_args_.reserve(16);
-		command_args_.clear();
+		text_.marks.push_back(-1);
 	}
 	
 	/// Get the parse result.
@@ -63,6 +66,7 @@ namespace robotutor {
 		// Flush the final sentence and remove the last empty sentence.
 		flushSentence_();
 		text_.sentences.pop_back();
+		text_.marks.pop_back();
 		
 		command::SharedPtr result;
 		// If we read exactly one command, just return that instead.
@@ -165,6 +169,7 @@ namespace robotutor {
 		// Only add a new sentence if the last one is non empty.
 		if (sentenceNonEmpty_) {
 			text_.sentences.push_back(std::string());
+			text_.marks.push_back(text_.arguments.size() - 1);
 		}
 		sentenceNonEmpty_ = false;
 	}
@@ -174,13 +179,13 @@ namespace robotutor {
 		trim(command_name_);
 		text_.arguments.push_back(factory_.create(std::move(command_name_), std::move(command_args_)));
 		
-		// If the last sentence is empty, add the command bookmark to the sencond last sentence.
-		auto sentence = text_.sentences.rbegin();
-		if (!sentenceNonEmpty_) {
-			if (text_.sentences.size() < 2) text_.sentences.push_back(std::string());
-			sentence = text_.sentences.rbegin() + 1;
+		// If the sentence is non-empty, add a bookmark for the command.
+		if (sentenceNonEmpty_) {
+			text_.sentences.back() += "\\mrk=" + boost::lexical_cast<std::string>(text_.arguments.size()) + "\\";
+		// If the sentence is empty, bump the mark number to indicate the command should be executed before the sentence.
+		} else {
+			text_.marks.back() = text_.arguments.size() - 1;
 		}
-		*sentence += "\\mrk=" + boost::lexical_cast<std::string>(text_.arguments.size()) + "\\";
 		
 		command_name_.clear();
 		command_args_.clear();

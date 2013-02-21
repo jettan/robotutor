@@ -1,7 +1,7 @@
 #pragma once
 #include "../command/command.hpp"
-#include "speech_engine.hpp"
 #include "../server/server.hpp"
+#include "speech_engine.hpp"
 
 namespace AL {
 	class ALBroker;

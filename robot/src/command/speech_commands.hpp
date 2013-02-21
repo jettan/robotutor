@@ -20,6 +20,9 @@ namespace robotutor {
 			/// The text to synthesize.
 			std::vector<std::string> sentences;
 			
+			/// The last mark, per sentence.
+			std::vector<int> marks;
+			
 			/// Construct an empty text command.
 			Text() {}
 			
@@ -28,18 +31,11 @@ namespace robotutor {
 			 * \param text The text to say.
 			 * \param arguments The embedded commands.
 			 */
-			Text(std::vector<std::string> const & sentences, ArgList const & arguments) :
-				Command(arguments),
-				sentences(sentences) {}
-			
-			/// Construct a text command.
-			/**
-			 * \param text The text to say.
-			 * \param commands The embedded commands.
-			 */
-			Text(std::vector<std::string> && sentences, ArgList && commands) :
-				Command(std::move(arguments)),
-				sentences(std::move(sentences)) {}
+			template<typename Sentences, typename Arguments, typename Marks>
+			Text(Sentences && sentences, Arguments && arguments, Marks && marks) :
+				Command(std::forward<Arguments>(arguments)),
+				sentences(std::forward<Sentences>(sentences)),
+				marks(std::forward<Marks>(marks)) {}
 			
 			/// Get the name of the command.
 			/**

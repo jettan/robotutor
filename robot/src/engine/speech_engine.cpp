@@ -2,6 +2,7 @@
 #include <alproxies/almemoryproxy.h>
 
 #include "speech_engine.hpp"
+#include "script_engine.hpp"
 
 
 namespace robotutor {
@@ -14,9 +15,6 @@ namespace robotutor {
 		functionName("onBookmark", getName(), "Handle bookmarks.");
 		BIND_METHOD(SpeechEngine::onBookmark);
 		
-		functionName("onWordPos", getName(), "Handle word positions.");
-		BIND_METHOD(SpeechEngine::onWordPos);
-		
 		functionName("onTextDone", getName(), "Handle job completion.");
 		BIND_METHOD(SpeechEngine::onTextDone);
 	}
@@ -24,7 +22,6 @@ namespace robotutor {
 	/// Deconstruct the speech engine.
 	SpeechEngine::~SpeechEngine() {
 		memory_->unsubscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName());
-		memory_->unsubscribeToEvent("ALTextToSpeech/PositionOfCurrentWord", getName());
 		memory_->unsubscribeToEvent("ALTextToSpeech/TextDone"             , getName());
 	}
 	
@@ -42,7 +39,6 @@ namespace robotutor {
 		tts_.enableNotifications();
 		
 		memory_->subscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName(), "onBookmark");
-		memory_->subscribeToEvent("ALTextToSpeech/PositionOfCurrentWord", getName(), "onWordPos");
 		memory_->subscribeToEvent("ALTextToSpeech/TextDone"             , getName(), "onTextDone");
 		
 	}
@@ -57,7 +53,7 @@ namespace robotutor {
 		std::lock_guard<std::recursive_mutex> lock(mutex_);
 		
 		if (current_) {
-			current_->interrupts.push_back(SpeechContext(text, current_));
+			current_->interrupts.push_back(SpeechContext(*parent_, text, current_));
 		} else {
 			enqueue(text);
 		}
@@ -72,7 +68,7 @@ namespace robotutor {
 	void SpeechEngine::enqueue(command::Text::SharedPtr text) {
 		std::lock_guard<std::recursive_mutex> lock(mutex_);
 		
-		queue_.push_back(SpeechContext(text, nullptr));
+		queue_.push_back(SpeechContext(*parent_, text, nullptr));
 		if (!current_) {
 			current_ = &queue_.front();
 			resume();
@@ -82,26 +78,33 @@ namespace robotutor {
 	/// Stop execution.
 	void SpeechEngine::pause() {
 		std::lock_guard<std::recursive_mutex> lock(mutex_);
+		if (!playing_) return;
 		
 		playing_ = false;
+		on_pause(*this);
 	}
 	
-	/// Resume execution at the top of the stack.
+	/// Resume execution.
 	void SpeechEngine::resume() {
 		std::lock_guard<std::recursive_mutex> lock(mutex_);
+		if (playing_) return;
 		
-		if (current_) {
-			playing_ = true;
-			job_id_ = tts_.post.say(current_->currentSentence());
-		} else {
-			playing_ = false;
-		}
+		playing_ = true;
+		on_resume(*this);
+		
+		step_();
+		
+		if (!current_) on_done(*this);
 	}
 	
 	/// Reset the engine.
 	void SpeechEngine::reset() {
+		std::lock_guard<std::recursive_mutex> lock(mutex_);
+		
 		pause();
+		current_ = nullptr;
 		queue_.clear();
+		on_done(*this);
 	}
 	
 	/// Called when a bookmark is encountered.
@@ -110,13 +113,8 @@ namespace robotutor {
 		
 		// Bookmark 0 gets abused, so we ignore that one.
 		if (value > 0) {
-			current_->text->arguments[value - 1]->run(*parent_);
+			current_->executeCommand(value - 1);
 		}
-	}
-	
-	/// Called when word is finished.
-	void SpeechEngine::onWordPos(std::string const & eventName, int const & value, std::string const & subscriberIndentifier) {
-		std::lock_guard<std::recursive_mutex> lock(mutex_);
 	}
 	
 	/// Called when the TTS engine is done.
@@ -124,46 +122,82 @@ namespace robotutor {
 		std::lock_guard<std::recursive_mutex> lock(mutex_);
 		
 		if (!tts_.isRunning(job_id_)) {
+			std::cout << "Job done." << std::endl;
 			job_id_ = 0;
-			nextSentence_();
-			if (playing_) resume();
+			if (playing_) step_();
+			if (!current_) on_done(*this);
 		}
 	}
 	
-	/// Recursively update the state of the speech engine so that it's ready to say the next sentence.
+	/// Step trough the contexts.
+	void SpeechEngine::step_() {
+		while (current_ && !current_->step());
+		if (!current_) playing_ = false;
+	}
+	
+	/// Say a text.
 	/**
-	 * This method sets current_ to the correct context,
-	 * and removes any finished context encoutered on the way.
+	 * \param text The text.
 	 */
-	void SpeechEngine::nextSentence_() {
-		++current_->sentence;
-		while (true) {
-			// Current command has an interrupt pending, first interrupt is next.
-			if (current_->interrupts.size()) {
-				current_ = &current_->interrupts.front();
-				
-			// Current command has no interrupt pending and it is not done, so it's next.
-			} else if (!current_->done()) {
-				break;
-				
-			// Current command is done and interrupted someone else.
-			// The interrupted command is next.
-			} else if (current_->interrupted) {
-				current_ = current_->interrupted;
-				current_->interrupts.pop_front();
-				
-			// Current command is a top level command.
+	void SpeechEngine::say_(std::string const & text) {
+		job_id_ = tts_.post.say(text);
+	}
+	
+	/// Execute all unexecuted commands up to the given index.
+	/**
+	 * \param command The index.
+	 */
+	void SpeechContext::executeCommand(int command) {
+		for (; mark <= command; ++mark) {
+			text->arguments[mark]->run(parent);
+		}
+	}
+	
+	/// Perform the next step of the context.
+	/**
+	 * If this method returns true, the next step should wait
+	 * until the started aynchronous operation completed.
+	 * 
+	 * \return True if the step started an asynchronous operation.
+	 */
+	bool SpeechContext::step() {
+		// If there's an interrupt pending, switch context.
+		if (interrupts.size()) {
+			parent.speech->current_ = &interrupts[0];
+			return false;
+			
+		// If there are commands left to execute, execute them.
+		} else if (mark <= text->marks[sentence]) {
+			executeCommand(text->marks[sentence]);
+			return false;
+			
+		// If there's a sentence to say, say it.
+		} else if (sentence < text->sentences.size()) {
+			parent.speech->say_(text->sentences[sentence++]);
+			return true;
+			
+		// If there's commands left to execute after the last sentence, execute them.
+		} else if (mark < text->arguments.size()) {
+			executeCommand(text->arguments.size() - 1);
+			return false;
+			
+		// Otherwise we're done, and we interrupted someone.
+		// That command should continue.
+		} else if (interrupted) {
+			interrupted->interrupts.pop_front();
+			parent.speech->current_ = interrupted;
+			return false;
+			
+		// Otherwise we're a top level command,
+		// and the next command should come from the queue.
+		} else  {
+			parent.speech->queue_.pop_front(); // Note that this deconstructs us.
+			if (parent.speech->queue_.size()) {
+				parent.speech->current_ = &parent.speech->queue_.front();
 			} else {
-				queue_.pop_front();
-				// There is a command left to execute, it's next.
-				if (queue_.size()) {
-					current_ = &queue_.front();
-				// No commands left.
-				} else {
-					current_ = nullptr;
-					break;
-				}
+				parent.speech->current_ = nullptr;
 			}
+			return false;
 		}
 	}
 	
