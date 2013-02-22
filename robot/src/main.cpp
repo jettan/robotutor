@@ -101,7 +101,7 @@ int main(int argc, char ** argv) {
 	parse_thread.join();
 	engine.join();
 	
-	usleep(1000 * 1000);
+	broker->shutdown();
 	
 	return 0;
 }
