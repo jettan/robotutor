@@ -9,6 +9,7 @@ namespace robotutor {
 	 */
 	ScriptEngine::ScriptEngine(boost::shared_ptr<AL::ALBroker> broker, boost::asio::io_service & ios) :
 		speech(SpeechEngine::create(*this, broker, "RTISE")),
+		behavior(broker, ios),
 		server(ios, ip::tcp::endpoint(ip::tcp::v4(), 8311))
 	{
 		server.start();

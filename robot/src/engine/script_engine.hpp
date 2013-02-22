@@ -2,6 +2,7 @@
 #include "../command/command.hpp"
 #include "../server/server.hpp"
 #include "speech_engine.hpp"
+#include "behavior_engine.hpp"
 
 namespace AL {
 	class ALBroker;
@@ -18,8 +19,10 @@ namespace robotutor {
 		public:
 			/// The text-to-speech engine.
 			boost::shared_ptr<SpeechEngine> speech;
-			Server server;
 			
+			BehaviorEngine behavior;
+			
+			Server server;
 			
 			/// Construct the script engine.
 			/**
