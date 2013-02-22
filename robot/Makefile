@@ -16,7 +16,7 @@ common_OBJS    := main
 common_LIBS    :=
 common_DIR     := .
 
-command_OBJS   := command speech_commands
+command_OBJS   := command speech_commands behavior_commands
 command_LIBS   :=
 command_DIR    := command
 

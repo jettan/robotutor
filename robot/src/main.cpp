@@ -6,9 +6,12 @@
 #include <alcommon/albroker.h>
 #include <alcommon/albrokermanager.h>
 
-#include "parser/command_parser.hpp"
 #include "parser/parse.hpp"
+#include "parser/command_parser.hpp"
 #include "engine/script_engine.hpp"
+
+#include "command/speech_commands.hpp"
+#include "command/behavior_commands.hpp"
 
 #include <unistd.h>
 
@@ -20,6 +23,7 @@ command::Factory factory;
 void registerCommands() {
 	factory.add<command::Stop>("stop");
 	factory.add<command::Execute>("execute");
+	factory.add<command::Behavior>("behavior");
 }
 
 command::SharedPtr parseStream(std::istream & stream) {
