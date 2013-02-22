@@ -23,19 +23,8 @@ namespace robotutor {
 			/// The last mark, per sentence.
 			std::vector<int> marks;
 			
-			/// Construct an empty text command.
-			Text() {}
-			
-			/// Construct a text command.
-			/**
-			 * \param text The text to say.
-			 * \param arguments The embedded commands.
-			 */
-			template<typename Sentences, typename Arguments, typename Marks>
-			Text(Sentences && sentences, Arguments && arguments, Marks && marks) :
-				Command(std::forward<Arguments>(arguments)),
-				sentences(std::forward<Sentences>(sentences)),
-				marks(std::forward<Marks>(marks)) {}
+			/// The original text.
+			std::string original;
 			
 			/// Get the name of the command.
 			/**

@@ -68,6 +68,9 @@ namespace robotutor {
 		text_.sentences.pop_back();
 		text_.marks.pop_back();
 		
+		// Trim the original text.
+		trim(text_.original);
+		
 		command::SharedPtr result;
 		// If we read exactly one command, just return that instead.
 		if (!textNonEmpty_ && text_.arguments.size() == 1) {
@@ -87,6 +90,9 @@ namespace robotutor {
 	 * \return bool True if the parser is done.
 	 */
 	bool CommandParser::consume(char c) {
+		
+		text_.original.push_back(c);
+		
 		switch (state_) {
 			// Parsing normal text.
 			case STATE_TEXT:
