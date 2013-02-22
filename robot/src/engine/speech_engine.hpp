@@ -46,10 +46,10 @@ namespace robotutor {
 			command::Text::SharedPtr text;
 			
 			/// Last executed mark.
-			int mark = 0;
+			unsigned int mark = 0;
 			
 			/// Index of the most recently played sentence.
-			int sentence = 0;
+			unsigned int sentence = 0;
 			
 			/// Interruption queue for the current context.
 			std::deque<std::shared_ptr<SpeechContext>> interrupts;
@@ -75,7 +75,7 @@ namespace robotutor {
 			/**
 			 * \param command The index.
 			 */
-			void executeCommand(int command);
+			void executeCommand(unsigned int command);
 	};
 	
 	/// Speech engine to execute command::Text.

@@ -21,7 +21,7 @@ namespace robotutor {
 			std::vector<std::string> sentences;
 			
 			/// The last mark, per sentence.
-			std::vector<int> marks;
+			std::vector<unsigned int> marks;
 			
 			/// The original text.
 			std::string original;

@@ -20,7 +20,7 @@ namespace robotutor {
 	
 	/// Deconstruct the speech engine.
 	SpeechEngine::~SpeechEngine() {
-		memory_->unsubscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName());
+		memory_->unsubscribeToEvent("ALTextToSpeech/CurrentBookMark", getName());
 	}
 	
 	/// Create a speech engine.
@@ -37,7 +37,7 @@ namespace robotutor {
 		tts_ = AL::ALTextToSpeechProxy(getParentBroker());
 		tts_.enableNotifications();
 		
-		memory_->subscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName(), "onBookmark");
+		memory_->subscribeToEvent("ALTextToSpeech/CurrentBookMark", getName(), "onBookmark");
 	}
 	
 	/// Join the background thread to ensure we can safely be destructed.
@@ -167,10 +167,10 @@ namespace robotutor {
 	
 	/// Execute all unexecuted commands up to the given index.
 	/**
-	 * \param command The index.
+	 * \param command The lowest index NOT to execute.
 	 */
-	void SpeechContext::executeCommand(int command) {
-		for (; mark <= command; ++mark) {
+	void SpeechContext::executeCommand(unsigned int command) {
+		for (; mark < command; ++mark) {
 			text->arguments[mark]->run(parent);
 		}
 	}
@@ -199,7 +199,7 @@ namespace robotutor {
 			return false;
 			
 		// If there are commands left to execute, execute them.
-		} else if (!sentences_done && mark <= text->marks[sentence]) {
+		} else if (!sentences_done && mark < text->marks[sentence]) {
 			std::cout << "pre-commands" << std::endl;
 			executeCommand(text->marks[sentence]);
 			return false;
@@ -213,7 +213,7 @@ namespace robotutor {
 		// If there's commands left to execute after the last sentence, execute them.
 		} else if (mark < text->arguments.size()) {
 			std::cout << "post-commands" << std::endl;
-			executeCommand(text->arguments.size() - 1);
+			executeCommand(text->arguments.size());
 			return false;
 			
 		// Otherwise we're done, and we interrupted someone.

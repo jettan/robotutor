@@ -47,7 +47,7 @@ namespace robotutor {
 		text_.marks.clear();
 		
 		text_.sentences.push_back(std::string());
-		text_.marks.push_back(-1);
+		text_.marks.push_back(0);
 	}
 	
 	/// Get the parse result.
@@ -175,7 +175,7 @@ namespace robotutor {
 		// Only add a new sentence if the last one is non empty.
 		if (sentenceNonEmpty_) {
 			text_.sentences.push_back(std::string());
-			text_.marks.push_back(text_.arguments.size() - 1);
+			text_.marks.push_back(text_.arguments.size());
 		}
 		sentenceNonEmpty_ = false;
 	}
@@ -190,7 +190,7 @@ namespace robotutor {
 			text_.sentences.back() += "\\mrk=" + boost::lexical_cast<std::string>(text_.arguments.size()) + "\\";
 		// If the sentence is empty, bump the mark number to indicate the command should be executed before the sentence.
 		} else {
-			text_.marks.back() = text_.arguments.size() - 1;
+			text_.marks.back() = text_.arguments.size();
 		}
 		
 		command_name_.clear();
