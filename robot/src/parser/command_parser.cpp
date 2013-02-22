@@ -35,7 +35,7 @@ namespace robotutor {
 	
 	/// Reset the parser so that it can parse a new command.
 	void CommandParser::reset() {
-		state_            = STATE_TEXT;
+		state_            = State::text;
 		sentenceNonEmpty_ = false;
 		textNonEmpty_     = false;
 		
@@ -59,7 +59,7 @@ namespace robotutor {
 	 */
 	command::SharedPtr CommandParser::result() {
 		// Make sure the parser isn't in the middle of something.
-		if (state_ != STATE_TEXT && state_ != STATE_DONE) {
+		if (state_ != State::text && state_ != State::done) {
 			throw std::runtime_error("Parser requires more input before returning a result.");
 		}
 		
@@ -95,15 +95,15 @@ namespace robotutor {
 		
 		switch (state_) {
 			// Parsing normal text.
-			case STATE_TEXT:
+			case State::text:
 				// An opening curly bracket starts a command.
 				if (c == '{') {
-					state_ = STATE_COMMAND_NAME;
+					state_ = State::command_name;
 					return false;
 					
 				// A colon or closing curly bracket ends the text.
 				} else if (c == '|' || c == '}') {
-					state_ = STATE_DONE;
+					state_ = State::done;
 					return true;
 					
 				// The rest is text.
@@ -115,17 +115,17 @@ namespace robotutor {
 				}
 				
 			// Parsing a command name.
-			case STATE_COMMAND_NAME:
+			case State::command_name:
 				// Pipe symbol starts the argument list.
 				if (c == '|') {
-					state_ = STATE_COMMAND_ARGS;
+					state_ = State::command_args;
 					arg_parser_.reset(new CommandParser(factory_));
 					return false;
 					
 				// A closing curly bracket closes the command.
 				} else if (c == '}') {
 					flushCommand_();
-					state_ = STATE_TEXT;
+					state_ = State::text;
 					return false;
 					
 				// Lower case alpha characters, digits and normal spaces can be part of the name.
@@ -146,12 +146,12 @@ namespace robotutor {
 				}
 				
 			// Parsing command arguments in sub-parser.
-			case STATE_COMMAND_ARGS:
+			case State::command_args:
 				if (arg_parser_->consume(c)) {
 					command_args_.push_back(arg_parser_->result());
 					if (c == '}') {
 						flushCommand_();
-						state_ = STATE_TEXT;
+						state_ = State::text;
 						return false;
 					} else if (c == '|') {
 						arg_parser_.reset(new CommandParser(factory_));
@@ -164,8 +164,12 @@ namespace robotutor {
 				}
 				
 			// Done parsing, stop feeding us.
-			case STATE_DONE:
+			case State::done:
 				throw std::runtime_error("Input received after command parsing finished.");
+				
+			// Can't happen, but G++ won't shut up about it.
+			default:
+				throw std::logic_error("Parser in invalid state.");
 		}
 	}
 	

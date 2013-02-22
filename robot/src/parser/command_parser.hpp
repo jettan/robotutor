@@ -20,11 +20,11 @@ namespace robotutor {
 	class CommandParser {
 		protected:
 			/// The state of the parser.
-			enum {
-				STATE_TEXT,
-				STATE_COMMAND_NAME,
-				STATE_COMMAND_ARGS,
-				STATE_DONE
+			enum class State {
+				text,
+				command_name,
+				command_args,
+				done
 			} state_;
 			
 			/// Factory to create commands.
