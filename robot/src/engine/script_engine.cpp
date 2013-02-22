@@ -7,9 +7,9 @@ namespace robotutor {
 	/**
 	 * \param broker The ALBroker to use for communicating with naoqi.
 	 */
-	ScriptEngine::ScriptEngine(boost::shared_ptr<AL::ALBroker> broker, boost::asio::io_service & ios) :
-		speech(SpeechEngine::create(*this, broker, "RTISE")),
-		behavior(broker, ios),
+	ScriptEngine::ScriptEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker) :
+		speech(SpeechEngine::create(*this, ios, broker, "RTISE")),
+		behavior(ios, broker),
 		server(ios, ip::tcp::endpoint(ip::tcp::v4(), 8311))
 	{
 		server.start();

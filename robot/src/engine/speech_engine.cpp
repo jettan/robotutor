@@ -1,3 +1,5 @@
+#include <boost/asio.hpp>
+
 #include <alcommon/albroker.h>
 #include <alproxies/almemoryproxy.h>
 
@@ -26,8 +28,9 @@ namespace robotutor {
 	}
 	
 	/// Create a speech engine.
-	boost::shared_ptr<SpeechEngine> SpeechEngine::create(ScriptEngine & parent, boost::shared_ptr<AL::ALBroker> broker, std::string const & name) {
+	boost::shared_ptr<SpeechEngine> SpeechEngine::create(ScriptEngine & parent, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name) {
 		boost::shared_ptr<SpeechEngine> result = ALModule::createModule<SpeechEngine>(broker, name);
+		result->ios_    = &ios;
 		result->parent_ = &parent;
 		return result;
 	}

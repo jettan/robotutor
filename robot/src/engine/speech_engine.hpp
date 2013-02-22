@@ -13,10 +13,18 @@
 
 #include "../command/speech_commands.hpp"
 
+
+namespace boost {
+	namespace asio {
+		class io_service;
+	}
+}
+
 namespace AL {
 	class ALBroker;
 	class ALMemoryProxy;
 }
+
 
 namespace robotutor {
 	
@@ -85,6 +93,8 @@ namespace robotutor {
 			boost::signal<void (SpeechEngine & engine)> on_resume;
 			
 		protected:
+			/// IO service to perform asynchronous work.
+			boost::asio::io_service * ios_;
 			
 			/// Reference to the parent script engine.
 			ScriptEngine * parent_;
@@ -118,7 +128,7 @@ namespace robotutor {
 			virtual ~SpeechEngine();
 			
 			/// Create a speech engine.
-			static boost::shared_ptr<SpeechEngine> create(ScriptEngine & parent, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
+			static boost::shared_ptr<SpeechEngine> create(ScriptEngine & parent, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
 			/// Execute a text command by interrupting the current text.
 			/**

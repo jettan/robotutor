@@ -1,10 +1,13 @@
 #pragma once
 
-#include <boost/asio.hpp>
-
-#include <alcommon/almodule.h>
 #include <alproxies/albehaviormanagerproxy.h>
 
+
+namespace boost {
+	namespace asio {
+		class io_service;
+	}
+}
 
 namespace AL {
 	class ALBroker;
@@ -18,6 +21,9 @@ namespace robotutor {
 	 */
 	class BehaviorEngine {
 		protected:
+			/// IO service to perform asynchronous work.
+			boost::asio::io_service & ios_;
+			
 			/// Behavior manager to use.
 			AL::ALBehaviorManagerProxy bm_;
 		
@@ -26,7 +32,7 @@ namespace robotutor {
 			/**
 			 * \param broker The ALBroker to use for communicating with naoqi.
 			 */
-			BehaviorEngine(boost::shared_ptr<AL::ALBroker> broker, boost::asio::io_service & ios);
+			BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
 			
 			/// Run a behaviour asynchronously.
 			/**

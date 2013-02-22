@@ -71,7 +71,7 @@ int main(int argc, char ** argv) {
 	};
 	
 	// Initialize the script engine.
-	ScriptEngine engine(broker, ios);
+	ScriptEngine engine(ios, broker);
 	engine.speech->on_done.connect(onDone);
 	std::thread thread(iosRun);
 	

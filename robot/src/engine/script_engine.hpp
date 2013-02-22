@@ -28,7 +28,7 @@ namespace robotutor {
 			/**
 			 * \param broker The ALBroker to use for communicating with naoqi.
 			 */
-			ScriptEngine(boost::shared_ptr<AL::ALBroker> broker, boost::asio::io_service & ios);
+			ScriptEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
 			
 			/// Run a command with the script engine.
 			/**
