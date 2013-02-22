@@ -160,29 +160,43 @@ namespace robotutor {
 	 * \return True if the step started an asynchronous operation.
 	 */
 	bool SpeechContext::step() {
+		bool sentences_done = sentence >= text->sentences.size();
+		std::cout
+			<< "\n"
+			<< "step\n"
+			<< "sentence: " << sentence << "\n"
+			<< "mark:" << mark << "\n"
+			<< "interrupts: " << interrupts.size() << "\n"
+			<< "mark target: " << text->marks[sentence] << "\n"
+			<< "action: ";
 		// If there's an interrupt pending, switch context.
 		if (interrupts.size()) {
+			std::cout << "down" << std::endl;
 			parent.speech->current_ = &interrupts[0];
 			return false;
 			
 		// If there are commands left to execute, execute them.
-		} else if (mark <= text->marks[sentence]) {
+		} else if (!sentences_done && mark <= text->marks[sentence]) {
+			std::cout << "pre-commands" << std::endl;
 			executeCommand(text->marks[sentence]);
 			return false;
 			
 		// If there's a sentence to say, say it.
-		} else if (sentence < text->sentences.size()) {
+		} else if (!sentences_done) {
+			std::cout << "text" << std::endl;
 			parent.speech->say_(text->sentences[sentence++]);
 			return true;
 			
 		// If there's commands left to execute after the last sentence, execute them.
 		} else if (mark < text->arguments.size()) {
+			std::cout << "post-commands" << std::endl;
 			executeCommand(text->arguments.size() - 1);
 			return false;
 			
 		// Otherwise we're done, and we interrupted someone.
 		// That command should continue.
 		} else if (interrupted) {
+			std::cout << "up" << std::endl;
 			interrupted->interrupts.pop_front();
 			parent.speech->current_ = interrupted;
 			return false;
@@ -192,8 +206,10 @@ namespace robotutor {
 		} else  {
 			parent.speech->queue_.pop_front(); // Note that this deconstructs us.
 			if (parent.speech->queue_.size()) {
+				std::cout << "up" << std::endl;
 				parent.speech->current_ = &parent.speech->queue_.front();
 			} else {
+				std::cout << "done" << std::endl;
 				parent.speech->current_ = nullptr;
 			}
 			return false;
