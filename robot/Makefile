@@ -1,16 +1,18 @@
-NAOQI_PATH := /opt/naoqi-sdk
 -include Makefile.local
 
-CXX            := c++
-CXXFLAGS_EXTRA := -std=c++11 -I$(NAOQI_PATH)/include -Wall -MP -MMD
-LDFLAGS_EXTRA  := -pthread
-LDFLAGS_EXTRA  += -L $(NAOQI_PATH)/lib
-LDFLAGS_EXTRA  += -L $(NAOQI_PATH)/lib/naoqi
-LDFLAGS_EXTRA  += -Wl,-rpath=$(NAOQI_PATH)/lib
-LDFLAGS_EXTRA  += -Wl,-rpath=$(NAOQI_PATH)/lib/naoqi
+source_dir     ?= src
+build_dir      ?= build
+naoqi_path     ?= /opt/naoqi-sdk
 
-source_dir     := src
-build_dir      := build
+CXX            ?= c++
+CXXFLAGS_EXTRA += -std=c++11 -Wall -MP -MMD
+CXXFLAGS_EXTRA += -I$(naoqi_path)/include
+
+LDFLAGS_EXTRA  += -pthread
+LDFLAGS_EXTRA  += -L$(naoqi_path)/lib
+LDFLAGS_EXTRA  += -L$(naoqi_path)/lib/naoqi
+LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib
+LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib/naoqi
 
 common_OBJS    := main
 common_LIBS    :=
@@ -25,8 +27,9 @@ parser_LIBS    :=
 parser_DIR     := parser
 
 engine_OBJS    := speech_engine script_engine behavior_engine
-engine_LIBS    := alcommon alproxies alvalue alsoap alerror althread
-engine_LIBS    += qi rttools boost_filesystem boost_signals
+engine_LIBS    += boost_filesystem boost_signals
+engine_LIBS    += alcommon alproxies alvalue alsoap alerror althread
+engine_LIBS    += qi rttools
 engine_DIR     := engine
 
 server_OBJS    := server
