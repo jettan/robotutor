@@ -15,4 +15,13 @@ namespace robotutor {
 		server.start();
 	}
 	
+	/// Join any background threads created by the engine.
+	/**
+	 * Make sure that the IO service has already been stopped,
+	 * or it may still process events that use the engine.
+	 */
+	void ScriptEngine::join() {
+		speech->join();
+	}
+	
 }

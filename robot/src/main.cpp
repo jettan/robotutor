@@ -38,13 +38,36 @@ command::SharedPtr parseFile(std::string const & name) {
 	return parseStream(stream);
 }
 
+void parse(int argc, char ** argv, ScriptEngine & engine, boost::asio::io_service &ios) {
+	// Register all commands.
+	registerCommands();
+	
+	command::SharedPtr script;
+	try {
+		CommandParser parser(factory);
+		// If a command line argument is given, it's an input file to read.
+		if (argc > 2) {
+			script = parseFile(argv[2]);
+		} else  {
+			script = parseStream(std::cin);
+		}
+	} catch (std::exception const & e) {
+		std::cerr << "Failed to parse input: " << e.what() << std::endl;
+		ios.stop();
+	}
+	
+	ios.post([&engine, script] () {
+		engine.run(script);
+	});
+}
+
 int main(int argc, char ** argv) {
 	// Get nao host from command line.
 	std::string nao_host = "localhost";
 	if (argc > 1) nao_host = argv[1];
 	
-	// Register all commands.
-	registerCommands();
+	// The main IO service.
+	boost::asio::io_service ios;
 	
 	// Try to create a broker.
 	boost::shared_ptr<AL::ALBroker> broker;
@@ -58,13 +81,6 @@ int main(int argc, char ** argv) {
 		return -2;
 	}
 	
-	boost::asio::io_service ios;
-	
-	// Run the io service.
-	auto iosRun = [&ios] () {
-		ios.run();
-	};
-	
 	// Stop the io service when the speech engine is done.
 	auto onDone = [&ios] (SpeechEngine &) {
 		ios.stop();
@@ -73,25 +89,15 @@ int main(int argc, char ** argv) {
 	// Initialize the script engine.
 	ScriptEngine engine(ios, broker);
 	engine.speech->on_done.connect(onDone);
-	std::thread thread(iosRun);
 	
-	command::SharedPtr script;
-	try {
-		CommandParser parser(factory);
-		// If a command line argument is given, it's an input file to read.
-		if (argc > 2) {
-			script = parseFile(argv[2]);
-		} else  {
-			script = parseStream(std::cin);
-		}
-	} catch (std::exception const & e) {
-		std::cerr << "Failed to parse input: " << e.what() << std::endl;
-		return -1;
-	}
-	std::cout << *script;
+	std::thread parse_thread([argc, argv, &engine, &ios] () {
+		parse(argc, argv, engine, ios);
+	});
 	
-	engine.run(script);
-	thread.join();
+	
+	ios.run();
+	parse_thread.join();
+	engine.join();
 	
 	usleep(1000 * 1000);
 	

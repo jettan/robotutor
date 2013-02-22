@@ -40,6 +40,15 @@ namespace robotutor {
 		memory_->subscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName(), "onBookmark");
 	}
 	
+	/// Join the background thread to ensure we can safely be destructed.
+	/**
+	 * Make sure that the IO service has already been stopped,
+	 * or it may still process events that use the speech engine.
+	 */
+	void SpeechEngine::join() {
+		if (wait_thread_.joinable()) wait_thread_.join();
+	}
+	
 	/// Execute a text command by interrupting the current text.
 	/**
 	 * Note that the current text will be interrupted at the next sentence end.
@@ -112,10 +121,29 @@ namespace robotutor {
 	
 	/// Say a text.
 	/**
+	 * This method may only be called if there is no job currently running.
+	 *
 	 * \param text The text.
 	 */
 	void SpeechEngine::say_(std::string const & text) {
-		job_id_ = tts_.post.say(text);
+		int job = tts_.post.say(text);
+		if (wait_thread_.joinable()) wait_thread_.join();
+		wait_thread_ = std::thread([this, job] () {
+			wait_(job);
+		});
+	}
+	
+	/// Wait for a job and post the event.
+	/**
+	 * \param job The job ID.
+	 */
+	void SpeechEngine::wait_(int job) {
+		std::cout << "wait... " << std::flush;
+		tts_.wait(job, 0);
+		std::cout << "done" << std::endl;
+		ios_->post([this] () {
+			handleTextDone_();
+		});
 	}
 	
 	/// Handle a bookmark.
@@ -126,8 +154,6 @@ namespace robotutor {
 		// Bookmark 0 gets abused, so we ignore that one.
 		if (bookmark > 0) {
 			current_->executeCommand(bookmark - 1);
-		} else {
-			handleTextDone_();
 		}
 	}
 	

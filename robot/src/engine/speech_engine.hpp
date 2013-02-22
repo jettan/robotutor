@@ -4,7 +4,7 @@
 #include <deque>
 #include <functional>
 #include <memory>
-#include <mutex>
+#include <thread>
 
 #include <boost/signal.hpp>
 
@@ -117,6 +117,9 @@ namespace robotutor {
 			/// TTS proxy to do the actual synthesizing.
 			AL::ALTextToSpeechProxy tts_;
 			
+			/// Thread to wait for job completion.
+			std::thread wait_thread_;
+			
 		public:
 			/// Construct the speech engine.
 			SpeechEngine(boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
@@ -126,6 +129,16 @@ namespace robotutor {
 			
 			/// Create a speech engine.
 			static boost::shared_ptr<SpeechEngine> create(ScriptEngine & parent, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
+			
+			/// Initialize the module.
+			void init();
+			
+			/// Join the background thread to ensure we can safely be destructed.
+			/**
+			 * Make sure that the IO service has already been stopped,
+			 * or it may still process events that use the speech engine.
+			 */
+			void join();
 			
 			/// Execute a text command by interrupting the current text.
 			/**
@@ -142,9 +155,6 @@ namespace robotutor {
 			 * \param text The text command to execute.
 			 */
 			void enqueue(command::Text::SharedPtr text);
-			
-			/// Initialize the module.
-			void init();
 			
 			/// Pause execution at the next sentence end.
 			void pause();
@@ -164,9 +174,17 @@ namespace robotutor {
 				
 			/// Say a text.
 			/**
+			 * This method may only be called if there is no job currently running.
+			 *
 			 * \param text The text.
 			 */
 			void say_(std::string const & text);
+			
+			/// Wait for a job and post the event.
+			/**
+			 * \param job The job ID.
+			 */
+			void wait_(int job);
 			
 			/// Handle a bookmark.
 			/**

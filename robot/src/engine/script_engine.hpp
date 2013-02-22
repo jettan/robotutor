@@ -30,6 +30,13 @@ namespace robotutor {
 			 */
 			ScriptEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
 			
+			/// Join any background threads created by the engine.
+			/**
+			 * Make sure that the IO service has already been stopped,
+			 * or it may still process events that use the engine.
+			 */
+			void join();
+			
 			/// Run a command with the script engine.
 			/**
 			 * \param command The command to run.
