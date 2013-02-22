@@ -16,15 +16,11 @@ namespace robotutor {
 		
 		functionName("onBookmark", getName(), "Handle bookmarks.");
 		BIND_METHOD(SpeechEngine::onBookmark);
-		
-		functionName("onTextDone", getName(), "Handle job completion.");
-		BIND_METHOD(SpeechEngine::onTextDone);
 	}
 	
 	/// Deconstruct the speech engine.
 	SpeechEngine::~SpeechEngine() {
 		memory_->unsubscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName());
-		memory_->unsubscribeToEvent("ALTextToSpeech/TextDone"             , getName());
 	}
 	
 	/// Create a speech engine.
@@ -42,8 +38,6 @@ namespace robotutor {
 		tts_.enableNotifications();
 		
 		memory_->subscribeToEvent("ALTextToSpeech/CurrentBookMark"      , getName(), "onBookmark");
-		memory_->subscribeToEvent("ALTextToSpeech/TextDone"             , getName(), "onTextDone");
-		
 	}
 	
 	/// Execute a text command by interrupting the current text.
@@ -110,14 +104,6 @@ namespace robotutor {
 		});
 	}
 	
-	/// Called when the TTS engine is done.
-	void SpeechEngine::onTextDone(std::string const & eventName, bool const & value, std::string const & subsciberIdentifier) {
-		// Post the event to the io_service.
-		ios_->post([this] () {
-			handleTextDone_();
-		});
-	}
-	
 	/// Step trough the contexts.
 	void SpeechEngine::step_() {
 		while (current_ && !current_->step());
@@ -140,16 +126,16 @@ namespace robotutor {
 		// Bookmark 0 gets abused, so we ignore that one.
 		if (bookmark > 0) {
 			current_->executeCommand(bookmark - 1);
+		} else {
+			handleTextDone_();
 		}
 	}
 	
 	/// Handle the text done event.
 	void SpeechEngine::handleTextDone_() {
-		if (!tts_.isRunning(job_id_)) {
-			job_id_ = 0;
-			if (playing_) step_();
-			if (!current_) on_done(*this);
-		}
+		job_id_ = 0;
+		if (playing_) step_();
+		if (!current_) on_done(*this);
 	}
 	
 	

@@ -158,9 +158,6 @@ namespace robotutor {
 			/// Called when a bookmark is encountered.
 			void onBookmark(std::string const & eventName, int const & value, std::string const & subscriberIndentifier);
 			
-			/// Called when the TTS engine is done.
-			void onTextDone(std::string const & eventName, bool const & value, std::string const & subsciberIdentifier);
-			
 		protected:
 			/// Step trough the contexts.
 			void step_();
