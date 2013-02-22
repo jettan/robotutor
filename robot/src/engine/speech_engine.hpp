@@ -117,9 +117,6 @@ namespace robotutor {
 			/// TTS proxy to do the actual synthesizing.
 			AL::ALTextToSpeechProxy tts_;
 			
-			/// Mutex to lock when processing callbacks.
-			std::recursive_mutex mutex_;
-			
 		public:
 			/// Construct the speech engine.
 			SpeechEngine(boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
@@ -173,5 +170,15 @@ namespace robotutor {
 			 * \param text The text.
 			 */
 			void say_(std::string const & text);
+			
+			/// Handle a bookmark.
+			/**
+			 * \param bookmark The number of the bookmark.
+			 */
+			void handleBookmark_(int bookmark);
+			
+			/// Handle the text done event.
+			void handleTextDone_();
+			
 	};
 }

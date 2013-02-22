@@ -53,8 +53,6 @@ namespace robotutor {
 	 * \param text The text command to execute.
 	 */
 	void SpeechEngine::interrupt(command::Text::SharedPtr text) {
-		std::lock_guard<std::recursive_mutex> lock(mutex_);
-		
 		if (current_) {
 			current_->interrupts.push_back(std::make_shared<SpeechContext>(*parent_, text, current_));
 		} else {
@@ -69,8 +67,6 @@ namespace robotutor {
 	 * \param text The text command to execute.
 	 */
 	void SpeechEngine::enqueue(command::Text::SharedPtr text) {
-		std::lock_guard<std::recursive_mutex> lock(mutex_);
-		
 		queue_.push_back(SpeechContext(*parent_, text, nullptr));
 		if (!current_) {
 			current_ = &queue_.front();
@@ -80,7 +76,6 @@ namespace robotutor {
 	
 	/// Stop execution.
 	void SpeechEngine::pause() {
-		std::lock_guard<std::recursive_mutex> lock(mutex_);
 		if (!playing_) return;
 		
 		playing_ = false;
@@ -89,7 +84,6 @@ namespace robotutor {
 	
 	/// Resume execution.
 	void SpeechEngine::resume() {
-		std::lock_guard<std::recursive_mutex> lock(mutex_);
 		if (playing_) return;
 		
 		playing_ = true;
@@ -102,8 +96,6 @@ namespace robotutor {
 	
 	/// Reset the engine.
 	void SpeechEngine::reset() {
-		std::lock_guard<std::recursive_mutex> lock(mutex_);
-		
 		pause();
 		current_ = nullptr;
 		queue_.clear();
@@ -112,23 +104,18 @@ namespace robotutor {
 	
 	/// Called when a bookmark is encountered.
 	void SpeechEngine::onBookmark(std::string const & eventName, int const & value, std::string const & subscriberIndentifier) {
-		std::lock_guard<std::recursive_mutex> lock(mutex_);
-		
-		// Bookmark 0 gets abused, so we ignore that one.
-		if (value > 0) {
-			current_->executeCommand(value - 1);
-		}
+		// Post the event to the io_service.
+		ios_->post([this, value] () {
+			handleBookmark_(value);
+		});
 	}
 	
 	/// Called when the TTS engine is done.
 	void SpeechEngine::onTextDone(std::string const & eventName, bool const & value, std::string const & subsciberIdentifier) {
-		std::lock_guard<std::recursive_mutex> lock(mutex_);
-		
-		if (!tts_.isRunning(job_id_)) {
-			job_id_ = 0;
-			if (playing_) step_();
-			if (!current_) on_done(*this);
-		}
+		// Post the event to the io_service.
+		ios_->post([this] () {
+			handleTextDone_();
+		});
 	}
 	
 	/// Step trough the contexts.
@@ -144,6 +131,27 @@ namespace robotutor {
 	void SpeechEngine::say_(std::string const & text) {
 		job_id_ = tts_.post.say(text);
 	}
+	
+	/// Handle a bookmark.
+	/**
+	 * \param bookmark The number of the bookmark.
+	 */
+	void SpeechEngine::handleBookmark_(int bookmark) {
+		// Bookmark 0 gets abused, so we ignore that one.
+		if (bookmark > 0) {
+			current_->executeCommand(bookmark - 1);
+		}
+	}
+	
+	/// Handle the text done event.
+	void SpeechEngine::handleTextDone_() {
+		if (!tts_.isRunning(job_id_)) {
+			job_id_ = 0;
+			if (playing_) step_();
+			if (!current_) on_done(*this);
+		}
+	}
+	
 	
 	/// Execute all unexecuted commands up to the given index.
 	/**
