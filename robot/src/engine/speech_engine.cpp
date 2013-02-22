@@ -122,7 +122,6 @@ namespace robotutor {
 		std::lock_guard<std::recursive_mutex> lock(mutex_);
 		
 		if (!tts_.isRunning(job_id_)) {
-			std::cout << "Job done." << std::endl;
 			job_id_ = 0;
 			if (playing_) step_();
 			if (!current_) on_done(*this);
