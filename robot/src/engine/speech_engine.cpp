@@ -53,7 +53,7 @@ namespace robotutor {
 		std::lock_guard<std::recursive_mutex> lock(mutex_);
 		
 		if (current_) {
-			current_->interrupts.push_back(SpeechContext(*parent_, text, current_));
+			current_->interrupts.push_back(std::make_shared<SpeechContext>(*parent_, text, current_));
 		} else {
 			enqueue(text);
 		}
@@ -172,7 +172,7 @@ namespace robotutor {
 		// If there's an interrupt pending, switch context.
 		if (interrupts.size()) {
 			std::cout << "down" << std::endl;
-			parent.speech->current_ = &interrupts[0];
+			parent.speech->current_ = interrupts[0].get();
 			return false;
 			
 		// If there are commands left to execute, execute them.

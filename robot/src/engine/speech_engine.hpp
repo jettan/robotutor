@@ -44,26 +44,16 @@ namespace robotutor {
 			int sentence = 0;
 			
 			/// Interruption queue for the current context.
-			std::deque<SpeechContext> interrupts;
+			std::deque<std::shared_ptr<SpeechContext>> interrupts;
 			
+		public:
 			/// Construct a speech engine context.
 			SpeechContext(ScriptEngine & parent, command::Text::SharedPtr text, SpeechContext * interrupted) :
 				parent(parent),
 				interrupted(interrupted),
 				text(text) {}
-			
-			/// Check if the context is done executing.
-			bool done() {
-				return
-					   mark     >= text->arguments.size() - 1
-					&& sentence >= text->sentences.size() - 1;
-			}
-			
-			/// Get the current sentence to execute.
-			std::string const & currentSentence() {
-				return text->sentences[sentence];
-			}
-			
+				
+		protected:
 			/// Perform the next step of the context.
 			/**
 			 * If this method returns true, the next step should wait
