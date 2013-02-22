@@ -38,6 +38,7 @@ command::SharedPtr parseFile(std::string const & name) {
 	return parseStream(stream);
 }
 
+/// Parse the script.
 void parse(int argc, char ** argv, ScriptEngine & engine, boost::asio::io_service &ios) {
 	// Register all commands.
 	registerCommands();
@@ -90,11 +91,12 @@ int main(int argc, char ** argv) {
 	ScriptEngine engine(ios, broker);
 	engine.speech->on_done.connect(onDone);
 	
+	// Parse input in a different thread.
 	std::thread parse_thread([argc, argv, &engine, &ios] () {
 		parse(argc, argv, engine, ios);
 	});
 	
-	
+	// Run the IO service and make sure all threads are joined before exiting.
 	ios.run();
 	parse_thread.join();
 	engine.join();
