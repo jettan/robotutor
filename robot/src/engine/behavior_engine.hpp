@@ -5,6 +5,7 @@
 #include <alcommon/almodule.h>
 #include <alproxies/albehaviormanagerproxy.h>
 
+
 namespace AL {
 	class ALBroker;
 }
@@ -18,7 +19,7 @@ namespace robotutor {
 	class BehaviorEngine {
 		protected:
 			/// Behavior manager to use.
-			AL::ALBehaviorManagerProxy bhv_;
+			AL::ALBehaviorManagerProxy bm_;
 		
 		public:
 			/// Construct the behaviour engine.
@@ -31,13 +32,13 @@ namespace robotutor {
 			/**
 			 * \param name The name of the behaviour.
 			 */
-			play(const std::string &name);
+			void run(std::string const & name);
 			
 			/// Stop a running behaviour.
 			/**
 			 * \param name The name of the behaviour.
 			 */
-			stop(const std::string &name);
+			void stop(std::string const & name);
 	};
 	
 }
