@@ -7,7 +7,9 @@ namespace robotutor {
 		bm_(broker) {}
 	
 	void BehaviorEngine::run(std::string const & name) {
-		bm_.runBehavior(name);
+		if (bm_.isBehaviorInstalled(name)) {
+			bm_.runBehavior(name);
+		}
 	}
 }
 
