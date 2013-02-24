@@ -1,8 +1,8 @@
 #pragma once
 #include "../command/command.hpp"
-#include "../server/server.hpp"
 #include "speech_engine.hpp"
 #include "behavior_engine.hpp"
+#include "server_engine.hpp"
 
 namespace AL {
 	class ALBroker;
@@ -23,7 +23,8 @@ namespace robotutor {
 			/// The behavior engine.
 			BehaviorEngine behavior;
 			
-			Server server;
+			/// The server engine.
+			ServerEngine server;
 			
 			/// Construct the script engine.
 			/**

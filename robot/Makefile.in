@@ -8,6 +8,9 @@ $$(build_dir)/$$($1_DIR): | $$(build_dir)
 
 $$(build_dir)/$$($1_DIR)/%.o: $$(source_dir)/$$($1_DIR)/%.cpp | $$(build_dir)/$$($1_DIR)
 	$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
+	
+$$(build_dir)/$$($1_DIR)/%.o: $$(source_dir)/$$($1_DIR)/%.cc | $$(build_dir)/$$($1_DIR)
+	$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
 
 -include $$(build_dir)/$$($1_DIR)/*.d
 endef

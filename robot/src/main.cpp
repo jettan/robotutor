@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <thread>
 
+#include <boost/asio.hpp>
+
 #include <alcommon/albroker.h>
 #include <alcommon/albrokermanager.h>
 
@@ -12,8 +14,6 @@
 
 #include "command/speech_commands.hpp"
 #include "command/behavior_commands.hpp"
-
-#include <unistd.h>
 
 
 using namespace robotutor;

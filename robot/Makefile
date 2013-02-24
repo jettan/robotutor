@@ -4,7 +4,8 @@ source_dir     ?= src
 build_dir      ?= build
 naoqi_path     ?= /opt/naoqi-sdk
 
-CXX            ?= c++
+CXX            := c++
+PROTOC         := protoc
 CXXFLAGS_EXTRA += -std=c++11 -Wall -MP -MMD
 CXXFLAGS_EXTRA += -I$(naoqi_path)/include
 
@@ -29,21 +30,38 @@ parser_DIR     := parser
 engine_OBJS    := speech_engine script_engine behavior_engine
 engine_LIBS    += boost_filesystem boost_signals
 engine_LIBS    += alcommon alproxies alvalue alsoap alerror althread
-engine_LIBS    += qi rttools
+engine_LIBS    += qi rttools protobuf
 engine_DIR     := engine
 
-server_OBJS    := server
-server_LIBS    := boost_system
-server_DIR     := server
+protocol_OBJS  := messages.pb
+protocol_LIBS  +=
+protocol_DIR   += protocol
 
-robotutor_COMPONENTS := common parser engine server command
+robotutor_COMPONENTS := common parser engine protocol command
 robotutor_BIN        := robotutor
 
 .PHONY: default
-default: $(robotutor_BIN)
+default: $(source_dir)/$(protocol_DIR)/messages.pb.h $(robotutor_BIN)
 
 include Makefile.in
 
+# Call protoc to generate protobuffer C++ files.
+$(source_dir)/$(protocol_DIR)/messages.pb.h: $(source_dir)/$(protocol_DIR)/messages.proto
+	$(PROTOC) --cpp_out='.' '$^'
 
-$(call define_components,common command parser engine server)
+$(source_dir)/$(protocol_DIR)/messages.pb.cc: $(source_dir)/$(protocol_DIR)/messages.proto
+	$(PROTOC) --cpp_out='.' '$^'
+	
+$(source_dir)/$(engine_DIR)/server_engine.hpp: $(source_dir)/$(protocol_DIR)/messages.pb.h
+
+
+
+clean_protobuf:
+	rm -f '$(source_dir)/$(protocol_DIR)/messages.bp.cc'
+	rm -f '$(source_dir)/$(protocol_DIR)/messages.bp.h'
+
+clean: clean_protobuf
+
+
+$(call define_components,common command parser engine protocol)
 $(call define_program,robotutor)

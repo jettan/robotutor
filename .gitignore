@@ -10,3 +10,5 @@ Makefile.local
 client/RCF/
 client/boost/
 *.suo
+*.pb.h
+*.pb.cc
