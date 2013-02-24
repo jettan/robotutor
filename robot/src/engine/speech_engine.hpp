@@ -93,11 +93,11 @@ namespace robotutor {
 			boost::signal<void (SpeechEngine & engine)> on_resume;
 			
 		protected:
-			/// IO service to perform asynchronous work.
-			boost::asio::io_service * ios_;
-			
 			/// Reference to the parent script engine.
 			ScriptEngine * parent_;
+			
+			/// IO service to perform asynchronous work.
+			boost::asio::io_service * ios_;
 			
 			/// Text queue.
 			std::deque<SpeechContext> queue_;
@@ -122,12 +122,22 @@ namespace robotutor {
 			
 		public:
 			/// Construct the speech engine.
+			/**
+			 * \param broker The broker to use.
+			 * \param name The name of the module.
+			 */
 			SpeechEngine(boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
 			/// Deconstruct the speech engine.
 			virtual ~SpeechEngine();
 			
 			/// Create a speech engine.
+			/**
+			 * \param parent The parent script engine.
+			 * \param ios The IO service to use.
+			 * \param broker The broker to use.
+			 * \param name The name of the module.
+			 */
 			static boost::shared_ptr<SpeechEngine> create(ScriptEngine & parent, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
 			/// Initialize the module.

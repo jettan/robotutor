@@ -20,6 +20,7 @@ namespace robotutor {
 			/// The text-to-speech engine.
 			boost::shared_ptr<SpeechEngine> speech;
 			
+			/// The behavior engine.
 			BehaviorEngine behavior;
 			
 			Server server;
