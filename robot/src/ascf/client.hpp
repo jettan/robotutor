@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <memory>
+#include <type_traits>
 
 #include <boost/asio.hpp>
 
@@ -32,6 +33,15 @@ namespace ascf {
 			/// Virtual deconstructor.
 			virtual ~Client() {}
 			
+			/// Create a new client connection.
+			/**
+			 * \param ios The IO service to use.
+			 * \return A shared pointer to a new client connection.
+			 */
+			static std::shared_ptr<ConnectionType> create(boost::asio::io_service & ios) {
+				return std::make_shared<ConnectionType>(typename ParentType::must_be_shared_(), ios);
+			}
+			
 			/// Connect to an endpoint.
 			/**
 			 * \param endpoint The endpoint to connect to.
@@ -44,13 +54,53 @@ namespace ascf {
 				this->socket_.async_connect(endpoint, handler);
 			}
 			
-			/// Create a new server connection.
+			/// Connect to an endpoint.
 			/**
-			 * \param ios The IO service to use.
-			 * \return A shared pointer to a new server connection.
+			 * \param arguments The arguments for the endpoint constructor.
 			 */
-			static std::shared_ptr<ConnectionType> create(boost::asio::io_service & ios) {
-				return std::make_shared<ConnectionType>(typename ParentType::must_be_shared_(), ios);
+			template<typename... Arguments>
+			void connect(Arguments... arguments) {
+				connect(typename Protocol::Endpoint(arguments...));
+			}
+			
+			/// Connect to a TCP endpoint with an IPv4 address.
+			/**
+			 * \param address The IPv4 address.
+			 * \param port    The port number.
+			 */
+			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
+			void connect_ip4(boost::asio::ip::address_v4::bytes_type const & address, unsigned short port) {
+				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4(address), port));
+			}
+			
+			/// Connect to a TCP endpoint with an IPv4 address.
+			/**
+			 * \param address The IPv4 address.
+			 * \param port    The port number.
+			 */
+			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
+			void connect_ip4(std::string const & address, unsigned short port) {
+				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(address), port));
+			}
+			
+			/// Connect to a TCP endpoint with an IPv6 address.
+			/**
+			 * \param address The IPv6 address.
+			 * \param port    The port number.
+			 */
+			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
+			void connect_ip6(boost::asio::ip::address_v6::bytes_type const & address, unsigned short port) {
+				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v6(address), port));
+			}
+			
+			/// Connect to a TCP endpoint with an IPv6 address.
+			/**
+			 * \param address The IPv6 address.
+			 * \param port    The port number.
+			 */
+			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
+			void connect_ip6(std::string const & address, unsigned short port) {
+				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v6::from_string(address), port));
 			}
 			
 		protected:

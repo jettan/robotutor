@@ -136,6 +136,34 @@ namespace ascf {
 				asyncAccept_();
 			}
 			
+			/// Start listening for incoming connections.
+			/**
+			 * \param arguments The arguments for the endpoint constructor.
+			 */
+			template<typename... Arguments>
+			void listen(Arguments... arguments) {
+				listen(typename Protocol::Endpoint(arguments...));
+			}
+			
+			/// Listen for incoming TCP/IPv4 connections.
+			/**
+			 * \param port The port to listen on.
+			 */
+			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
+			void listen_ip4(unsigned short port) {
+				listen(boost::asio::ip::tcp::v4(), port);
+			}
+			
+			
+			/// Listen for incoming TCP/IPv6 connections.
+			/**
+			 * \param port The port to listen on.
+			 */
+			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
+			void listen6(unsigned short port) {
+				listen(boost::asio::ip::tcp::v6(), port);
+			}
+			
 			/// Close the server.
 			/**
 			 * Stop listening to connections and clear all registered connections.
