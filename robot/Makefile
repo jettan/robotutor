@@ -19,7 +19,7 @@ common_OBJS    := main
 common_LIBS    :=
 common_DIR     := .
 
-command_OBJS   := command speech_commands behavior_commands
+command_OBJS   := command speech_commands behavior_commands presentation_commands
 command_LIBS   :=
 command_DIR    := command
 
@@ -27,7 +27,7 @@ parser_OBJS    := command_parser
 parser_LIBS    :=
 parser_DIR     := parser
 
-engine_OBJS    := speech_engine script_engine behavior_engine
+engine_OBJS    := speech_engine script_engine behavior_engine server_engine
 engine_LIBS    += boost_filesystem boost_signals
 engine_LIBS    += alcommon alproxies alvalue alsoap alerror althread
 engine_LIBS    += qi rttools protobuf
@@ -53,8 +53,6 @@ $(source_dir)/$(protocol_DIR)/messages.pb.cc: $(source_dir)/$(protocol_DIR)/mess
 	$(PROTOC) --cpp_out='.' '$^'
 	
 $(source_dir)/$(engine_DIR)/server_engine.hpp: $(source_dir)/$(protocol_DIR)/messages.pb.h
-
-
 
 clean_protobuf:
 	rm -f '$(source_dir)/$(protocol_DIR)/messages.bp.cc'

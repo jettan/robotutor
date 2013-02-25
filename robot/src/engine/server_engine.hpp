@@ -29,6 +29,17 @@ namespace robotutor {
 				ascf::Server<Protocol>(ios),
 				parent_(parent) {}
 			
+			/// Jump to a slide relative from the current slide.
+			/**
+			 * \param offset The offset.
+			 */
+			void adjustSlide(int offset);
+			
+			/// Jump to a slide.
+			/**
+			 * \param index The absolute slide number.
+			 */
+			void goSlide(unsigned int index);
 	};
 }
 

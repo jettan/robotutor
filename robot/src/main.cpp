@@ -14,6 +14,7 @@
 
 #include "command/speech_commands.hpp"
 #include "command/behavior_commands.hpp"
+#include "command/presentation_commands.hpp"
 
 
 using namespace robotutor;
@@ -24,6 +25,8 @@ void registerCommands() {
 	factory.add<command::Stop>("stop");
 	factory.add<command::Execute>("execute");
 	factory.add<command::Behavior>("behavior");
+	factory.add<command::NextSlide>("next slide");
+	factory.add<command::PreviousSlide>("previous slide");
 }
 
 command::SharedPtr parseStream(std::istream & stream) {
