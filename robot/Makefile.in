@@ -1,29 +1,53 @@
-all_programs :=
-
 .PHONY: clean
+
+log_linking  := @echo "\e[01;31mLinking $1.\e[m"
 
 define component_template
 $$(build_dir)/$$($1_DIR): | $$(build_dir)
-	test -d $$@ || mkdir $$@
+	@test -d $$@ || mkdir $$@
 
 $$(build_dir)/$$($1_DIR)/%.o: $$(source_dir)/$$($1_DIR)/%.cpp | $$(build_dir)/$$($1_DIR)
-	$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
+	@tput bold
+	@tput setf 6
+	@echo -n "Compiling "
+	@tput setf 7
+	@echo "$$@"
+	@tput sgr0
+	@$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
 	
 $$(build_dir)/$$($1_DIR)/%.o: $$(source_dir)/$$($1_DIR)/%.cc | $$(build_dir)/$$($1_DIR)
-	$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
+	@tput bold
+	@tput setf 6
+	@echo -n "Compiling "
+	@tput setf 7
+	@echo "$$@"
+	@tput sgr0
+	@$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
 
 -include $$(build_dir)/$$($1_DIR)/*.d
 endef
 
 define program_template
 $$($1_BIN): $$(call for_components,$1,component_objects)
-	$$(CXX) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -o '$$@' $$^ $$(call for_components,$1,component_libs)
+	@tput bold
+	@tput setf 3
+	@echo -n "Linking "
+	@tput setf 7
+	@echo "$$@"
+	@tput sgr0
+	@$$(CXX) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -o '$$@' $$^ $$(call for_components,$1,component_libs)
 	
 all_programs += $1
 endef
 
 define clean_template
-	test -f '$1' && rm '$1' || true
+	@tput bold
+	@tput setf 4
+	@echo -n "Removing "
+	@tput setf 7
+	@echo "$1"
+	@tput sgr0
+	@rm -f '$1'
 endef
 
 component_objects = $($1_OBJS:%=$(build_dir)/$($1_DIR)/%.o)
@@ -34,10 +58,14 @@ define_components = $(foreach component,$1,$(call define_component,$(component))
 define_program    = $(eval $(call program_template,$1))
 
 $(build_dir):
-	test -d $@ || mkdir $@
+	@test -d $@ || mkdir $@
 
 clean:
-	test -d "$(build_dir)" && rm -r "$(build_dir)" || true
+	@tput bold
+	@tput setf 4
+	@echo "Removing build directory"
+	@tput sgr0
+	@test -d "$(build_dir)" && rm -r "$(build_dir)" || true
 	$(foreach program,$(all_programs), $(call clean_template,$($(program)_BIN)))
 
 component-%:

@@ -47,16 +47,23 @@ include Makefile.in
 
 # Call protoc to generate protobuffer C++ files.
 $(source_dir)/$(protocol_DIR)/messages.pb.h: $(source_dir)/$(protocol_DIR)/messages.proto
-	$(PROTOC) --cpp_out='.' '$^'
+	@tput bold
+	@tput setf 1
+	@echo "Generating protobuf files"
+	@tput sgr0
+	@cd '$(source_dir)/$(protocol_DIR)' && $(PROTOC) --cpp_out='.' 'messages.proto'
 
 $(source_dir)/$(protocol_DIR)/messages.pb.cc: $(source_dir)/$(protocol_DIR)/messages.proto
-	$(PROTOC) --cpp_out='.' '$^'
 	
 $(source_dir)/$(engine_DIR)/server_engine.hpp: $(source_dir)/$(protocol_DIR)/messages.pb.h
 
 clean_protobuf:
-	rm -f '$(source_dir)/$(protocol_DIR)/messages.bp.cc'
-	rm -f '$(source_dir)/$(protocol_DIR)/messages.bp.h'
+	@tput bold
+	@tput setf 4
+	@echo "Removing generated protobuf files"
+	@tput sgr0
+	@rm -f '$(source_dir)/$(protocol_DIR)/messages.pb.cc'
+	@rm -f '$(source_dir)/$(protocol_DIR)/messages.pb.h'
 
 clean: clean_protobuf
 
