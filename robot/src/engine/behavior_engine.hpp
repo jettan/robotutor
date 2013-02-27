@@ -52,6 +52,16 @@ namespace robotutor {
 			 * \param name The name of the behaviour.
 			 */
 			void stop(std::string const & name);
+			
+			/// Returns a random number uniformly from given interval.
+			/**
+			 * \param lower
+			 * \param upper
+			 */
+			 int rnd(int lower, int upper);
+			 
+			 /// Get processor clock value via assembly instruction
+			 int rdtsc();
 	};
 	
 }
