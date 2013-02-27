@@ -1,4 +1,5 @@
 #include "behavior_engine.hpp"
+#include <stdint.h>
 
 namespace robotutor {
 
@@ -21,6 +22,18 @@ namespace robotutor {
 		if (bm_.isBehaviorInstalled(name)) {
 			bm_.runBehavior(name);
 		}
+	}
+	
+	int BehaviorEngine::rdtsc() {
+		asm volatile("rdtsc");
+	}
+	
+	///Draws a random number within the given bounds
+	int BehaviorEngine::rnd(int lower, int upper) {
+  		srand(rdtsc());
+  		// Of: srand(time(NULL));
+    		int result = rand() % upper + lower;
+    		return result;	
 	}
 }
 
