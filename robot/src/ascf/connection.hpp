@@ -8,6 +8,86 @@
 
 namespace ascf {
 	template<typename Protocol, bool IsServer> class Connection;
+	template<typename Protocol> class Server;
+	template<typename Protocol> class ServerConnection;
+	template<typename Protocol> class Client;
+	
+	/// Default server extension that does nothing.
+	template<typename Protocol>
+	struct ServerExtension {
+		/// The associated server.
+		Server<Protocol> & server;
+		
+		/// Construct the extension.
+		/**
+		 * \param server The associated server.
+		 */
+		ServerExtension(Server<Protocol> & server) : server(server) {}
+		
+		/// Invoked when the server goes into a listening state.
+		void handleListening() {}
+		
+		/// Invoked when the server accepted a connection.
+		/**
+		 * \return If not true, the server will immideately close the connection.
+		 */
+		bool handleAccept(std::shared_ptr<ServerConnection<Protocol>> connection) { return true; }
+		
+		/// Invoked when the server closes the listening socket.
+		void handleClose() {}
+	};
+	
+	/// Default connection extension that does nothing.
+	template<typename Protocol>
+	struct ServerConnectionExtension {
+		/// The associated connection.
+		ServerConnection<Protocol> & connection;
+		
+		/// Construct the extension.
+		/**
+		 * \param connection The associated connection.
+		 */
+		ServerConnectionExtension(ServerConnection<Protocol> & connection) : connection(connection) {}
+		
+		/// Invoked when the connection reads a message.
+		/**
+		 * \param message The message.
+		 * \return If not true, the message is not processed further.
+		 */
+		bool handleMessage(typename Protocol::ClientMessage & message) { return true; }
+		
+		/// Invoked after the connection was established.
+		void handleConnect() {}
+		
+		/// Invoked after the socket was closed.
+		void handleClose() {}
+	};
+	
+	/// Default connection extension that does nothing.
+	template<typename Protocol>
+	struct ClientExtension {
+		/// The associated connection.
+		Client<Protocol> & connection;
+		
+		/// Construct the extension.
+		/**
+		 * \param connection The associated connection.
+		 */
+		ClientExtension(Client<Protocol> & connection) : connection(connection) {}
+		
+		/// Invoked when the connection reads a message.
+		/**
+		 * \param message The message.
+		 * \return If not true, the message is not processed further.
+		 */
+		bool handleMessage(typename Protocol::ServerMessage & message) { return true; }
+		
+		/// Invoked after the connection was established.
+		void handleConnect() {}
+		
+		/// Invoked after the socket was closed.
+		void handleClose() {}
+	};
 	
 	/// Exception class for connection errors.
 	template<typename Protocol, bool IsServer>
@@ -64,7 +144,7 @@ namespace ascf {
 			
 		protected:
 			/// The socket for communication.
-			typename Protocol::Socket socket_;
+			typename Protocol::Transport::socket socket_;
 			
 			/// Protected struct to prevent direct use of constructor.
 			struct must_be_shared_ {};
@@ -83,17 +163,19 @@ namespace ascf {
 			/**
 			 * \param socket The socket to use for the connection.
 			 */
-			explicit Connection(must_be_shared_, typename Protocol::Socket && socket) :
-				socket_(std::forward<typename Protocol::Socket>(socket)) {}
+			explicit Connection(must_be_shared_, typename Protocol::Transport::socket && socket) :
+				socket_(std::forward<typename Protocol::Transport::socket>(socket)) {}
 			
 			/// Deconstruct the connection.
 			virtual ~Connection() {}
 			
 			/// Get a reference to the socket used by the connection.
 			/**
-			 * \return A const reference to the socket.
+			 * Note that reading from and writing to the socket manually will likely break the message protocol.
 			 */
-			typename Protocol::Socket const & socket() const { return socket_; }
+			typename Protocol::Transport::socket       & socket()       { return socket_; }
+			/// Get a reference to the socket used by the connection.
+			typename Protocol::Transport::socket const & socket() const { return socket_; }
 			
 			/// Check if the connection is open.
 			/**
@@ -104,7 +186,7 @@ namespace ascf {
 			/// Close the connection.
 			virtual void close() {
 				ErrorCode error;
-				socket_.shutdown(Protocol::Socket::shutdown_type::shutdown_both, error);
+				socket_.shutdown(Protocol::Transport::socket::shutdown_type::shutdown_both, error);
 				socket_.close(error);
 			}
 			
@@ -146,7 +228,6 @@ namespace ascf {
 			 * \param bytes_transferred The amount of bytes transferred for this operation.
 			 */
 			void handleWrite_(ErrorCode const & error, std::size_t bytes_transferred, std::shared_ptr<std::string const> buffer) {
-				// Destroy the connection if an error occured.
 				if (error) throw Error(*this, error);
 			}
 			
@@ -156,19 +237,15 @@ namespace ascf {
 			 * \param bytes_transferred The amount of bytes transferred for this operation.
 			 */
 			void handleRead_(ErrorCode const & error, std::size_t bytes_transferred) {
-				// Destroy the connection if an error occured.
 				if (error) {
 					throw Error(*this, error);
-				
+					
 				// Otherwise check the received data for a whole message and process it.
 				} else {
 					read_buffer_.commit(bytes_transferred);
-					
-					// Consume all available complete messages in the buffer.
-					auto handler = [this] (ReadMessage && message) {
-						handleMessage_(std::forward<ReadMessage>(message));
-					};
-					while (Protocol::template consumeMessage<ReadMessage>(read_buffer_, handler));
+					while (auto message = Protocol::template consumeMessage<ReadMessage>(read_buffer_)) {
+						handleMessage_(std::move(*message));
+					}
 					
 					// Get more data.
 					asyncRead_();

@@ -4,19 +4,25 @@
 #include <memory>
 
 #include <boost/asio.hpp>
+#include <boost/optional.hpp>
+
+#include "connection.hpp"
+#include "client.hpp"
+#include "server.hpp"
 
 
 namespace ascf {
 	
-	/// Protocol Bufffers protocol.
+	/// Protocol Buffers protocol.
 	template<typename ClientMessageT, typename ServerMessageT, typename TransportT = boost::asio::ip::tcp>
 	struct ProtocolBuffers {
-		typedef ServerMessageT                ServerMessage;
-		typedef ClientMessageT                ClientMessage;
-		typedef TransportT                    Transport;
-		typedef typename Transport::socket    Socket;
-		typedef typename Transport::acceptor  Acceptor;
-		typedef typename Transport::endpoint  Endpoint;
+		typedef ProtocolBuffers<ClientMessageT, ServerMessageT, TransportT> Protocol;
+		typedef ServerMessageT                      ServerMessage;
+		typedef ClientMessageT                      ClientMessage;
+		typedef TransportT                          Transport;
+		typedef ServerExtension<Protocol>           ServerExtension;
+		typedef ServerConnectionExtension<Protocol> ServerConnectionExtension;
+		typedef ClientExtension<Protocol>           ClientExtension;
 		
 		/// Frame a message by prefixing it with it's size.
 		/**
@@ -30,10 +36,10 @@ namespace ascf {
 			buffer->reserve(4 + size);
 			
 			// Add size in big endian.
-			buffer->push_back((size >> (3 * 8)) & 0xff);
-			buffer->push_back((size >> (2 * 8)) & 0xff);
-			buffer->push_back((size >> (1 * 8)) & 0xff);
-			buffer->push_back((size >> (0 * 8)) & 0xff);
+			buffer->push_back((size >> 3 * 8) & 0xff);
+			buffer->push_back((size >> 2 * 8) & 0xff);
+			buffer->push_back((size >> 1 * 8) & 0xff);
+			buffer->push_back((size >> 0 * 8) & 0xff);
 			
 			// Add the message.
 			message.AppendToString(buffer.get());
@@ -41,39 +47,38 @@ namespace ascf {
 			return buffer;
 		}
 		
-		/// Consume a character from the buffer and pass it to a handler.
+		/// Consume a message from the buffer.
 		/**
 		 * \param buffer The buffer to read from.
-		 * \param handler The handler to pass messages to.
-		 * \return True if a message was consumed.
+		 * \return The message, if the buffer contained a valid message.
 		 */
 		template<typename MessageType>
-		static bool consumeMessage(boost::asio::streambuf & buffer, std::function<void (MessageType &&)> handler) {
+		static boost::optional<MessageType> consumeMessage(boost::asio::streambuf & buffer) {
 			// Buffer must contain atleast 4 bytes, the length of the message.
 			if (buffer.size() < 4) return false;
 			
 			// Read message size in big endian.
 			char const * data = boost::asio::buffer_cast<char const *>(buffer.data());
 			unsigned int size =
-				  (data[0] << (3 * 8))
-				+ (data[1] << (2 * 8))
-				+ (data[2] << (1 * 8))
-				+ (data[3] << (0 * 8));
+				  (data[0] << 3 * 8)
+				+ (data[1] << 2 * 8)
+				+ (data[2] << 1 * 8)
+				+ (data[3] << 0 * 8);
 			
-			// Size of 0 means there was not actually a message.
+			// Size of 0 means an empty (default constructed).
 			if (!size) {
 				buffer.consume(4);
-				return true;
+				return boost::make_optional(MessageType());
+				
 			// Make sure buffer contains the entire message.
 			} else if (buffer.size() >= 4 + size) {
-				MessageType message;
-				message.ParseFromArray(reinterpret_cast<void const *>(&data[4]), size);
+				boost::optional<MessageType> message((MessageType()));
+				message->ParseFromArray(reinterpret_cast<void const *>(&data[4]), size);
 				buffer.consume(4 + size);
-				handler(std::move(message));
-				return true;
+				return message;
 			// Buffer didn't contain a complete message.
 			} else {
-				return false;
+				return boost::optional<MessageType>();
 			}
 		}
 	};

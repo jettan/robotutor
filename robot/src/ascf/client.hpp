@@ -10,15 +10,21 @@
 
 namespace ascf {
 	
-	template<typename Protocol>
-	class Client : public Connection<Protocol, false> {
+	template<typename ProtocolT>
+	class Client : public Connection<ProtocolT, false> {
+		
 		public:
-			typedef Client<Protocol>                         ConnectionType;
-			typedef Connection<Protocol, false>              ParentType;
+			typedef ProtocolT                                Protocol;
+			typedef Connection<Protocol, false>              BaseType;
 			typedef boost::system::error_code                ErrorCode;
 			
-			typedef std::function<void(std::shared_ptr<ConnectionType> connection, typename Protocol::ServerMessage && message)> MessageHandler;
+			typedef std::function<void(std::shared_ptr<Client<Protocol>> connection, typename Protocol::ServerMessage && message)> MessageHandler;
 			
+		protected:
+			/// Protocol defined extension.
+			typename Protocol::ClientExtension extension_;
+			
+		public:
 			/// The message handler.
 			MessageHandler message_handler;
 			
@@ -27,31 +33,43 @@ namespace ascf {
 			 * \param must_be_shared Token to prevent direct construction.
 			 * \param ios The IO service to use.
 			 */
-			Client(typename ParentType::must_be_shared_ must_be_shared, boost::asio::io_service & ios) :
-				ParentType(must_be_shared, typename Protocol::Socket(ios)) {}
+			Client(typename BaseType::must_be_shared_ must_be_shared, boost::asio::io_service & ios) :
+				BaseType(must_be_shared, typename Protocol::Transport::socket(ios)),
+				extension_(*this) {}
 			
 			/// Virtual deconstructor.
-			virtual ~Client() {}
+			~Client() {}
+			
+			/// Get the protocol defined extension object.
+			typename Protocol::ClientExtension       & extension()       { return extension_; };
+			/// Get the protocol defined extension object.
+			typename Protocol::ClientExtension const & extension() const { return extension_; };
 			
 			/// Create a new client connection.
 			/**
 			 * \param ios The IO service to use.
 			 * \return A shared pointer to a new client connection.
 			 */
-			static std::shared_ptr<ConnectionType> create(boost::asio::io_service & ios) {
-				return std::make_shared<ConnectionType>(typename ParentType::must_be_shared_(), ios);
+			static std::shared_ptr<Client<Protocol>> create(boost::asio::io_service & ios) {
+				return std::make_shared<Client<Protocol>>(typename BaseType::must_be_shared_(), ios);
 			}
 			
 			/// Connect to an endpoint.
 			/**
 			 * \param endpoint The endpoint to connect to.
 			 */
-			void connect(typename Protocol::Endpoint const & endpoint) {
+			void connect(typename Protocol::Transport::endpoint const & endpoint) {
 				auto handler = [this] (ErrorCode const & error) {
 					handleConnect_(error);
 				};
 				
 				this->socket_.async_connect(endpoint, handler);
+			}
+			
+			/// Close the connection.
+			void close() {
+				BaseType::close();
+				extension_.handleClose();
 			}
 			
 			/// Connect to an endpoint.
@@ -60,7 +78,7 @@ namespace ascf {
 			 */
 			template<typename... Arguments>
 			void connect(Arguments... arguments) {
-				connect(typename Protocol::Endpoint(arguments...));
+				connect(typename Protocol::Transport::endpoint(arguments...));
 			}
 			
 			/// Connect to a TCP endpoint with an IPv4 address.
@@ -108,8 +126,8 @@ namespace ascf {
 			/**
 			 * \return A shared pointer to this client.
 			 */
-			std::shared_ptr<ConnectionType> get_shared_() {
-				return std::static_pointer_cast<ConnectionType>(this->shared_from_this());
+			std::shared_ptr<Client<Protocol>> get_shared_() {
+				return std::static_pointer_cast<Client<Protocol>>(this->shared_from_this());
 			}
 			
 			/// Handle an asynchronous connect event.
@@ -118,6 +136,7 @@ namespace ascf {
 			 */
 			void handleConnect_(ErrorCode const & error) {
 				if (!error) {
+					extension_.handleConnect();
 					this->asyncRead_();
 				}
 			}
@@ -126,8 +145,10 @@ namespace ascf {
 			/**
 			 * \param message The message to handle.
 			 */
-			virtual void handleMessage_(typename Protocol::ServerMessage && message) {
-				if (message_handler) message_handler(get_shared_(), std::forward<typename Protocol::ServerMessage>(message));
+			void handleMessage_(typename Protocol::ServerMessage && message) {
+				if (extension_.handleMessage(message) && message_handler) {
+					message_handler(get_shared_(), std::forward<typename Protocol::ServerMessage>(message));
+				}
 			}
 			
 	};
