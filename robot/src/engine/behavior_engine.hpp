@@ -1,6 +1,10 @@
 #pragma once
 
 #include <alproxies/albehaviormanagerproxy.h>
+#include <alcommon/almodule.h>
+#include "alaudio/alsoundextractor.h"
+#include <boost/shared_ptr.hpp>
+#include <string>
 
 
 namespace boost {
@@ -11,6 +15,7 @@ namespace boost {
 
 namespace AL {
 	class ALBroker;
+	class ALSoundExtractor
 }
 
 namespace robotutor {
@@ -21,7 +26,7 @@ namespace robotutor {
 	 * Behaviour engine executes behaviours in commands.
 	 * All behaviours should be interruptable.
 	 */
-	class BehaviorEngine {
+	class BehaviorEngine : public ALSoundExtractor {
 		protected:
 			/// Reference to the parent script engine.
 			ScriptEngine & parent_;
@@ -39,7 +44,10 @@ namespace robotutor {
 			 * \param ios The IO service to use.
 			 * \param broker The ALBroker to use for communicating with naoqi.
 			 */
-			BehaviorEngine(ScriptEngine & engine, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
+			BehaviorEngine(ScriptEngine & engine, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
+			
+			/// Initialize audiodevice etc.
+			void init();
 			
 			/// Run a behaviour asynchronously.
 			/**
@@ -60,7 +68,7 @@ namespace robotutor {
 			 */
 			 int rnd(int lower, int upper);
 			 
-			 /// Get processor clock value via assembly instruction
+			 /// Get processor clock value via assembly instruction rdtsc
 			 int rdtsc();
 	};
 	
