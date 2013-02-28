@@ -20,9 +20,9 @@ namespace ascf {
 		typedef ServerMessageT                      ServerMessage;
 		typedef ClientMessageT                      ClientMessage;
 		typedef TransportT                          Transport;
-		typedef ServerExtension<Protocol>           ServerExtension;
-		typedef ServerConnectionExtension<Protocol> ServerConnectionExtension;
-		typedef ClientExtension<Protocol>           ClientExtension;
+		typedef ::ascf::ServerExtension<Protocol>           ServerExtension;
+		typedef ::ascf::ServerConnectionExtension<Protocol> ServerConnectionExtension;
+		typedef ::ascf::ClientExtension<Protocol>           ClientExtension;
 		
 		/// Frame a message by prefixing it with it's size.
 		/**

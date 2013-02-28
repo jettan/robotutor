@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <functional>
 
 #include <boost/asio.hpp>
 
@@ -206,19 +207,14 @@ namespace ascf {
 			void asyncWriteBuffer_(std::shared_ptr<std::string const> buffer) {
 				// Start the asynchronous write.
 				auto connection = this->shared_from_this();
-				auto handler    = [connection, buffer](ErrorCode const & error, std::size_t bytes_transferred) {
-					connection->handleWrite_(error, bytes_transferred, buffer);
-				};
+				auto handler    = std::bind(&Connection<Protocol, IsServer>::handleWrite_, this, std::placeholders::_1, std::placeholders::_2, buffer);
 				boost::asio::async_write(socket_, boost::asio::buffer(*buffer), handler);
 			}
 			
 			/// Start an asynchronous read operation.
 			void asyncRead_() {
 				auto connection = this->shared_from_this();
-				auto handler = [connection](ErrorCode const & error, std::size_t bytes_transferred) {
-					connection->handleRead_(error, bytes_transferred);
-				};
-				
+				auto handler    = std::bind(&Connection<Protocol, IsServer>::handleRead_, this, std::placeholders::_1, std::placeholders::_2);
 				socket_.async_read_some(read_buffer_.prepare(1024), handler);
 			}
 			

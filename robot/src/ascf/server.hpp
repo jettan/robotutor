@@ -177,7 +177,7 @@ namespace ascf {
 			 * \param port The port to listen on.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void listen_ip4(unsigned short port) {
+			void listenIp4(unsigned short port) {
 				listen(boost::asio::ip::tcp::v4(), port);
 			}
 			
@@ -187,7 +187,7 @@ namespace ascf {
 			 * \param port The port to listen on.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void listen6(unsigned short port) {
+			void listenIp6(unsigned short port) {
 				listen(boost::asio::ip::tcp::v6(), port);
 			}
 			
@@ -217,12 +217,8 @@ namespace ascf {
 		protected:
 			/// Asynchronously accept a new connection.
 			void asyncAccept_() {
-				auto socket = std::make_shared<typename Protocol::Transport::socket>(ios_);
-				
-				// Asynchronously accept a connection.
-				auto handler = [this, socket] (ErrorCode const & error) {
-					handleAccept_(socket, error);
-				};
+				std::shared_ptr<typename Protocol::Transport::socket> socket = std::make_shared<typename Protocol::Transport::socket>(ios_);
+				auto handler = std::bind(&Server<Protocol>::handleAccept_, this, socket, std::placeholders::_1);
 				acceptor_.async_accept(*socket, handler);
 			}
 			

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <functional>
 #include <memory>
+#include <functional>
 #include <type_traits>
 
 #include <boost/asio.hpp>
@@ -59,10 +59,7 @@ namespace ascf {
 			 * \param endpoint The endpoint to connect to.
 			 */
 			void connect(typename Protocol::Transport::endpoint const & endpoint) {
-				auto handler = [this] (ErrorCode const & error) {
-					handleConnect_(error);
-				};
-				
+				auto handler = std::bind(&Client<Protocol>::handleConnect_, this, std::placeholders::_1);
 				this->socket_.async_connect(endpoint, handler);
 			}
 			
@@ -87,7 +84,7 @@ namespace ascf {
 			 * \param port    The port number.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void connect_ip4(boost::asio::ip::address_v4::bytes_type const & address, unsigned short port) {
+			void connectIp4(boost::asio::ip::address_v4::bytes_type const & address, unsigned short port) {
 				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4(address), port));
 			}
 			
@@ -97,7 +94,7 @@ namespace ascf {
 			 * \param port    The port number.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void connect_ip4(std::string const & address, unsigned short port) {
+			void connectIp4(std::string const & address, unsigned short port) {
 				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(address), port));
 			}
 			
@@ -107,7 +104,7 @@ namespace ascf {
 			 * \param port    The port number.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void connect_ip6(boost::asio::ip::address_v6::bytes_type const & address, unsigned short port) {
+			void connectIp6(boost::asio::ip::address_v6::bytes_type const & address, unsigned short port) {
 				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v6(address), port));
 			}
 			
@@ -117,7 +114,7 @@ namespace ascf {
 			 * \param port    The port number.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void connect_ip6(std::string const & address, unsigned short port) {
+			void connectIp6(std::string const & address, unsigned short port) {
 				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v6::from_string(address), port));
 			}
 			
