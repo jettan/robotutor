@@ -49,6 +49,12 @@ namespace robotutor {
 			/// Initialize audiodevice etc.
 			void init();
 			
+			/// Noise callback
+			void noiseCallback(const int & nbOfChannels,
+               			     	   const int & nbrOfSamplesByChannel,
+               			           const AL_SOUND_FORMAT * buffer,
+               			           const ALValue & timeStamp);
+			
 			/// Run a behaviour asynchronously.
 			/**
 			 * \param name The name of the behaviour.
