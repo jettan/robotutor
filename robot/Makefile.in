@@ -1,53 +1,39 @@
 .PHONY: clean
 
-log_linking  := @echo "\e[01;31mLinking $1.\e[m"
+log_link     = \033[36mLinking\033[0;1m $@\033[0m...
+log_compile  = \033[33mCompiling\033[0;1m $<\033[0m...
+
+ifdef V
+log_tool     = $1
+suppress     =
+else
+log_tool     = @echo '$2' && $1
+suppress     = @
+endif
+
 
 define component_template
 $$(build_dir)/$$($1_DIR): | $$(build_dir)
 	@test -d $$@ || mkdir $$@
 
 $$(build_dir)/$$($1_DIR)/%.o: $$(source_dir)/$$($1_DIR)/%.cpp | $$(build_dir)/$$($1_DIR)
-	@tput bold
-	@tput setf 6
-	@echo -n "Compiling "
-	@tput setf 7
-	@echo "$$@"
-	@tput sgr0
-	@$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
+	$$(call log_tool,$$(CXX),$$(log_compile)) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
 	
 $$(build_dir)/$$($1_DIR)/%.o: $$(source_dir)/$$($1_DIR)/%.cc | $$(build_dir)/$$($1_DIR)
-	@tput bold
-	@tput setf 6
-	@echo -n "Compiling "
-	@tput setf 7
-	@echo "$$@"
-	@tput sgr0
-	@$$(CXX) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
+	$$(call log_tool,$$(CXX),$$(log_compile)) $$(CXXFLAGS_EXTRA) $$(CXXFLAGS) -c -o '$$@' '$$<'
 
 -include $$(build_dir)/$$($1_DIR)/*.d
 endef
 
 define program_template
 $$($1_BIN): $$(call for_components,$1,component_objects)
-	@tput bold
-	@tput setf 3
-	@echo -n "Linking "
-	@tput setf 7
-	@echo "$$@"
-	@tput sgr0
-	@$$(CXX) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -o '$$@' $$^ $$(call for_components,$1,component_libs)
+	$$(call log_tool,$$(CXX),$$(log_link)) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -o '$$@' $$^ $$(call for_components,$1,component_libs)
 	
-all_programs += $1
+all_programs += '$1'
 endef
 
 define clean_template
-	@tput bold
-	@tput setf 4
-	@echo -n "Removing "
-	@tput setf 7
-	@echo "$1"
-	@tput sgr0
-	@rm -f '$1'
+	$$(rm) -f '$1'
 endef
 
 component_objects = $($1_OBJS:%=$(build_dir)/$($1_DIR)/%.o)
@@ -58,18 +44,8 @@ define_components = $(foreach component,$1,$(call define_component,$(component))
 define_program    = $(eval $(call program_template,$1))
 
 $(build_dir):
-	@test -d $@ || mkdir $@
+	$(suppress) mkdir '$@'
 
 clean:
-	@tput bold
-	@tput setf 4
-	@echo "Removing build directory"
-	@tput sgr0
-	@test -d "$(build_dir)" && rm -r "$(build_dir)" || true
-	$(foreach program,$(all_programs), $(call clean_template,$($(program)_BIN)))
-
-component-%:
-	$(info $(call component_template,$(@:component-%=%)))
-
-program-%:
-	$(info $(call program_template,$(@:program-%=%)))
+	$(suppress) rm -rf '$(build_dir)'
+	$(suppress) rm -f $(all_programs)
