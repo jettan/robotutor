@@ -46,6 +46,9 @@ namespace robotutor {
 			 */
 			BehaviorEngine(ScriptEngine & engine, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
+			/// Destructor
+			~BehaviorEngine();
+			
 			/// Initialize audiodevice etc.
 			void init();
 			
