@@ -103,6 +103,7 @@ namespace robotutor {
 					
 				// A colon or closing curly bracket ends the text.
 				} else if (c == '|' || c == '}') {
+					text_.original.pop_back();
 					state_ = State::done;
 					return true;
 					
