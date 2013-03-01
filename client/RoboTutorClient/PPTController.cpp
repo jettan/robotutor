@@ -1,8 +1,8 @@
-#include "PPTController.h"
+#include "PptController.h"
 
 //DWORD WINAPI AutomatePowerPointByImport(LPVOID lpParam);
 
-PPTController::PPTController(void)
+PptController::PptController(void)
 {
 	try
 	{
@@ -26,12 +26,12 @@ PPTController::PPTController(void)
 	}
 }
 
-PPTController::~PPTController(void)
+PptController::~PptController(void)
 {
 	
 }
 
-void PPTController::closePowerpoint()
+void PptController::closePowerpoint()
 {
 	try
 	{
@@ -44,7 +44,7 @@ void PPTController::closePowerpoint()
 	}
 }
 
-void PPTController::openPresentation(std::string fileName)
+void PptController::openPresentation(std::string fileName)
 {
 	_putws(L"Opening presentation..");
 	try
@@ -64,7 +64,7 @@ void PPTController::openPresentation(std::string fileName)
 	}
 }
 
-void PPTController::closePresentation()
+void PptController::closePresentation()
 {
 	try
 	{
@@ -77,7 +77,7 @@ void PPTController::closePresentation()
 	}
 }
 
-void PPTController::startSlideShow()
+void PptController::startSlideShow()
 {
 	try
 	{
@@ -91,7 +91,7 @@ void PPTController::startSlideShow()
 	}
 }
 
-void PPTController::setSlide(int nr, bool relative)
+void PptController::setSlide(int nr, bool relative)
 {
 	try
 	{

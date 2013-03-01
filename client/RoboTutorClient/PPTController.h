@@ -25,11 +25,11 @@ using namespace VBIDE;
 #import "C:\\Program Files\\Microsoft Office\\Office12\\MSPPT.OLB" \
 	rename("RGB", "VisioRGB")
 
-class PPTController
+class PptController
 {
 public:
-	PPTController(void);
-	~PPTController(void);
+	PptController(void);
+	~PptController(void);
 	void openPresentation(std::string fileName);
 	void closePresentation();
 	void closePowerpoint();

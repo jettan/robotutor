@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RoboTutorClient", "RoboTutorClient\RoboTutorClient.vcxproj", "{DE1B0B78-D9A7-450D-BBC7-7FCFC58CBA06}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RoboTutorClient", "RoboTutorClient\RoboTutorClient.vcxproj", "{1C24ACE8-6C4F-4D07-9B7B-92EECA4A57A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DE1B0B78-D9A7-450D-BBC7-7FCFC58CBA06}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DE1B0B78-D9A7-450D-BBC7-7FCFC58CBA06}.Debug|Win32.Build.0 = Debug|Win32
-		{DE1B0B78-D9A7-450D-BBC7-7FCFC58CBA06}.Release|Win32.ActiveCfg = Release|Win32
-		{DE1B0B78-D9A7-450D-BBC7-7FCFC58CBA06}.Release|Win32.Build.0 = Release|Win32
+		{1C24ACE8-6C4F-4D07-9B7B-92EECA4A57A6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1C24ACE8-6C4F-4D07-9B7B-92EECA4A57A6}.Debug|Win32.Build.0 = Debug|Win32
+		{1C24ACE8-6C4F-4D07-9B7B-92EECA4A57A6}.Release|Win32.ActiveCfg = Release|Win32
+		{1C24ACE8-6C4F-4D07-9B7B-92EECA4A57A6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
