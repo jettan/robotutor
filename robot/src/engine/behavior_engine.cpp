@@ -20,7 +20,10 @@ namespace robotutor {
 	 */
 	void BehaviorEngine::run(std::string const & name) {
 		if (bm_.isBehaviorInstalled(name)) {
-			bm_.runBehavior(name);
+			std::cout << "Running behaviour: `" << name << "'." << std::endl;
+			bm_.post.runBehavior(name);
+		} else {
+			std::cout << "Behavior not found: `" << name << "'." << std::endl;
 		}
 	}
 	
@@ -30,10 +33,10 @@ namespace robotutor {
 	
 	///Draws a random number within the given bounds
 	int BehaviorEngine::rnd(int lower, int upper) {
-  		srand(rdtsc());
-  		// Of: srand(time(NULL));
-    		int result = rand() % upper + lower;
-    		return result;	
+		srand(rdtsc());
+		// Of: srand(time(NULL));
+			int result = rand() % upper + lower;
+			return result;
 	}
 }
 
