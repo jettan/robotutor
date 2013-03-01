@@ -222,6 +222,7 @@ namespace robotutor {
 			std::cout << "up" << std::endl;
 			interrupted->interrupts.pop_front();
 			parent.speech->current_ = interrupted;
+			parent.speech->on_command_done(*parent.speech);
 			return false;
 			
 		// Otherwise we're a top level command,
@@ -235,6 +236,7 @@ namespace robotutor {
 				std::cout << "done" << std::endl;
 				parent.speech->current_ = nullptr;
 			}
+			parent.speech->on_command_done(*parent.speech);
 			return false;
 		}
 	}

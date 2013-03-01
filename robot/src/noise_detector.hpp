@@ -10,7 +10,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <alcommon/almodule.h>
-#include "alaudio/alsoundextractor.h"
+#include <alaudio/alsoundextractor.h>
 
 
 namespace boost {
@@ -26,24 +26,27 @@ namespace AL {
 
 namespace robotutor {
 
-	class NoiseDetector : public ALSoundExtractor
-	{
+	class NoiseDetector : public AL::ALSoundExtractor {
 		public:
-
-			NoiseDetector(boost::shared_ptr<ALBroker> broker, const std::string & name);
+			
+			int threshold;
+			
+			NoiseDetector(boost::shared_ptr<AL::ALBroker> broker, const std::string & name);
 
 			virtual ~NoiseDetector();
 	
 			/// Signal indicating that the noise level is too high.
-			boost::signal<void (int & noiseLevel)> on_noise;
+			boost::signal<void (int noiseLevel)> on_noise;
 
 			// Initialize the sound module
 			void init();
 
-			void noiseCallback(const int & nbOfChannels,
-							   const int & nbrOfSamplesByChannel,
-							   const AL_SOUND_FORMAT * buffer,
-							   const ALValue & timeStamp);
+			void process(
+				const int & nbOfChannels,
+				const int & nbrOfSamplesByChannel,
+				const AL_SOUND_FORMAT * buffer,
+				const AL::ALValue & timeStamp
+			);
 	
 	};
 

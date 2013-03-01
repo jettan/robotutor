@@ -13,6 +13,7 @@ namespace robotutor {
 		AL::ALSoundExtractor(broker, name)
 	{
 		setModuleDescription("RoboTutor Noise Detection Module");
+		threshold = 150;
 	}
 	
 	/// Deconstructor
@@ -26,7 +27,7 @@ namespace robotutor {
 	  audioDevice->callVoid("setClientPreferences",
 		                getName(),                //Name of this module
 		                16000,                    //16000 Hz requested
-		                (int)FRONTCHANNEL,        //Front Channels requested
+		                (int)AL::FRONTCHANNEL,        //Front Channels requested
 		                0                         //Deinterleaving is not needed here
 		                );
 
@@ -35,10 +36,10 @@ namespace robotutor {
 
 	/// This function will be automatically called by the module ALAudioDevice
 	/// every 170ms with the appropriate audio buffer (front channel at 16000Hz)
-	void NoiseDetector::noiseCallback(const int & nbOfChannels,
-		                   	  const int & nbrOfSamplesByChannel,
-		                          const AL_SOUND_FORMAT * buffer,
-		                          const ALValue & timeStamp)
+	void NoiseDetector::process(const int & nbOfChannels,
+							    const int & nbrOfSamplesByChannel,
+							    const AL_SOUND_FORMAT * buffer,
+							    const AL::ALValue & timeStamp)
 	{
 	  /// Compute the maximum value of the front microphone signal.
 	  int maxValueFront = 0;
@@ -52,9 +53,9 @@ namespace robotutor {
 
 	  /// Call on_noise function when classroom is too noisy
 	  //TODO: threshold in config file
-	  if(maxValueFront > 20)
+	  if(maxValueFront >= threshold)
 	  {
-	    on_noise(*maxValueFront);
+	    on_noise(maxValueFront);
 	  }
 	}
 	

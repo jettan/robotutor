@@ -15,8 +15,8 @@ LDFLAGS_EXTRA  += -L$(naoqi_path)/lib/naoqi
 LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib
 LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib/naoqi
 
-common_OBJS    := main
-common_LIBS    :=
+common_OBJS    := main noise_detector
+common_LIBS    := alaudio alextractor
 common_DIR     := .
 
 command_OBJS   := command speech_commands behavior_commands presentation_commands

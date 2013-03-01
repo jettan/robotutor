@@ -86,6 +86,9 @@ namespace robotutor {
 			/// Signal indicating that the engine is done.
 			boost::signal<void (SpeechEngine & engine)> on_done;
 			
+			/// Signal indicating that a command is done.
+			boost::signal<void (SpeechEngine & engine)> on_command_done;
+			
 			/// Signal indicating that the engine has paused.
 			boost::signal<void (SpeechEngine & engine)> on_pause;
 			
