@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "PPTController.h"
 
 //DWORD WINAPI AutomatePowerPointByImport(LPVOID lpParam);
 
@@ -91,37 +91,21 @@ void PPTController::startSlideShow()
 	}
 }
 
-void PPTController::nextSlide()
+void PPTController::setSlide(int nr, bool relative)
 {
 	try
 	{
-		show_->Next();
-	}
-	catch (_com_error &err)
-	{
-		wprintf(L"PowerPoint throws the error: %s\n", err.ErrorMessage());
-		wprintf(L"Description: %s\n", (LPCWSTR) err.Description());
-	}
-}
+		int slide = 0;
 
-void PPTController::previousSlide()
-{
-	try
-	{
-		show_->Previous();
-	}
-	catch (_com_error &err)
-	{
-		wprintf(L"PowerPoint throws the error: %s\n", err.ErrorMessage());
-		wprintf(L"Description: %s\n", (LPCWSTR) err.Description());
-	}
-}
+		if (relative)
+			slide = show_->GetSlide()->SlideIndex;
 
-void PPTController::setSlide(int slideNr)
-{
-	try
-	{
-		show_->GotoSlide(slideNr, Office::MsoTriState::msoTrue);
+		slide += nr;
+
+		if (slide > pres_->GetSlides()->Count)
+			show_->Next();
+		else
+			show_->GotoSlide(slide, Office::MsoTriState::msoTrue);
 	}
 	catch (_com_error &err)
 	{
