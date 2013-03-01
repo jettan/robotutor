@@ -1,0 +1,1 @@
+All non-special behaviors MUST end with the NAO returning to the default standing position. They should not start with the NAO moving to the default stand position, as this manifests itself as a delay.
