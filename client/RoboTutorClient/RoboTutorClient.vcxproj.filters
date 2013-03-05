@@ -71,6 +71,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_CodeEditor.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="ScriptHighlighter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RoboTutorClient.h">
@@ -104,6 +107,9 @@
     </ClInclude>
     <ClInclude Include="protocol\messages.pb.h">
       <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptHighlighter.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

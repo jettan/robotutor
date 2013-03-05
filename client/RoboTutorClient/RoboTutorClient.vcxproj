@@ -106,6 +106,7 @@
     <ClCompile Include="PptController.cpp" />
     <ClCompile Include="protocol\messages.pb.cc" />
     <ClCompile Include="RoboTutorClient.cpp" />
+    <ClCompile Include="ScriptHighlighter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RoboTutorClient.h">
@@ -134,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.hpp" />
+    <ClInclude Include="ScriptHighlighter.h" />
     <CustomBuild Include="CodeEditor.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing CodeEditor.h...</Message>

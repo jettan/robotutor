@@ -1,13 +1,14 @@
 #include "RoboTutorClient.h"
 
-RoboTutorClient::RoboTutorClient(QWidget *parent)
-	: QMainWindow(parent), ppt_controller_(new PptController), client_(ascf::Client<Protocol>::create(ios_)), status_label_("")
+RoboTutorClient::RoboTutorClient(QWidget *parent) :
+	QMainWindow(parent), ppt_controller_(new PptController), client_(ascf::Client<Protocol>::create(ios_)), status_label_("")
 {
 	ui_.setupUi(this);
 	client_->message_handler = std::bind(&RoboTutorClient::handleServerMessage, this, std::placeholders::_1, std::placeholders::_2);
 	client_->connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string("192.168.0.108"), 8311));
 
 	ui_.statusBar->addWidget(&status_label_);
+	highlighter_ = new ScriptHighlighter(ui_.scriptEditor->document());
 
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 }

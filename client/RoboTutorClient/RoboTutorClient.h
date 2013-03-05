@@ -18,6 +18,7 @@
 #include "client.hpp"
 
 #include "PptController.h"
+#include "ScriptHighlighter.h"
 
 typedef ascf::ProtocolBuffers<robotutor::ClientMessage, robotutor::RobotMessage> Protocol;
 
@@ -31,12 +32,15 @@ public:
 
 private:
 	Ui::RoboTutorClientClass ui_;
-	boost::asio::io_service ios_;
 	PptController *ppt_controller_;
+
+	boost::asio::io_service ios_;
 	std::shared_ptr<ascf::Client<Protocol>> client_;
 
 	QString script_path_;
 	QLabel status_label_;
+
+	ScriptHighlighter *highlighter_;
 
 	void handleServerMessage(std::shared_ptr<ascf::Client<Protocol>> connection, robotutor::RobotMessage const & message);
 	void setScriptPath(QString path);
