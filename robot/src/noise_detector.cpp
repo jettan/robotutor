@@ -22,41 +22,30 @@ namespace robotutor {
 	}
 	
 	/// Initializes the audio device and starts detection.
-	void NoiseDetector::init()
-	{
-	  audioDevice->callVoid("setClientPreferences",
-		                getName(),                //Name of this module
-		                16000,                    //16000 Hz requested
-		                (int)AL::FRONTCHANNEL,        //Front Channels requested
-		                0                         //Deinterleaving is not needed here
-		                );
-
-	  startDetection();
-	}
-
-	/// This function will be automatically called by the module ALAudioDevice
-	/// every 170ms with the appropriate audio buffer (front channel at 16000Hz)
-	void NoiseDetector::process(const int & nbOfChannels,
-							    const int & nbrOfSamplesByChannel,
-							    const AL_SOUND_FORMAT * buffer,
-							    const AL::ALValue & timeStamp)
-	{
-	  /// Compute the maximum value of the front microphone signal.
-	  int maxValueFront = 0;
-	  for(int i = 0 ; i < nbrOfSamplesByChannel ; i++)
-	  {
-	    if(buffer[i] > maxValueFront)
-	    {
-	      maxValueFront = buffer[i];
-	    }
-	  }
-
-	  /// Call on_noise function when classroom is too noisy
-	  //TODO: threshold in config file
-	  if(maxValueFront >= threshold)
-	  {
-	    on_noise(maxValueFront);
-	  }
+	void NoiseDetector::init() {
+		audioDevice->callVoid("setClientPreferences", getName(), 16000, (int)AL::FRONTCHANNEL, 0 );
+		startDetection();
 	}
 	
+	/// This function will be automatically called by the module ALAudioDevice
+	/// every 170ms with the appropriate audio buffer (front channel at 16000Hz)
+	void NoiseDetector::process(const int & nbOfChannels, const int & nbrOfSamplesByChannel, const AL_SOUND_FORMAT * buffer, const AL::ALValue & timeStamp) {
+		/// Compute the maximum value of the front microphone signal.
+		int maxValueFront = 0;
+		for(int i = 0 ; i < nbrOfSamplesByChannel ; i++)
+		{
+			if(buffer[i] > maxValueFront)
+			{
+				maxValueFront = buffer[i];
+			}
+		}
+		
+		/// Call on_noise function when classroom is too noisy
+		//TODO: threshold in config file
+		if(maxValueFront >= threshold)
+		{
+			on_noise(maxValueFront);
+		}
+	}
+
 }
