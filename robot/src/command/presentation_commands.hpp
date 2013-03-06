@@ -5,48 +5,40 @@
 
 namespace robotutor {
 	namespace command {
-		
-		/// Command to go to the next slide.
-		struct NextSlide : public Command {
+		/// Command to go to a different slide.
+		struct Slide : public Command {
 			
-			/// Create a next command.
-			static SharedPtr create(std::string && name, ArgList && arguments) {
-				return std::make_shared<NextSlide>();
-			}
+			/// The offset.
+			int offset;
+			
+			/// If true, the offset is relative to the current slide.
+			/// If false, the offset is relative to slide 0.
+			bool relative;
+			
+			/// Construct a slide command.
+			/**
+			 * \param parent The parent command.
+			 * \param offset The offset.
+			 * \param If true, the offset is relative.
+			 */
+			Slide(Command * parent, int offset, bool relative);
+			
+			/// Create a slide command.
+			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &);
 			
 			/// Get the name of the command.
 			/**
 			 * \return The name of the command.
 			 */
-			std::string name() const { return "next slide"; }
+			std::string name() const { return "slide"; }
 			
 			/// Run the command.
 			/**
 			 * \param engine The script engine to use for executing the command.
 			 */
-			bool run(ScriptEngine & engine) const;
+			bool step(ScriptEngine & engine);
 		};
 		
-		/// Command to go to the previous slide.
-		struct PreviousSlide : public Command {
-			
-			/// Create a next command.
-			static SharedPtr create(std::string && name, ArgList && arguments) {
-				return std::make_shared<PreviousSlide>();
-			}
-			
-			/// Get the name of the command.
-			/**
-			 * \return The name of the command.
-			 */
-			std::string name() const { return "previous slide"; }
-			
-			/// Run the command.
-			/**
-			 * \param engine The script engine to use for executing the command.
-			 */
-			bool run(ScriptEngine & engine) const;
-		};
 	}
 }
 

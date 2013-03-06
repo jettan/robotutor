@@ -24,29 +24,28 @@ namespace robotutor {
 				text,
 				command_name,
 				command_args,
-				done
 			} state_;
 			
 			/// Factory to create commands.
 			command::Factory & factory_;
 			
-			/// Buffer for the text contents.
-			command::Text text_;
+			/// Buffer for the root command.
+			std::shared_ptr<command::Execute> root_;
+			
+			/// Sentence currently being parsed.
+			std::shared_ptr<command::Speech> sentence_;
 			
 			/// Name of the command currently being parsed.
 			std::string command_name_;
 			
+			/// Argument currently being read.
+			std::string current_arg_;
+			
 			/// Arguments for the command currently being parsed.
-			command::ArgList command_args_;
+			std::vector<std::string> command_args_;
 			
-			/// Parser for embedded commands.
-			std::unique_ptr<CommandParser> arg_parser_;
-			
-			/// If true, the parser hasn't encountered text in this sentence yet.
-			bool sentenceNonEmpty_;
-			
-			/// If true, parser hasn't encountered text yet.
-			bool textNonEmpty_;
+			/// The level of nested commands in an argument.
+			unsigned int level_;
 			
 		public:
 			/// Construct a text parser.
@@ -77,6 +76,9 @@ namespace robotutor {
 		protected:
 			/// Flush the last read sentence.
 			void flushSentence_();
+			
+			/// Flush the last read command argument.
+			void flushArgument_();
 			
 			/// Flush the recently parsed command.
 			void flushCommand_();

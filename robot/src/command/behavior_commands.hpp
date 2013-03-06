@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
 #include "command.hpp"
 
@@ -17,11 +18,12 @@ namespace robotutor {
 			/**
 			 * \param arguments The arguments for the command.
 			 */
-			Behavior(ArgList && arguments);
+			Behavior(Command * parent, std::string behavior);
 			
 			/// Create the command.
-			static SharedPtr create(std::string && name, ArgList && arguments) {
-				return std::make_shared<Behavior>(std::forward<ArgList>(arguments));
+			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
+				if (arguments.size() != 1) throw std::runtime_error("Behavior command expects 1 argument.");
+				return std::make_shared<Behavior>(parent, arguments[0]);
 			}
 			
 			/// Get the name of the command.
@@ -34,7 +36,7 @@ namespace robotutor {
 			/**
 			 * \param engine The script engine to use for executing the command.
 			 */
-			bool run(ScriptEngine & engine) const;
+			bool step(ScriptEngine & engine);
 		};
 	}
 }

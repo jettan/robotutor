@@ -29,17 +29,12 @@ namespace robotutor {
 				ascf::Server<Protocol>(ios),
 				parent_(parent) {}
 			
-			/// Jump to a slide relative from the current slide.
+			/// Change the slide of all connected client.
 			/**
 			 * \param offset The offset.
+			 * \param relative If true, the offset is relative to the current slide, otherwise to zero.
 			 */
-			void adjustSlide(int offset);
-			
-			/// Jump to a slide.
-			/**
-			 * \param index The absolute slide number.
-			 */
-			void goSlide(unsigned int index);
+			void slide(int offset, bool relative);
 	};
 }
 

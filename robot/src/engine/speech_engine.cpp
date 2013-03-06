@@ -49,60 +49,35 @@ namespace robotutor {
 		if (wait_thread_.joinable()) wait_thread_.join();
 	}
 	
-	/// Execute a text command by interrupting the current text.
+	/// Execute a speech command.
 	/**
-	 * Note that the current text will be interrupted at the next sentence end.
+	 * May not be called while the engine is already executing a job.
 	 * 
-	 * \param text The text command to execute.
+	 * \param command The speech command to execute.
+	 * \param bookmark_handler Callback to invoke when a bookmark is encountered.
+	 * \param done_handler Callback to invoke when the job is finished.
 	 */
-	void SpeechEngine::interrupt(command::Text::SharedPtr text) {
-		if (current_) {
-			current_->interrupts.push_back(std::make_shared<SpeechContext>(*parent_, text, current_));
-		} else {
-			enqueue(text);
+	void SpeechEngine::say(command::Speech & command, SpeechJob::BookmarkHandler bookmark_handler, SpeechJob::DoneHandler done_handler) {
+		cancel();
+		if (wait_thread_.joinable()) wait_thread_.join();
+		
+		int job_id = tts_.post.say(command.text);
+		auto job = std::make_shared<SpeechJob>(&command, job_id, bookmark_handler, done_handler);
+		std::cout << "Job started: " << job << " " << command.text << std::endl;
+		job_ = job;
+		wait_thread_ = std::thread([this, job] () {
+			wait_(job);
+		});
+	}
+	
+	/// Cancel the current job.
+	void SpeechEngine::cancel() {
+		if (job_) {
+			tts_.stop(job_->id);
+			job_->on_done(true);
+			job_->id = 0;
+			job_ = std::shared_ptr<SpeechJob>();
 		}
-	}
-	
-	/// Execute a text command.
-	/**
-	 * The text command will be queued and executed when the last of the currently remaining job is done.
-	 * 
-	 * \param text The text command to execute.
-	 */
-	void SpeechEngine::enqueue(command::Text::SharedPtr text) {
-		queue_.push_back(SpeechContext(*parent_, text, nullptr));
-		if (!current_) {
-			current_ = &queue_.front();
-			resume();
-		}
-	}
-	
-	/// Stop execution.
-	void SpeechEngine::pause() {
-		if (!playing_) return;
-		
-		playing_ = false;
-		on_pause(*this);
-	}
-	
-	/// Resume execution.
-	void SpeechEngine::resume() {
-		if (playing_) return;
-		
-		playing_ = true;
-		on_resume(*this);
-		
-		step_();
-		
-		if (!current_) on_done(*this);
-	}
-	
-	/// Reset the engine.
-	void SpeechEngine::reset() {
-		pause();
-		current_ = nullptr;
-		queue_.clear();
-		on_done(*this);
 	}
 	
 	/// Called when a bookmark is encountered.
@@ -113,131 +88,38 @@ namespace robotutor {
 		});
 	}
 	
-	/// Step trough the contexts.
-	void SpeechEngine::step_() {
-		while (current_ && !current_->step());
-		if (!current_) playing_ = false;
-	}
-	
-	/// Say a text.
-	/**
-	 * This method may only be called if there is no job currently running.
-	 *
-	 * \param text The text.
-	 */
-	void SpeechEngine::say_(std::string const & text) {
-		int job = tts_.post.say(text);
-		if (wait_thread_.joinable()) wait_thread_.join();
-		wait_thread_ = std::thread([this, job] () {
-			wait_(job);
-		});
-	}
-	
 	/// Wait for a job and post the event.
 	/**
 	 * \param job The job ID.
 	 */
-	void SpeechEngine::wait_(int job) {
-		std::cout << "wait... " << std::flush;
-		tts_.wait(job, 0);
-		std::cout << "done" << std::endl;
-		ios_->post([this] () {
-			handleTextDone_();
+	void SpeechEngine::wait_(std::shared_ptr<SpeechJob> job) {
+		tts_.wait(job->id, 0);
+		ios_->post([this, job] () {
+			handleJobDone_(job);
 		});
 	}
 	
-	/// Handle a bookmark.
+	/// Called when a bookmark is encountered.
 	/**
 	 * \param bookmark The number of the bookmark.
 	 */
 	void SpeechEngine::handleBookmark_(int bookmark) {
 		// Bookmark 0 gets abused, so we ignore that one.
-		if (bookmark > 0) {
-			current_->executeCommand(bookmark - 1);
+		if (bookmark > 0 && job_ && job_->id) {
+			job_->on_bookmark(static_cast<unsigned int>(bookmark));
 		}
 	}
 	
-	/// Handle the text done event.
-	void SpeechEngine::handleTextDone_() {
-		job_id_ = 0;
-		if (playing_) step_();
-		if (!current_) on_done(*this);
-	}
-	
-	
-	/// Execute all unexecuted commands up to the given index.
-	/**
-	 * \param command The lowest index NOT to execute.
-	 */
-	void SpeechContext::executeCommand(unsigned int command) {
-		for (; mark < command; ++mark) {
-			text->arguments[mark]->run(parent);
-		}
-	}
-	
-	/// Perform the next step of the context.
-	/**
-	 * If this method returns true, the next step should wait
-	 * until the started aynchronous operation completed.
-	 * 
-	 * \return True if the step started an asynchronous operation.
-	 */
-	bool SpeechContext::step() {
-		bool sentences_done = sentence >= text->sentences.size();
-		std::cout
-			<< "\n"
-			<< "step\n"
-			<< "sentence: " << sentence << "\n"
-			<< "mark:" << mark << "\n"
-			<< "interrupts: " << interrupts.size() << "\n"
-			<< "mark target: " << text->marks[sentence] << "\n"
-			<< "action: ";
-		// If there's an interrupt pending, switch context.
-		if (interrupts.size()) {
-			std::cout << "down" << std::endl;
-			parent.speech->current_ = interrupts[0].get();
-			return false;
-			
-		// If there are commands left to execute, execute them.
-		} else if (!sentences_done && mark < text->marks[sentence]) {
-			std::cout << "pre-commands" << std::endl;
-			executeCommand(text->marks[sentence]);
-			return false;
-			
-		// If there's a sentence to say, say it.
-		} else if (!sentences_done) {
-			std::cout << "text" << std::endl;
-			parent.speech->say_(text->sentences[sentence++]);
-			return true;
-			
-		// If there's commands left to execute after the last sentence, execute them.
-		} else if (mark < text->arguments.size()) {
-			std::cout << "post-commands" << std::endl;
-			executeCommand(text->arguments.size());
-			return false;
-			
-		// Otherwise we're done, and we interrupted someone.
-		// That command should continue.
-		} else if (interrupted) {
-			std::cout << "up" << std::endl;
-			interrupted->interrupts.pop_front();
-			parent.speech->current_ = interrupted;
-			parent.speech->on_command_done(*parent.speech);
-			return false;
-			
-		// Otherwise we're a top level command,
-		// and the next command should come from the queue.
-		} else  {
-			parent.speech->queue_.pop_front(); // Note that this deconstructs us.
-			if (parent.speech->queue_.size()) {
-				std::cout << "up" << std::endl;
-				parent.speech->current_ = &parent.speech->queue_.front();
-			} else {
-				std::cout << "done" << std::endl;
-				parent.speech->current_ = nullptr;
-			}
-			parent.speech->on_command_done(*parent.speech);
-			return false;
+	/// Called when a job is done.
+	void SpeechEngine::handleJobDone_(std::shared_ptr<SpeechJob> job) {
+		std::cout << "Job finished. Current: " << job_ << ". Finished: " << job << "." << std::endl;
+		// Unset the current job so that the done handler can safely start a new job.
+		if (job == job_) job_ = std::shared_ptr<SpeechJob>();
+		
+		// If the job hasn't been cancelled, invoke the done handler.
+		if (job->id) {
+			job->on_done(false);
+			job->id = 0;
 		}
 	}
 	

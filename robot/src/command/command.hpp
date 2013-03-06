@@ -17,10 +17,10 @@ namespace robotutor {
 	namespace command {
 		
 		class Command;
-		class CommandFactory;
+		class Factory;
 		
 		/// Shared pointer for executables.
-		typedef std::shared_ptr<Command const> SharedPtr;
+		typedef std::shared_ptr<Command> SharedPtr;
 		
 		/// Argument list, containing shared pointers to commands.
 		typedef std::vector<SharedPtr> ArgList;
@@ -28,17 +28,20 @@ namespace robotutor {
 		/// Base class for executables.
 		class Command : public std::enable_shared_from_this<Command> {
 			public:
+				/// The parent command.
+				Command * parent;
+				
 				/// Arguments for the command.
 				ArgList arguments;
 				
 				/// Construct a command without arguments.
-				Command() {}
+				Command(Command * parent = nullptr) : parent(parent) {}
 				
 				/// Construct a command with arguments.
-				Command(ArgList const & arguments) : arguments(arguments) {}
+				Command(Command * parent, ArgList const & arguments) : arguments(arguments) {}
 				
 				/// Construct a command with arguments.
-				Command(ArgList && arguments) : arguments(std::move(arguments)) {}
+				Command(Command * parent, ArgList && arguments) : arguments(std::move(arguments)) {}
 				
 				/// Virtual destructor.
 				virtual ~Command() {};
@@ -53,7 +56,7 @@ namespace robotutor {
 				/**
 				 * \param engine The engine to use when run a command.
 				 */
-				virtual bool run(ScriptEngine & engine) const = 0;
+				virtual bool step(ScriptEngine & engine) = 0;
 				
 				/// Write the command to a stream.
 				/**
@@ -64,17 +67,21 @@ namespace robotutor {
 		
 		/// Command to execute other commands.
 		struct Execute : public Command {
+			/// Next subcommand.
+			unsigned int next;
 			
 			/// Construct the command.
-			Execute() : Command() {};
+			Execute(Command * parent = nullptr) :
+				Command(parent),
+				next(0) {}
 			
 			/// Construct the command.
-			Execute(ArgList && arguments) : Command(std::move(arguments)) {};
+			Execute(Command * parent, ArgList && arguments) :
+				Command(parent, std::move(arguments)),
+				next(0) {}
 			
 			/// Create the command.
-			static SharedPtr create(std::string && name, ArgList && arguments) {
-				return std::make_shared<Execute>(std::move(arguments));
-			}
+			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory);
 			
 			/// Get the name of the command.
 			/**
@@ -83,7 +90,7 @@ namespace robotutor {
 			std::string name() const { return "execute"; };
 			
 			/// Execute one step.
-			bool run(ScriptEngine & engine) const;
+			bool step(ScriptEngine & engine);
 		};
 		
 		
@@ -98,7 +105,7 @@ namespace robotutor {
 		class Factory {
 			protected:
 				/// Function type for creator functions.
-				typedef std::function<SharedPtr (std::string &&, ArgList && arguments)> Creator;
+				typedef std::function<SharedPtr (Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory)> Creator;
 				
 				/// Map type for the creator map.
 				typedef std::map<std::string, Creator> CreatorMap;
@@ -113,10 +120,10 @@ namespace robotutor {
 				 * \param name The name of the command.
 				 * \param args The argument list for the command.
 				 */
-				SharedPtr create(std::string && name, ArgList && args) {
+				SharedPtr create(Command * parent,  std::string && name, std::vector<std::string> && args) {
 					CreatorMap::iterator creator = creators_.find(name);
 					if (creator == creators_.end()) throw std::runtime_error("Command `" + name + "' not found.");
-					return creator->second(std::move(name), std::move(args));
+					return creator->second(parent, std::move(name), std::move(args), *this);
 				}
 				
 				/// Register a creator.

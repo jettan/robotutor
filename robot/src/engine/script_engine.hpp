@@ -26,11 +26,26 @@ namespace robotutor {
 			/// The server engine.
 			ServerEngine server;
 			
+			/// The current command.
+			command::Command * current;
+			
+		protected:
+			/// The root command.
+			std::shared_ptr<command::Command> root_;
+			
+		public:
 			/// Construct the script engine.
 			/**
 			 * \param broker The ALBroker to use for communicating with naoqi.
 			 */
 			ScriptEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
+			
+			/// Load a script.
+			void load(std::shared_ptr<command::Command> script) {
+				root_ = script;
+				current = root_.get();
+				std::cout << "Script loaded:\n" << *root_ << std::endl;
+			}
 			
 			/// Join any background threads created by the engine.
 			/**
@@ -39,13 +54,8 @@ namespace robotutor {
 			 */
 			void join();
 			
-			/// Run a command with the script engine.
-			/**
-			 * \param command The command to run.
-			 */
-			void run(command::SharedPtr command) {
-				command->run(*this);
-			}
+			/// Run the script.
+			void run();
 	};
 	
 }

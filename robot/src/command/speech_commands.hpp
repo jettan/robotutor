@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <vector>
+#include <deque>
 #include <memory>
 
 #include "command.hpp"
@@ -13,30 +13,44 @@ namespace robotutor {
 		 * The normal text is synthesized by a TTS engine,
 		 * the embedded commands are executed when a bookmark is encountered.
 		 */
-		struct Text : public Command {
-			/// Shared pointer type.
-			typedef std::shared_ptr<Text const> SharedPtr;
+		struct Speech : public Command {
+			/// The text to say.
+			std::string text;
 			
-			/// The text to synthesize.
-			std::vector<std::string> sentences;
+			/// Last executed bookmark.
+			unsigned int mark;
 			
-			/// The last mark, per sentence.
-			std::vector<unsigned int> marks;
+			/// True if the text has been synthesized.
+			bool synthesized;
 			
-			/// The original text.
-			std::string original;
+			/// Queue for delayed commands.
+			std::deque<Command *> delayed;
+			
+			/// Construct a sentence command.
+			Speech(Command * parent, std::string const & text = "") :
+				Command(parent),
+				text(text),
+				mark(0),
+				synthesized(false) {}
 			
 			/// Get the name of the command.
 			/**
 			 * \return The name of the command.
 			 */
-			std::string name() const { return "text"; }
+			std::string name() const { return "speech"; }
+			
+			/// Called when a bookmark is encountered.
+			void onBookmark(ScriptEngine & engine, unsigned int bookmark);
+			
+			/// Called when the speech engine finished saying us.
+			void onDone(ScriptEngine & engine, bool interrupted);
 			
 			/// Run the command.
 			/**
 			 * \param engine The script engine to use for executing the command.
+			 * \return True if an asynchronous operation was started.
 			 */
-			bool run(ScriptEngine & engine) const;
+			bool step(ScriptEngine & engine);
 			
 			/// Write the command to a stream.
 			/**
@@ -48,9 +62,13 @@ namespace robotutor {
 		/// Command to stop the program execution.
 		struct Stop : public Command {
 			
+			/// Construct a stop command.
+			Stop(Command * parent) : Command(parent) {}
+			
 			/// Create a stop command.
-			static SharedPtr create(std::string && name, ArgList && arguments) {
-				return std::make_shared<Stop>();
+			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
+				if (arguments.size()) throw std::runtime_error("Stop command takes zero arguments.");
+				return std::make_shared<Stop>(parent);
 			}
 			
 			/// Get the name of the command.
@@ -63,7 +81,7 @@ namespace robotutor {
 			/**
 			 * \param engine The script engine to use for executing the command.
 			 */
-			bool run(ScriptEngine & engine) const;
+			bool step(ScriptEngine & engine);
 		};
 	}
 }

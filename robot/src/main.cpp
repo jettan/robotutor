@@ -26,8 +26,7 @@ void registerCommands() {
 	factory.add<command::Stop>("stop");
 	factory.add<command::Execute>("execute");
 	factory.add<command::Behavior>("behavior");
-	factory.add<command::NextSlide>("next slide");
-	factory.add<command::PreviousSlide>("previous slide");
+	factory.add<command::Slide>("slide");
 }
 
 command::SharedPtr parseStream(std::istream & stream) {
@@ -56,14 +55,18 @@ void parse(int argc, char ** argv, ScriptEngine & engine, boost::asio::io_servic
 		} else  {
 			script = parseStream(std::cin);
 		}
+		
+		std::cout << "Script parsed." << std::endl;
+		std::cout << *script << std::endl;
+		
+		ios.post([&engine, script] () {
+			engine.load(script);
+			engine.run();
+		});
 	} catch (std::exception const & e) {
 		std::cerr << "Failed to parse input: " << e.what() << std::endl;
 		ios.stop();
 	}
-	
-	ios.post([&engine, script] () {
-		engine.run(script);
-	});
 }
 
 int main(int argc, char ** argv) {
