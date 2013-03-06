@@ -27,6 +27,8 @@ namespace robotutor {
 				if (!parser::isDigit(*i)) throw std::runtime_error("Unexpected character encountered slide command argument.");
 				result.first = result.first * 10 + *i - '0';
 			}
+			if (input[0] == '-') result.first *= -1;
+			
 			
 			return result;
 		}
