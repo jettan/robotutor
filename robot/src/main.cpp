@@ -56,9 +56,6 @@ void parse(int argc, char ** argv, ScriptEngine & engine, boost::asio::io_servic
 			script = parseStream(std::cin);
 		}
 		
-		std::cout << "Script parsed." << std::endl;
-		std::cout << *script << std::endl;
-		
 		ios.post([&engine, script] () {
 			engine.load(script);
 			engine.run();
