@@ -27,8 +27,7 @@ namespace robotutor {
 		 */
 		bool Behavior::step(ScriptEngine & engine) {
 			engine.behavior.enqueue(behavior);
-			engine.current = parent;
-			return false;
+			return done_(engine);
 		}
 	}
 }

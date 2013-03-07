@@ -8,16 +8,6 @@ namespace robotutor {
 	
 	namespace command {
 		
-		/// Write the command to a stream.
-		/**
-		 * \param stream The stream to write to.
-		 * */
-		void Command::write(std::ostream & stream) const {
-			stream << "{" << name();
-			for (auto argument : arguments) stream << "|"  << *argument;
-			stream << "}";
-		}
-		
 		/// Write a command to a stream.
 		/**
 		 * \param stream  The stream to write to.
@@ -26,6 +16,28 @@ namespace robotutor {
 		std::ostream & operator << (std::ostream & stream, Command const & command) {
 			command.write(stream);
 			return stream;
+		}
+		
+		/// Write the command to a stream.
+		/**
+		 * \param stream The stream to write to.
+		 */
+		void Command::write(std::ostream & stream) const {
+			stream << "{" << name();
+			for (auto argument : arguments) stream << "|"  << *argument;
+			stream << "}";
+		}
+		
+		/// Should be called when the command is done.
+		/**
+		 * Sets the current command of the engine to the parent of this command.
+		 * 
+		 * \param engine The script engine to modify.
+		 * \return True.
+		 */
+		bool Command::done_(ScriptEngine & engine) const {
+			engine.current = parent;
+			return true;
 		}
 		
 		/// Execute one step.
@@ -38,7 +50,7 @@ namespace robotutor {
 				std::cout << "done" << std::endl;
 				engine.current = parent;
 			}
-			return false;
+			return true;
 		}
 		
 		/// Create the command.

@@ -27,7 +27,7 @@ namespace robotutor {
 				if (engine.speech->job()) {
 					engine.speech->job()->command->delayed.push_back(this);
 					engine.current = parent;
-					return false;
+					return true;
 					
 				// The engine isn't busy, the command should be synthesized.
 				} else {
@@ -35,24 +35,23 @@ namespace robotutor {
 					auto on_done     = std::bind(&Speech::onDone    , this, std::ref(engine), std::placeholders::_1);
 					engine.speech->say(*this, on_bookmark, on_done);
 					synthesized = true;
-					return true;
+					return false;
 				}
 				
 			// This command is the current job of the TTS engine, so wait for it to finish.
 			} else if (engine.speech->job() && engine.speech->job()->command == this) {
-				return true;
+				return false;
 				
 			// There are delayed commands to execute.
 			} else if (delayed.size()) {
 				engine.current = delayed.front();
 				delayed.pop_front();
-				return false;
+				return true;
 				
 			// This command is totally done, we can go to our parent.
 			} else {
 				std::cout << "Speech done: " << parent << std::endl;
-				engine.current = parent;
-				return false;
+				return done_(engine);
 			}
 		}
 		
@@ -73,8 +72,7 @@ namespace robotutor {
 		 */
 		bool Stop::step(ScriptEngine & engine) {
 			engine.speech->cancel();
-			engine.current = parent;
-			return false;
+			return done_(engine);
 		}
 	}
 }

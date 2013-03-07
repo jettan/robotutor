@@ -67,8 +67,7 @@ namespace robotutor {
 		bool Slide::step(ScriptEngine & engine) {
 			std::cout << "Slide: " << offset << " " << relative << std::endl;
 			engine.server.slide(offset, relative);
-			engine.current = parent;
-			return false;
+			return done_(engine);
 		}
 	}
 }

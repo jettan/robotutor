@@ -27,7 +27,7 @@ namespace robotutor {
 	
 	/// Run the script.
 	void ScriptEngine::run() {
-		while (current && !current->step(*this));
+		while (current && current->step(*this));
 	}
 	
 }

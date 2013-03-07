@@ -46,15 +46,10 @@ namespace robotutor {
 				/// Virtual destructor.
 				virtual ~Command() {};
 				
-				/// Get the name of the command.
-				/**
-				 * \return The name of the command.
-				 */
-				virtual std::string name() const = 0;
-				
 				/// Run the command.
 				/**
 				 * \param engine The engine to use when run a command.
+				 * \return True if the engine should continue processing commands.
 				 */
 				virtual bool step(ScriptEngine & engine) = 0;
 				
@@ -63,10 +58,28 @@ namespace robotutor {
 				 * \param stream The stream to write to.
 				 */
 				virtual void write(std::ostream & stream) const;
+				
+				/// Get the name of the command.
+				/**
+				 * \return The name of the command.
+				 */
+				virtual std::string name() const = 0;
+				
+			protected:
+				/// Should be called when the command is done.
+				/**
+				 * Sets the current command of the engine to the parent of this command.
+				 * 
+				 * \param engine The script engine to modify.
+				 * \return True.
+				 */
+				bool done_(ScriptEngine & engine) const;
+				
 		};
 		
 		/// Command to execute other commands.
 		struct Execute : public Command {
+			
 			/// Next subcommand.
 			unsigned int next;
 			
@@ -83,11 +96,14 @@ namespace robotutor {
 			/// Create the command.
 			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory);
 			
+			/// The name of the command.
+			static std::string static_name() { return "execute"; }
+			
 			/// Get the name of the command.
 			/**
 			 * \return The name of the command.
 			 */
-			std::string name() const { return "execute"; };
+			std::string name() const { return Execute::static_name(); }
 			
 			/// Execute one step.
 			bool step(ScriptEngine & engine);
@@ -144,6 +160,16 @@ namespace robotutor {
 				template<typename T>
 				void add(std::string const & name) {
 					creators_[name] = &T::create;
+				}
+				
+				/// Register a command.
+				/**
+				 * The type parameter must have a static create function
+				 * and a static static_name method.
+				 */
+				template<typename T>
+				void add() {
+					creators_[T::static_name()] = &T::create;
 				}
 		};
 		

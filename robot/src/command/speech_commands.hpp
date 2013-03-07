@@ -71,11 +71,14 @@ namespace robotutor {
 				return std::make_shared<Stop>(parent);
 			}
 			
+			/// The name of the command.
+			static std::string static_name() { return "stop"; }
+			
 			/// Get the name of the command.
 			/**
 			 * \return The name of the command.
 			 */
-			std::string name() const { return "stop"; }
+			std::string name() const { return Stop::static_name(); }
 			
 			/// Run the command.
 			/**

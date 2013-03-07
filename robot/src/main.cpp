@@ -23,10 +23,10 @@ using namespace robotutor;
 command::Factory factory;
 
 void registerCommands() {
-	factory.add<command::Stop>("stop");
-	factory.add<command::Execute>("execute");
-	factory.add<command::Behavior>("behavior");
-	factory.add<command::Slide>("slide");
+	factory.add<command::Stop>();
+	factory.add<command::Execute>();
+	factory.add<command::Behavior>();
+	factory.add<command::Slide>();
 }
 
 command::SharedPtr parseStream(std::istream & stream) {
