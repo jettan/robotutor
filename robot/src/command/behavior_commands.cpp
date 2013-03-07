@@ -26,7 +26,7 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool Behavior::step(ScriptEngine & engine) {
-			engine.behavior.run(behavior);
+			engine.behavior.enqueue(behavior);
 			engine.current = parent;
 			return false;
 		}
