@@ -42,6 +42,9 @@ namespace robotutor {
 			/// The root command.
 			std::shared_ptr<command::Command> root_;
 			
+			/// Thread to wait in the background.
+			std::thread wait_thread_;
+			
 		public:
 			/// Construct the script engine.
 			/**
@@ -56,6 +59,12 @@ namespace robotutor {
 				std::cout << "Script loaded:\n" << *root_ << std::endl;
 			}
 			
+			/// Check if the engine is executing a script.
+			/**
+			 * \return True if the engine is currently running a script.
+			 */
+			bool busy() { return current; }
+			
 			/// Join any background threads created by the engine.
 			/**
 			 * Make sure that the IO service has already been stopped,
@@ -63,8 +72,21 @@ namespace robotutor {
 			 */
 			void join();
 			
+			/// Stop the engine as soon as possible.
+			/**
+			 * \param callback Callback to invoke when the engine was stopped.
+			 */
+			void stop(std::function<void ()> handler = nullptr);
+			
 			/// Run the script.
 			void run();
+			
+		protected:
+			/// Wait for the engine to cleanly stop.
+			/**
+			 * \param handler The callback to invoke when the waiting is done.
+			 */
+			void wait_(std::function<void ()> callback = nullptr);
 	};
 	
 }

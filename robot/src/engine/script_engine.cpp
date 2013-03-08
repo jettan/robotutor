@@ -23,14 +23,36 @@ namespace robotutor {
 	 * or it may still process events that use the engine.
 	 */
 	void ScriptEngine::join() {
-		speech->join();
-		behavior.join();
+		wait_(nullptr);
+		wait_thread_.join();
 	}
 	
 	/// Run the script.
 	void ScriptEngine::run() {
 		while (current && current->step(*this));
 		if (!current) on_done();
+	}
+	
+	/// Stop the engine as soon as possible.
+	/**
+	 * \param callback Callback to invoke when the engine was stopped.
+	 */
+	void ScriptEngine::stop(std::function<void ()> handler) {
+		speech->cancel();
+		behavior.drop();
+		
+		if (wait_thread_.joinable()) wait_thread_.join();
+		wait_thread_ = std::thread(std::bind(&ScriptEngine::wait_, this, handler));
+	}
+	
+	/// Wait for the engine to stop cleanly.
+	/**
+	 * \param handler The callback to invoke when the waiting is done.
+	 */
+	void ScriptEngine::wait_(std::function<void ()> handler) {
+		speech->join();
+		behavior.join();
+		if (handler) handler();
 	}
 	
 }
