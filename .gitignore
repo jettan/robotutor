@@ -18,5 +18,7 @@ protoc.exe
 *.db
 *.aps
 GeneratedFiles/
+robot/robotutor-server
+robot/robotutor-client
 
 *.swp

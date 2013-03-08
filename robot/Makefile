@@ -14,9 +14,13 @@ LDFLAGS_EXTRA  += -L$(naoqi_path)/lib/naoqi
 LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib
 LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib/naoqi
 
-common_OBJS    := main noise_detector
-common_LIBS    := alaudio alextractor
-common_DIR     := .
+server_OBJS    := server noise_detector
+server_LIBS    := alaudio alextractor
+server_DIR     := .
+
+client_OBJS    := client
+client_LIBS    :=
+client_DIR     := .
 
 command_OBJS   := command speech_commands behavior_commands presentation_commands
 command_LIBS   :=
@@ -33,16 +37,19 @@ engine_LIBS    += qi rttools protobuf opencv_core opencv_highgui
 engine_DIR     := engine
 
 protocol_OBJS  := messages.pb
-protocol_LIBS  +=
+protocol_LIBS  += protobuf
 protocol_DIR   += protocol
 
-robotutor_COMPONENTS := common parser engine protocol command
-robotutor_BIN        := robotutor
+server_COMPONENTS := server parser engine protocol command
+server_BIN        := robotutor-server
+
+client_COMPONENTS := client protocol
+client_BIN        := robotutor-client
 
 -include Makefile.local
 
 .PHONY: default
-default: $(source_dir)/$(protocol_DIR)/messages.pb.h $(robotutor_BIN)
+default: $(source_dir)/$(protocol_DIR)/messages.pb.h $(server_BIN) $(client_BIN)
 
 include Makefile.in
 
@@ -61,5 +68,6 @@ clean_protobuf:
 clean: clean_protobuf
 
 
-$(call define_components,common command parser engine protocol)
-$(call define_program,robotutor)
+$(call define_components,client server command parser engine protocol)
+$(call define_program,server)
+$(call define_program,client)

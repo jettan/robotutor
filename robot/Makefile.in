@@ -11,6 +11,7 @@ log_tool     = @echo '$2' && $1
 suppress     = @
 endif
 
+all_programs :=
 
 define component_template
 $$(build_dir)/$$($1_DIR): | $$(build_dir)
@@ -29,7 +30,7 @@ define program_template
 $$($1_BIN): $$(call for_components,$1,component_objects)
 	$$(call log_tool,$$(CXX),$$(log_link)) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -o '$$@' $$^ $$(call for_components,$1,component_libs)
 	
-all_programs += '$1'
+all_programs += '$$($1_BIN)'
 endef
 
 define clean_template
