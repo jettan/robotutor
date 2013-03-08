@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <deque>
 #include <functional>
 #include <memory>
 #include <thread>
@@ -10,8 +9,6 @@
 
 #include <alcommon/almodule.h>
 #include <alproxies/altexttospeechproxy.h>
-
-#include "../command/speech_commands.hpp"
 
 
 namespace boost {
@@ -25,15 +22,18 @@ namespace AL {
 	class ALMemoryProxy;
 }
 
-
 namespace robotutor {
 	
 	class ScriptEngine;
 	
+	namespace command {
+		struct Speech;
+	}
+	
 	/// Struct representing a speech job.
 	struct SpeechJob {
 		typedef std::function<void (unsigned int bookmark)> BookmarkHandler;
-		typedef std::function<void (bool interrupted)>         DoneHandler;
+		typedef std::function<void (bool interrupted)>      DoneHandler;
 		
 		/// The speech command that initiated the job.
 		command::Speech * command;

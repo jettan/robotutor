@@ -1,6 +1,8 @@
+#include <functional>
+
 #include "script_engine.hpp"
 
-using namespace boost::asio;
+
 namespace robotutor {
 	
 	/// Construct the script engine.

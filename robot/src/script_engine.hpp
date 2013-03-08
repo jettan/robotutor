@@ -2,10 +2,10 @@
 
 #include <boost/signal.hpp>
 
-#include "../command/command.hpp"
+#include "command.hpp"
 #include "speech_engine.hpp"
 #include "behavior_engine.hpp"
-#include "../protocol/robotutor_protocol.hpp"
+#include "robotutor_protocol.hpp"
 
 namespace AL {
 	class ALBroker;

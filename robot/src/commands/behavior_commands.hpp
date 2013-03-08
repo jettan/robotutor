@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include "command.hpp"
+#include "../command.hpp"
 
 namespace robotutor {
 	namespace command {

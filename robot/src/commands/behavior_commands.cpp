@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "behavior_commands.hpp"
-#include "../engine/script_engine.hpp"
+#include "../script_engine.hpp"
 
 namespace robotutor {
 	namespace command {

@@ -1,14 +1,13 @@
-#include <boost/asio.hpp>
+#include <boost/asio/io_service.hpp>
 
-#include <alvalue/alvalue.h>
 #include <alcommon/alproxy.h>
-#include <alcommon/albroker.h>
 
 #include "noise_detector.hpp"
 
+
 namespace robotutor {
 	
-	/// Constructor
+	/// Construct a noise detector.
 	NoiseDetector::NoiseDetector(boost::shared_ptr<AL::ALBroker> broker, std::string const & name) :
 		AL::ALSoundExtractor(broker, name)
 	{
@@ -16,36 +15,49 @@ namespace robotutor {
 		threshold = 150;
 	}
 	
-	/// Deconstructor
+	/// Create a noise detector.
+	/**
+	 * \param ios The IO service to use.
+	 * \param broker The broker to use for naoqi communication.
+	 * \param name The name of the module.
+	 */
+	boost::shared_ptr<NoiseDetector> NoiseDetector::create(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name) {
+		auto result = AL::ALModule::createModule<NoiseDetector>(broker, name);
+		result->ios_ = &ios;
+		return result;
+	}
+	
+	/// Deconstructor.
 	NoiseDetector::~NoiseDetector() {
 		stopDetection();
 	}
 	
-	/// Initializes the audio device and starts detection.
+	/// Initialize the audio device and start detection.
 	void NoiseDetector::init() {
 		audioDevice->callVoid("setClientPreferences", getName(), 16000, (int)AL::FRONTCHANNEL, 0 );
 		startDetection();
 	}
 	
-	/// This function will be automatically called by the module ALAudioDevice
-	/// every 170ms with the appropriate audio buffer (front channel at 16000Hz)
-	void NoiseDetector::process(const int & nbOfChannels, const int & nbrOfSamplesByChannel, const AL_SOUND_FORMAT * buffer, const AL::ALValue & timeStamp) {
-		/// Compute the maximum value of the front microphone signal.
-		int maxValueFront = 0;
-		for(int i = 0 ; i < nbrOfSamplesByChannel ; i++)
-		{
-			if(buffer[i] > maxValueFront)
-			{
-				maxValueFront = buffer[i];
-			}
+	/// Process sound data.
+	/**
+	 * This function will be automatically called by the module ALAudioDevice
+	 * every 170ms with the appropriate audio buffer (front channel at 16000Hz).
+	 * 
+	 * \param channels The number of channels in the buffer.
+	 * \param samples  The number of samples per channel in the buffer.
+	 * \param time     The time when the buffer was created.
+	 */
+	void NoiseDetector::process(const int & channels, const int & samples, const AL_SOUND_FORMAT * buffer, const AL::ALValue & time) {
+		// Compute the maximum value of the front microphone signal.
+		int max = 0;
+		for (int i = 0 ; i < samples; i++) {
+			if (buffer[i] > max) max = buffer[i];
 		}
 		
-		/// Call on_noise function when classroom is too noisy
-		//TODO: threshold in config file
-		if(maxValueFront >= threshold)
-		{
-			on_noise(maxValueFront);
-		}
+		// Emit the signal if the noise level exceeds the threshold.
+		if(max >= threshold) ios_->post([this, max] () {
+			on_noise(max);
+		});
 	}
-
+	
 }

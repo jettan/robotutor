@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "../ascf/server.hpp"
-#include "../ascf/client.hpp"
-#include "../ascf/protobuf.hpp"
+#include "ascf/server.hpp"
+#include "ascf/client.hpp"
+#include "ascf/protobuf.hpp"
 #include "messages.pb.h"
 
 namespace robotutor {

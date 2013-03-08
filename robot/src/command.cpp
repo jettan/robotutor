@@ -1,8 +1,9 @@
 #include "command.hpp"
 
-#include "../engine/script_engine.hpp"
-#include "../parser/command_parser.hpp"
-#include "../parser/parse.hpp"
+#include "script_engine.hpp"
+#include "command_parser.hpp"
+#include "parse.hpp"
+
 
 namespace robotutor {
 	

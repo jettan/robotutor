@@ -1,9 +1,9 @@
 #include <functional>
-#include <iostream>
 
 #include <boost/asio/io_service.hpp>
 
 #include "behavior_engine.hpp"
+
 
 namespace robotutor {
 	
@@ -64,7 +64,6 @@ namespace robotutor {
 		
 		// If the behavior can be found, execute it.
 		if (bm_.isBehaviorInstalled(job.name_)) {
-			std::cout << "Running behaviour: `" << job.name_ << "'." << std::endl;
 			job.id_ = bm_.post.runBehavior(job.name_);
 			
 			// Start a new wait thread.
@@ -73,7 +72,6 @@ namespace robotutor {
 		
 		// Otherwise, immediately call the done handler.
 		} else {
-			std::cout << "Behavior not found: `" << job.name_ << "'." << std::endl;
 			if (job.on_done_) job.on_done_();
 		}
 	}

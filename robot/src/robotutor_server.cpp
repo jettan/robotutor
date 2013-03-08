@@ -1,23 +1,23 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
-#include <thread>
+#include <functional>
 
-#include <boost/asio.hpp>
+#include <boost/asio/io_service.hpp>
 
 #include <alcommon/albroker.h>
 #include <alcommon/albrokermanager.h>
 
-#include "parser/parse.hpp"
-#include "parser/command_parser.hpp"
-#include "engine/script_engine.hpp"
+#include "parse.hpp"
+#include "command_parser.hpp"
+#include "script_engine.hpp"
 #include "noise_detector.hpp"
+#include "messages.pb.h"
 
-#include "command/speech_commands.hpp"
-#include "command/behavior_commands.hpp"
-#include "command/presentation_commands.hpp"
+#include "commands/speech_commands.hpp"
+#include "commands/behavior_commands.hpp"
+#include "commands/presentation_commands.hpp"
 
-#include "protocol/messages.pb.h"
 
 
 using namespace robotutor;

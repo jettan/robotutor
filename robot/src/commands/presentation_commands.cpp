@@ -8,11 +8,8 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "presentation_commands.hpp"
-#include "../engine/script_engine.hpp"
-#include "../engine/server_engine.hpp"
-#include "../parser/parser_common.hpp"
-
-#include "../protocol/messages.pb.h"
+#include "../script_engine.hpp"
+#include "../parser_common.hpp"
 
 namespace robotutor {
 	
@@ -100,9 +97,9 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool Slide::step(ScriptEngine & engine) {
-			ClientMessage message;
-			message.mutable_slide().set_offset(offset);
-			message.mutable_slide().set_relative(relative);
+			RobotMessage message;
+			message.mutable_slide()->set_offset(offset);
+			message.mutable_slide()->set_relative(relative);
 			engine.server.sendMessage(message);
 			
 			return done_(engine);

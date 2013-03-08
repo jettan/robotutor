@@ -1,15 +1,10 @@
-#include <istream>
-#include <streambuf>
+#pragma once
 #include <string>
 #include <vector>
-#include <stdexcept>
-#pragma once
-
-#include <iterator>
 #include <memory>
 
-#include "../command/command.hpp"
-#include "../command/speech_commands.hpp"
+#include "command.hpp"
+#include "commands/speech_commands.hpp"
 
 namespace robotutor {
 	

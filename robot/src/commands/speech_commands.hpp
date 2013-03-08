@@ -3,7 +3,7 @@
 #include <deque>
 #include <memory>
 
-#include "command.hpp"
+#include "../command.hpp"
 
 namespace robotutor {
 	namespace command {

@@ -1,10 +1,10 @@
-#include <boost/asio.hpp>
+#include <boost/asio/io_service.hpp>
 
 #include <alcommon/albroker.h>
 #include <alproxies/almemoryproxy.h>
 
 #include "speech_engine.hpp"
-#include "script_engine.hpp"
+#include "commands/speech_commands.hpp"
 
 
 namespace robotutor {

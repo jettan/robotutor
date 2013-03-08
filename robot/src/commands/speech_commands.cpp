@@ -1,7 +1,7 @@
 #include <ostream>
 
 #include "speech_commands.hpp"
-#include "../engine/script_engine.hpp"
+#include "../script_engine.hpp"
 
 namespace robotutor {
 	namespace command {
