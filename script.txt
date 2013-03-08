@@ -2,26 +2,32 @@
 \rspd=85\\vct=88\
 Hello everyone, good afternoon.
 \pau=2000\
+
 Today I will be presenting to you about me and my family.
 First, I will talk about my history.
 Then, I will tell something about myself.
-{behavior|robotutor/short/Twinkle}{next slide}
+{behavior|robotutor/short/Twinkle}{slide}
+
 My ancestors are created by Al-de-ba-ran Robotics.
 Most of my brothers are playing soccer, while others are into dancing.
 {behavior|robotutor/short/Me}
 Me? I am a presenter.
-{behavior|robotutor/short/Twinkle}{next slide}
+
+{behavior|robotutor/short/Twinkle}{slide}
 Although I am not a living being, I can still sense the world like every body here.
 I can see in color through my two high definition cameras. \pau=300\
 If I try my best, I could even recognize some faces and remember them.
 \pau=300\
+
 I can hear by using four microphones.
 I understand many program languages like C++, Java and Python, but also human languages like English and French.
 Normally, I can stay awake for 90 minutes without recharging my batteries.
-{behavior|robotutor/short/ShowRight}{next slide}
+{behavior|robotutor/short/ShowRight}{slide}
+
 My future is very bright.
 I can be used in lab as an assistant, for research and for entertainment.
-{next slide}
+{slide}
+
 Thank you for your attention!
 \pau=300\
 I will now let the professor take over.
