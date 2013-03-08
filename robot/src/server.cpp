@@ -117,19 +117,22 @@ int main(int argc, char ** argv) {
 	};
 	// Register accept handler.
 	auto on_accept = [&engine] (std::shared_ptr<ascf::ServerConnection<Protocol>> connection) {
-		std::cout << "Connection accepted from " << connection->socket().remote_endpoint() << std::endl;
+		std::cout << connection->socket().remote_endpoint() << ": Connection accepted." << std::endl;
 	};
 	engine.server.on_message = on_message;
 	engine.server.on_accept  = on_accept;
 	
 	// Stop the io service when the speech engine is done.
-	engine.on_done.connect(std::bind(&boost::asio::io_server::stop, &ios));
+	engine.on_done.connect(std::bind(&boost::asio::io_service::stop, &ios));
 	
 	// Run the IO service.
 	while (true) {
 		try {
 			ios.run();
-		} catch (ascf::ConnectionError<Protocol, false> const & e) {
+			
+		} catch (ascf::ServerError<Protocol> const & e) {
+			std::cout << e.connection.socket().remote_endpoint() << ": " << e.what() << std::endl;
+			e.connection.close();
 			
 		} catch (std::exception const & e) {
 			ios.reset();

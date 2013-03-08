@@ -91,44 +91,71 @@ namespace ascf {
 	};
 	
 	/// Exception class for connection errors.
-	template<typename Protocol, bool IsServer>
-	class ConnectionError : public boost::system::system_error {
-		protected:
-			/// The connection that caused the error.
-			Connection<Protocol, IsServer> & connection_;
-			
+	template<typename Protocol>
+	class ServerError : public boost::system::system_error {
 		public:
+			/// The connection that caused the error.
+			ServerConnection<Protocol> & connection;
+			
 			/// Construct a connection error.
 			/**
 			 * \param connection The connection that caused the error.
 			 * \param error The underlying boost system error.
 			 */
-			ConnectionError(Connection<Protocol, IsServer> & connection, boost::system::error_code const & error) :
+			ServerError(ServerConnection<Protocol> & connection, boost::system::error_code const & error) :
 				boost::system::system_error(error),
-				connection_(connection) {}
+				connection(connection) {}
+			
+			/// Construct a connection error.
+			/**
+			 * \param connection The connection that caused the error.
+			 * \param error The underlying boost system error.
+			 */
+			ServerError(Connection<Protocol, true> & connection, boost::system::error_code const & error) :
+				boost::system::system_error(error),
+				connection(static_cast<ServerConnection<Protocol> &>(connection)) {}
+	};
+	
+	/// Exception class for connection errors.
+	template<typename Protocol>
+	class ClientError : public boost::system::system_error {
+		public:
+			/// The connection that caused the error.
+			Client<Protocol> & connection;
+			
+			/// Construct a connection error.
+			/**
+			 * \param connection The connection that caused the error.
+			 * \param error The underlying boost system error.
+			 */
+			ClientError(Client<Protocol> & connection, boost::system::error_code const & error) :
+				boost::system::system_error(error),
+				connection(connection) {}
+			
+			/// Construct a connection error.
+			/**
+			 * \param connection The connection that caused the error.
+			 * \param error The underlying boost system error.
+			 */
+			ClientError(Connection<Protocol, false> & connection, boost::system::error_code const & error) :
+				boost::system::system_error(error),
+				connection(static_cast<Client<Protocol> &>(connection)) {}
 	};
 	
 	
-	/// Template to extract the send message type from a protocol
+	/// Template to extract details from a protocol.
 	template<typename Protocol, bool IsServer>
-	struct WriteMessage {
-		typedef typename Protocol::ClientMessage MessageType;
+	struct ProtocolDetails {
+		typedef typename Protocol::ClientMessage WriteMessage;
+		typedef typename Protocol::ServerMessage ReadMessage;
+		typedef ClientError<Protocol>            Error;
 	};
 	
 	template<typename Protocol>
-	struct WriteMessage<Protocol, true> {
-		typedef typename Protocol::ServerMessage MessageType;
-	};
-	
-	/// Template to extract the receive message type from a protocol
-	template<typename Protocol, bool IsServer>
-	struct ReadMessage {
-		typedef typename Protocol::ServerMessage MessageType;
-	};
-	
-	template<typename Protocol>
-	struct ReadMessage<Protocol, true> {
-		typedef typename Protocol::ClientMessage MessageType;
+	struct ProtocolDetails<Protocol, true> {
+		typedef typename Protocol::ServerMessage WriteMessage;
+		typedef typename Protocol::ClientMessage ReadMessage;
+		typedef ServerError<Protocol>            Error;
 	};
 	
 	
@@ -136,12 +163,12 @@ namespace ascf {
 	template<typename Protocol, bool IsServer>
 	class Connection : public std::enable_shared_from_this<Connection<Protocol, IsServer>> {
 		public:
-			typedef typename WriteMessage<Protocol, IsServer>::MessageType WriteMessage;
-			typedef typename ReadMessage <Protocol, IsServer>::MessageType ReadMessage;
 			typedef Connection<Protocol, IsServer>      ConnectionType;
 			typedef boost::asio::streambuf              StreamBuf;
 			typedef boost::system::error_code           ErrorCode;
-			typedef ConnectionError<Protocol, IsServer> Error;
+			typedef typename ProtocolDetails<Protocol, IsServer>::WriteMessage WriteMessage;
+			typedef typename ProtocolDetails<Protocol, IsServer>::ReadMessage  ReadMessage;
+			typedef typename ProtocolDetails<Protocol, IsServer>::Error        Error;
 			
 		protected:
 			/// The socket for communication.
