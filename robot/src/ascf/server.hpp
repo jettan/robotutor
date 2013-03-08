@@ -114,9 +114,13 @@ namespace ascf {
 			typedef ProtocolT                  Protocol;
 			typedef ServerConnection<Protocol> ConnectionType;
 			typedef std::function<void(std::shared_ptr<ServerConnection<Protocol>> connection, typename Protocol::ClientMessage && message)> MessageHandler;
+			typedef std::function<void(std::shared_ptr<ServerConnection<Protocol>> connection)> AcceptHandler;
 			
 			/// The message handler to invoke when a message is received.
-			MessageHandler message_handler;
+			MessageHandler on_message;
+			
+			/// Handler to invoke when a connection is established.
+			AcceptHandler on_accept;
 			
 		protected:
 			/// ASIO IO service.
@@ -236,6 +240,8 @@ namespace ascf {
 						connections_.push_back(connection);
 						connection->identifier_ = std::prev(connections_.end());
 						
+						if (on_accept) on_accept(connection);
+						
 						// Start the asynchronous read loop.
 						connection->start_();
 					}
@@ -251,7 +257,7 @@ namespace ascf {
 			 * \param message    The received message.
 			 */
 			virtual void handleMessage_(std::shared_ptr<ServerConnection<Protocol>>  connection, typename Protocol::ClientMessage && message) {
-				if (message_handler) message_handler(connection, std::forward<typename Protocol::ClientMessage>(message));
+				if (on_message) on_message(connection, std::forward<typename Protocol::ClientMessage>(message));
 			}
 	};
 	

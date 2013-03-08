@@ -111,21 +111,33 @@ int main(int argc, char ** argv) {
 	// Initialize the script engine.
 	ScriptEngine engine(ios, broker);
 	
-	// Register message.
-	auto message_handler = [&engine] (std::shared_ptr<ascf::ServerConnection<Protocol>>, ClientMessage && message) {
+	// Register message handler.
+	auto on_message = [&engine] (std::shared_ptr<ascf::ServerConnection<Protocol>>, ClientMessage && message) {
 		handleMessage(engine, std::forward<ClientMessage>(message));
 	};
-	engine.server.message_handler = message_handler;
+	// Register accept handler.
+	auto on_accept = [&engine] (std::shared_ptr<ascf::ServerConnection<Protocol>> connection) {
+		std::cout << "Connection accepted from " << connection->socket().remote_endpoint() << std::endl;
+	};
+	engine.server.on_message = on_message;
+	engine.server.on_accept  = on_accept;
 	
 	// Stop the io service when the speech engine is done.
-	auto onDone = [&ios] () {
-		ios.stop();
-	};
+	engine.on_done.connect(std::bind(&boost::asio::io_server::stop, &ios));
 	
-	engine.on_done.connect(onDone);
+	// Run the IO service.
+	while (true) {
+		try {
+			ios.run();
+		} catch (ascf::ConnectionError<Protocol, false> const & e) {
+			
+		} catch (std::exception const & e) {
+			ios.reset();
+			std::cout << "Error: " << e.what() << std::endl;
+		}
+	}
 	
-	// Run the IO service and make sure all threads are joined before exiting.
-	ios.run();
+	// Make sure all threads are joined before exiting
 	engine.join();
 	
 	broker->shutdown();

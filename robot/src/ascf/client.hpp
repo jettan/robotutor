@@ -19,6 +19,7 @@ namespace ascf {
 			typedef boost::system::error_code                ErrorCode;
 			
 			typedef std::function<void(std::shared_ptr<Client<Protocol>> connection, typename Protocol::ServerMessage && message)> MessageHandler;
+			typedef std::function<void(std::shared_ptr<Client<Protocol>> connection, ErrorCode const & error)> ConnectHandler;
 			
 		protected:
 			/// Protocol defined extension.
@@ -26,7 +27,9 @@ namespace ascf {
 			
 		public:
 			/// The message handler.
-			MessageHandler message_handler;
+			MessageHandler on_message;
+			/// The connect handler.
+			ConnectHandler on_connect;
 			
 			/// Construct a client connection.
 			/**
@@ -132,10 +135,10 @@ namespace ascf {
 			 * \param error The error that occured, if any.
 			 */
 			void handleConnect_(ErrorCode const & error) {
-				if (!error) {
-					extension_.handleConnect();
-					this->asyncRead_();
-				}
+				extension_.handleConnect(error);
+				if (on_connect) on_connect(get_shared_(), error);
+				
+				if (!error) this->asyncRead_();
 			}
 			
 			/// Handle messages by passing them to the user defined message handler.
@@ -143,8 +146,8 @@ namespace ascf {
 			 * \param message The message to handle.
 			 */
 			void handleMessage_(typename Protocol::ServerMessage && message) {
-				if (extension_.handleMessage(message) && message_handler) {
-					message_handler(get_shared_(), std::forward<typename Protocol::ServerMessage>(message));
+				if (extension_.handleMessage(message) && on_message) {
+					on_message(get_shared_(), std::forward<typename Protocol::ServerMessage>(message));
 				}
 			}
 			
