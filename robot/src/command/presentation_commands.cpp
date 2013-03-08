@@ -18,6 +18,13 @@ namespace robotutor {
 	
 	namespace {
 		/// Parse a relative or absolute offset.
+		/**
+		 * A string starting with + or - is a relative offset.
+		 * Anything else is absolute.
+		 * The string may start with '+' or '-' and must otherwise consist only of digits.
+		 * 
+		 * \param input The input string.
+		 */
 		std::pair<int, bool> parseOffset(std::string input) {
 			parser::trim(input);
 			if (!input.length()) return std::make_pair(1, true);
@@ -41,7 +48,12 @@ namespace robotutor {
 			return result;
 		}
 		
-		void showImage(boost::shared_ptr<AL::ALBroker> broker) {
+		/// Grab an image from the NAO camera.
+		/**
+		 * The image is saved to "/var/www/capture.jpg".
+		 * \param broker The broker to communicate with naoqi.
+		 */
+		void grabImage(boost::shared_ptr<AL::ALBroker> broker) {
 			
 			// The camera proxy.
 			AL::ALVideoDeviceProxy camera_proxy(broker);
@@ -88,8 +100,11 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool Slide::step(ScriptEngine & engine) {
-			std::cout << "Slide: " << offset << " " << relative << std::endl;
-			engine.server.slide(offset, relative);
+			ClientMessage message;
+			message.mutable_slide().set_offset(offset);
+			message.mutable_slide().set_relative(relative);
+			engine.server.sendMessage(message);
+			
 			return done_(engine);
 		}
 		
@@ -115,11 +130,12 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool ShowImage::step(ScriptEngine & engine) {
-			std::cout << "ShowImage" << std::endl;
-			showImage(engine.broker);
+			grabImage(engine.broker);
+			
 			RobotMessage msg;
 			msg.mutable_show_image();
 			engine.server.sendMessage(msg);
+			
 			return done_(engine);
 		}
 	}
