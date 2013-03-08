@@ -6,6 +6,7 @@ CXX            := c++
 PROTOC         := protoc
 CXXFLAGS_EXTRA += -std=c++11 -Wall -MP -MMD
 CXXFLAGS_EXTRA += -I$(naoqi_path)/include
+CXXFLAGS_EXTRA += -I /usr/include/opencv2
 
 LDFLAGS_EXTRA  += -pthread
 LDFLAGS_EXTRA  += -L$(naoqi_path)/lib
@@ -28,7 +29,7 @@ parser_DIR     := parser
 engine_OBJS    := speech_engine script_engine behavior_engine server_engine
 engine_LIBS    += boost_filesystem-mt boost_signals-mt
 engine_LIBS    += alcommon alproxies alvalue alsoap alerror althread
-engine_LIBS    += qi rttools protobuf
+engine_LIBS    += qi rttools protobuf opencv_core opencv_highgui
 engine_DIR     := engine
 
 protocol_OBJS  := messages.pb

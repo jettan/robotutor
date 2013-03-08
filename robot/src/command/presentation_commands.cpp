@@ -1,10 +1,18 @@
 #include <utility>
 #include <memory>
 
+#include <alproxies/alvideodeviceproxy.h>
+#include <alvision/alimage.h>
+#include <alvision/alvisiondefinitions.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
 #include "presentation_commands.hpp"
 #include "../engine/script_engine.hpp"
+#include "../engine/server_engine.hpp"
 #include "../parser/parser_common.hpp"
 
+#include "../protocol/messages.pb.h"
 
 namespace robotutor {
 	
@@ -33,6 +41,21 @@ namespace robotutor {
 			return result;
 		}
 		
+		void showImage(boost::shared_ptr<AL::ALBroker> broker) {
+			
+			// The camera proxy.
+			AL::ALVideoDeviceProxy camera_proxy(broker);
+			
+			// Subscribe a client image requiring 320*240 and BGR colorspace.
+			const std::string client_name = camera_proxy.subscribeCamera("RoboTutorCamera", 0, AL::k4VGA, AL::kBGRColorSpace, 5);
+			cv::Mat image                 = cv::Mat(cv::Size(1280, 960), CV_8UC3);
+			AL::ALValue al_image          = camera_proxy.getImageRemote(client_name);
+			image.data                    = (uchar*) al_image[6].GetBinary();
+			
+			camera_proxy.releaseImage(client_name);
+			cv::imwrite("/var/www/capture.jpg", image);
+			camera_proxy.unsubscribe(client_name);
+		}
 	}
 	
 	namespace command {
@@ -67,6 +90,36 @@ namespace robotutor {
 		bool Slide::step(ScriptEngine & engine) {
 			std::cout << "Slide: " << offset << " " << relative << std::endl;
 			engine.server.slide(offset, relative);
+			return done_(engine);
+		}
+		
+		
+		/// Construct a ShowImage command.
+		/**
+		 * \param parent The parent command.
+		 */
+		ShowImage::ShowImage(Command * parent) :
+			Command(parent) {}
+		
+		/// Create the command.
+		SharedPtr ShowImage::create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
+			if (arguments.size() == 0) {
+				return std::make_shared<ShowImage>(parent);
+			} else {
+				throw std::runtime_error("Too many arguments given for show image command. Expected 0.");
+			}
+		}
+		
+		/// Run the command.
+		/**
+		 * \param engine The script engine to use for executing the command.
+		 */
+		bool ShowImage::step(ScriptEngine & engine) {
+			std::cout << "ShowImage" << std::endl;
+			showImage(engine.broker);
+			RobotMessage msg;
+			msg.mutable_show_image();
+			engine.server.sendMessage(msg);
 			return done_(engine);
 		}
 	}

@@ -42,6 +42,31 @@ namespace robotutor {
 			bool step(ScriptEngine & engine);
 		};
 		
+		struct ShowImage : public Command {
+			/// Construct a show image command.
+			/**
+			 * \param parent The parent command.
+			 */
+			ShowImage(Command * parent);
+			
+			/// Create a slide command.
+			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &);
+			
+			/// The name of the command.
+			static std::string static_name() { return "show image"; }
+			
+			/// Get the name of the command.
+			/**
+			 * \return The name of the command.
+			 */
+			std::string name() const { return ShowImage::static_name(); }
+			
+			/// Run the command.
+			/**
+			 * \param engine The script engine to use for executing the command.
+			 */
+			bool step(ScriptEngine & engine);
+		};
 	}
 }
 
