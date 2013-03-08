@@ -9,7 +9,7 @@
 #include <alcommon/albrokermanager.h>
 
 #include "parse.hpp"
-#include "command_parser.hpp"
+#include "script_parser.hpp"
 #include "script_engine.hpp"
 #include "noise_detector.hpp"
 #include "messages.pb.h"
@@ -33,22 +33,10 @@ void registerCommands() {
 }
 
 
-command::SharedPtr parseString(std::string const & string) {
-	CommandParser parser(factory);
-	parse(parser, string);
-	return parser.result();
-}
-
-command::SharedPtr parseStream(std::istream & stream) {
-	CommandParser parser(factory);
-	parse(parser, stream);
-	return parser.result();
-}
-
-command::SharedPtr parseFile(std::string const & name) {
+command::SharedPtr parseFile(command::Factory & factory, std::string const & name) {
 	std::ifstream stream(name);
 	if (!stream.good()) throw std::runtime_error("Failed to open file `" + name + "'.");
-	return parseStream(stream);
+	return parseScript(factory, stream);
 }
 
 void handleMessage(ScriptEngine & engine, ClientMessage && message) {
@@ -59,9 +47,9 @@ void handleMessage(ScriptEngine & engine, ClientMessage && message) {
 		// Check if there is a script to parse.
 		try {
 			if (message.run_script().has_script()) {
-				script = parseString(message.run_script().script());
+				script = parseScript(factory, message.run_script().script());
 			} else if (message.run_script().has_file()) {
-				script = parseFile(message.run_script().file());
+				script = parseFile(factory, message.run_script().file());
 			}
 		} catch (std::exception const & e) {
 			std::cout << "Error parsing script: " << e.what() << std::endl;

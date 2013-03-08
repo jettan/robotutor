@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 
+#include "parse.hpp"
 #include "command.hpp"
 #include "commands/speech_commands.hpp"
 
@@ -12,7 +13,7 @@ namespace robotutor {
 	/**
 	 * This parser will read an entire text executable from the input.
 	 */
-	class CommandParser {
+	class ScriptParser {
 		protected:
 			/// The state of the parser.
 			enum class State {
@@ -47,7 +48,7 @@ namespace robotutor {
 			/**
 			 * \param factory The command factory to use to instantiate commands found in the text.
 			 */
-			CommandParser(command::Factory & factory);
+			ScriptParser(command::Factory & factory);
 			
 			/// Reset the parser so that it can parse a new command.
 			void reset();
@@ -78,6 +79,20 @@ namespace robotutor {
 			/// Flush the recently parsed command.
 			void flushCommand_();
 	};
+	
+	
+	/// Parse a script.
+	/**
+	 * \param factory The command factory to use.
+	 * \param args The arguments to parse(parser, args...).
+	 * \return The parsed script.
+	 */
+	template<typename... Args>
+	command::SharedPtr parseScript(command::Factory & factory, Args&&... args) {
+		ScriptParser parser(factory);
+		parse(parser, std::forward<Args>(args)...);
+		return parser.result();
+	}
 	
 	
 }

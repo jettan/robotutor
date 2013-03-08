@@ -2,7 +2,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "command_parser.hpp"
+#include "script_parser.hpp"
 #include "parser_common.hpp"
 
 
@@ -30,14 +30,14 @@ namespace robotutor {
 	}
 	
 	/// Construct a text parser.
-	CommandParser::CommandParser(command::Factory & factory) :
+	ScriptParser::ScriptParser(command::Factory & factory) :
 		factory_(factory)
 	{
 		reset();
 	}
 	
 	/// Reset the parser so that it can parse a new command.
-	void CommandParser::reset() {
+	void ScriptParser::reset() {
 		state_ = State::text;
 		
 		root_     = std::make_shared<command::Execute>(nullptr);
@@ -56,7 +56,7 @@ namespace robotutor {
 	 * 
 	 * \return A shared pointer holding the parsed executable.
 	 */
-	command::SharedPtr CommandParser::result() {
+	command::SharedPtr ScriptParser::result() {
 		// Make sure the parser isn't in the middle of something.
 		if (state_ != State::text) {
 			throw std::runtime_error("Parser requires more input before returning a result.");
@@ -84,7 +84,7 @@ namespace robotutor {
 	 * \param c The input character.
 	 * \return bool True if the parser is done.
 	 */
-	bool CommandParser::consume(char c) {
+	bool ScriptParser::consume(char c) {
 		switch (state_) {
 			// Parsing normal text.
 			case State::text:
@@ -172,20 +172,20 @@ namespace robotutor {
 	}
 	
 	/// Flush the last read sentence
-	void CommandParser::flushSentence_() {
+	void ScriptParser::flushSentence_() {
 		root_->arguments.push_back(sentence_);
 		sentence_ = std::make_shared<command::Speech>(root_.get());
 	}
 	
 	/// Flush the last read command argument.
-	void CommandParser::flushArgument_() {
+	void ScriptParser::flushArgument_() {
 		command_args_.push_back(current_arg_);
 		current_arg_.clear();
 		level_ = 0;
 	}
 	
 	/// Flush the recently parsed command.
-	void CommandParser::flushCommand_() {
+	void ScriptParser::flushCommand_() {
 		trim(command_name_);
 		if (sentence_->text.size()) {
 			sentence_->arguments.push_back(factory_.create(sentence_.get(), std::move(command_name_), std::move(command_args_)));

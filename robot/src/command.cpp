@@ -1,7 +1,7 @@
 #include "command.hpp"
 
 #include "script_engine.hpp"
-#include "command_parser.hpp"
+#include "script_parser.hpp"
 #include "parse.hpp"
 
 
@@ -57,10 +57,8 @@ namespace robotutor {
 		/// Create the command.
 		SharedPtr Execute::create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory) {
 			auto result = std::make_shared<Execute>(parent);
-			CommandParser parser(factory);
 			for (auto const & argument : arguments) {
-				parse(parser, argument);
-				result->arguments.push_back(parser.result());
+				result->arguments.push_back(parseScript(factory, argument));
 				result->arguments.back()->parent = result.get();
 			}
 			return result;

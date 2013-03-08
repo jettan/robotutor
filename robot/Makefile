@@ -16,7 +16,7 @@ LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib/naoqi
 
 engine_src    = speech_engine.cpp script_engine.cpp behavior_engine.cpp
 commands_src  = command.cpp commands/speech_commands.cpp commands/behavior_commands.cpp commands/presentation_commands.cpp
-parser_src    = command_parser.cpp
+parser_src    = script_parser.cpp
 protocol_src  = messages.pb.cxx
 
 engine_lib    += boost_signals-mt
