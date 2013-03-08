@@ -1,5 +1,3 @@
--include Makefile.local
-
 source_dir     ?= src
 build_dir      ?= build
 naoqi_path     ?= /opt/naoqi-sdk
@@ -28,7 +26,7 @@ parser_LIBS    :=
 parser_DIR     := parser
 
 engine_OBJS    := speech_engine script_engine behavior_engine server_engine
-engine_LIBS    += boost_filesystem boost_signals
+engine_LIBS    += boost_filesystem-mt boost_signals-mt
 engine_LIBS    += alcommon alproxies alvalue alsoap alerror althread
 engine_LIBS    += qi rttools protobuf
 engine_DIR     := engine
@@ -39,6 +37,8 @@ protocol_DIR   += protocol
 
 robotutor_COMPONENTS := common parser engine protocol command
 robotutor_BIN        := robotutor
+
+-include Makefile.local
 
 .PHONY: default
 default: $(source_dir)/$(protocol_DIR)/messages.pb.h $(robotutor_BIN)
