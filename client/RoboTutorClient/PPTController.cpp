@@ -113,3 +113,19 @@ void PptController::setSlide(int nr, bool relative)
 		wprintf(L"Description: %s\n", (LPCWSTR) err.Description());
 	}
 }
+
+void PptController::createSlide(std::string pictureFile)
+{
+	// pictureFile in this format: http://192.168.0.108/test.jpg
+	int curr_slide_nr = show_->Slide->GetSlideNumber();
+
+	PowerPoint::_SlidePtr current_slide = pres_->Slides->Add(curr_slide_nr + 1, PowerPoint::ppLayoutPictureWithCaption);
+
+	current_slide->Shapes->AddPicture(_bstr_t(pictureFile.c_str()),
+									  Office::MsoTriState::msoFalse, 
+									  Office::MsoTriState::msoTrue, 
+									  200, 
+									  100, 
+									  320, 
+									  240);
+}

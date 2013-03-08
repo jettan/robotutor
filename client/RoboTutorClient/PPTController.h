@@ -35,6 +35,7 @@ public:
 	void closePowerpoint();
 	void startSlideShow();
 	void setSlide(int nr, bool relative);
+	void createSlide(std::string pictureFile);
 
 private:
 	PowerPoint::_ApplicationPtr ppt_;
