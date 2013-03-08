@@ -17,6 +17,8 @@
 #include "command/behavior_commands.hpp"
 #include "command/presentation_commands.hpp"
 
+#include "protocol/messages.pb.h"
+
 
 using namespace robotutor;
 
@@ -28,6 +30,13 @@ void registerCommands() {
 	factory.add<command::Behavior>();
 	factory.add<command::Slide>();
 	factory.add<command::ShowImage>();
+}
+
+
+command::SharedPtr parseString(std::string const & string) {
+	CommandParser parser(factory);
+	parse(parser, string);
+	return parser.result();
 }
 
 command::SharedPtr parseStream(std::istream & stream) {
@@ -42,30 +51,42 @@ command::SharedPtr parseFile(std::string const & name) {
 	return parseStream(stream);
 }
 
-/// Parse the script.
-void parse(int argc, char ** argv, ScriptEngine & engine, boost::asio::io_service &ios) {
-	// Register all commands.
-	registerCommands();
-	
-	command::SharedPtr script;
-	try {
-		CommandParser parser(factory);
-		// If a command line argument is given, it's an input file to read.
-		if (argc > 2) {
-			script = parseFile(argv[2]);
-		} else  {
-			script = parseStream(std::cin);
+void handleMessage(ScriptEngine & engine, ClientMessage && message) {
+	std::cout << "Message received: " << message.DebugString() << std::endl;
+	if (message.has_run_script()) {
+		std::shared_ptr<command::Command> script;
+		
+		// Check if there is a script to parse.
+		try {
+			if (message.run_script().has_script()) {
+				script = parseString(message.run_script().script());
+			} else if (message.run_script().has_file()) {
+				script = parseFile(message.run_script().file());
+			}
+		} catch (std::exception const & e) {
+			std::cout << "Error parsing script: " << e.what() << std::endl;
 		}
 		
-		ios.post([&engine, script] () {
-			engine.load(script);
-			engine.run();
-		});
-	} catch (std::exception const & e) {
-		std::cerr << "Failed to parse input: " << e.what() << std::endl;
-		ios.stop();
+		// Run the parsed script.
+		if (script) {
+			std::cout << "Script parsed.";
+			// If the engine is busy, stop it and wait for everything to finish before running the new script.
+			if (engine.busy()) {
+				auto load_script = [&engine, script] () {
+					engine.load(script);
+					engine.run();
+				};
+				engine.stop(load_script);
+				
+			// If the engine wasn't busy, just run the script.
+			} else {
+				engine.load(script);
+				engine.run();
+			}
+		}
 	}
 }
+
 
 int main(int argc, char ** argv) {
 	// Get nao host from command line.
@@ -90,6 +111,11 @@ int main(int argc, char ** argv) {
 	// Initialize the script engine.
 	ScriptEngine engine(ios, broker);
 	
+	// Register message.
+	auto message_handler = [&engine] (std::shared_ptr<ascf::ServerConnection<Protocol>>, ClientMessage && message) {
+		handleMessage(engine, std::forward<ClientMessage>(message));
+	};
+	engine.server.message_handler = message_handler;
 	
 	// Stop the io service when the speech engine is done.
 	auto onDone = [&ios] () {
@@ -98,14 +124,8 @@ int main(int argc, char ** argv) {
 	
 	engine.on_done.connect(onDone);
 	
-	// Parse input in a different thread.
-	std::thread parse_thread([argc, argv, &engine, &ios] () {
-		parse(argc, argv, engine, ios);
-	});
-	
 	// Run the IO service and make sure all threads are joined before exiting.
 	ios.run();
-	parse_thread.join();
 	engine.join();
 	
 	broker->shutdown();
