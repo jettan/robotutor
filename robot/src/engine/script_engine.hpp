@@ -20,6 +20,9 @@ namespace robotutor {
 	 */
 	class ScriptEngine {
 		public:
+			/// The AL broker for naoqi communication.
+			boost::shared_ptr<AL::ALBroker> broker;
+			
 			/// The text-to-speech engine.
 			boost::shared_ptr<SpeechEngine> speech;
 			
