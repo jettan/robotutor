@@ -112,11 +112,11 @@ int main(int argc, char ** argv) {
 	ScriptEngine engine(ios, broker);
 	
 	// Register message handler.
-	auto on_message = [&engine] (std::shared_ptr<ascf::ServerConnection<Protocol>>, ClientMessage && message) {
+	auto on_message = [&engine] (SharedServerConnection connection, ClientMessage && message) {
 		handleMessage(engine, std::forward<ClientMessage>(message));
 	};
 	// Register accept handler.
-	auto on_accept = [&engine] (std::shared_ptr<ascf::ServerConnection<Protocol>> connection) {
+	auto on_accept = [&engine] (SharedServerConnection connection) {
 		std::cout << connection->socket().remote_endpoint() << ": Connection accepted." << std::endl;
 	};
 	engine.server.on_message = on_message;
@@ -130,7 +130,7 @@ int main(int argc, char ** argv) {
 		try {
 			ios.run();
 			
-		} catch (ascf::ServerError<Protocol> const & e) {
+		} catch (ServerError const & e) {
 			std::cout << e.connection.socket().remote_endpoint() << ": " << e.what() << std::endl;
 			e.connection.close();
 			

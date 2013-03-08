@@ -5,7 +5,7 @@
 #include "../command/command.hpp"
 #include "speech_engine.hpp"
 #include "behavior_engine.hpp"
-#include "server_engine.hpp"
+#include "../protocol/robotutor_protocol.hpp"
 
 namespace AL {
 	class ALBroker;
@@ -30,7 +30,7 @@ namespace robotutor {
 			BehaviorEngine behavior;
 			
 			/// The server engine.
-			ServerEngine server;
+			Server server;
 			
 			/// The current command.
 			command::Command * current;
