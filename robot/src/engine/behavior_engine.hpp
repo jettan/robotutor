@@ -61,9 +61,6 @@ namespace robotutor {
 			boost::signal<void ()> on_done;
 			
 		protected:
-			/// Reference to the parent script engine.
-			ScriptEngine & parent_;
-			
 			/// IO service to perform asynchronous work.
 			boost::asio::io_service & ios_;
 			
@@ -79,11 +76,10 @@ namespace robotutor {
 		public:
 			/// Construct the behaviour engine.
 			/**
-			 * \param parent The parent script engine.
 			 * \param ios The IO service to use.
 			 * \param broker The ALBroker to use for communicating with naoqi.
 			 */
-			BehaviorEngine(ScriptEngine & engine, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
+			BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
 			
 			/// Queue a job for execution.
 			/**

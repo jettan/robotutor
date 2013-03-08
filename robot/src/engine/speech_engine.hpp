@@ -63,11 +63,8 @@ namespace robotutor {
 	
 	/// Speech engine to execute command::Text.
 	class SpeechEngine : public AL::ALModule {
-		public:
+		
 		protected:
-			/// Reference to the parent script engine.
-			ScriptEngine * parent_;
-			
 			/// IO service to perform asynchronous work.
 			boost::asio::io_service * ios_;
 			
@@ -102,12 +99,11 @@ namespace robotutor {
 			
 			/// Create a speech engine.
 			/**
-			 * \param parent The parent script engine.
 			 * \param ios The IO service to use.
 			 * \param broker The broker to use.
 			 * \param name The name of the module.
 			 */
-			static boost::shared_ptr<SpeechEngine> create(ScriptEngine & parent, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
+			static boost::shared_ptr<SpeechEngine> create(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, std::string const & name);
 			
 			/// Initialize the module.
 			void init();
