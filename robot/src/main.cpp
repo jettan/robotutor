@@ -86,36 +86,16 @@ int main(int argc, char ** argv) {
 		return -2;
 	}
 	
-	boost::shared_ptr<NoiseDetector> noise_detector = AL::ALModule::createModule<NoiseDetector>(broker, "NoiseDetector");
-	
 	// Initialize the script engine.
 	ScriptEngine engine(ios, broker);
 	
-	bool interrupted = false;
-	engine.speech->on_command_done.connect([&interrupted] (SpeechEngine &) {
-		interrupted = false;
-	});
-	
-	// Function that deals with a noisy classroom.
-	auto onNoise = [&engine, &interrupted] (int level) {
-		std::cout << "Interrupted:" << interrupted << std::endl;
-		if (!interrupted) {
-			interrupted = true;
-			std::cout << "Noise detected: " << level << std::endl;
-			auto command = std::make_shared<command::Text>();
-			command->sentences.push_back("\\pau=500\\Please be quiet.\\pau=1000\\");
-			command->marks.push_back(0);
-			engine.speech->interrupt(command);
-		}
-	};
 	
 	// Stop the io service when the speech engine is done.
-	auto onDone = [&ios] (SpeechEngine &) {
+	auto onDone = [&ios] () {
 		ios.stop();
 	};
 	
-	engine.speech->on_done.connect(onDone);
-	noise_detector->on_noise.connect(onNoise);
+	engine.on_done.connect(onDone);
 	
 	// Parse input in a different thread.
 	std::thread parse_thread([argc, argv, &engine, &ios] () {

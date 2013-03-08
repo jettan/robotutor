@@ -41,6 +41,11 @@ namespace robotutor {
 		}
 	}
 	
+	/// Join any background threads created by the engine.
+	void BehaviorEngine::join() {
+		if (wait_thread_.joinable()) wait_thread_.join();
+	}
+	
 	/// Drop all queued jobs.
 	/**
 	 * If there is a job currently running, it will continue as normal.
@@ -65,7 +70,7 @@ namespace robotutor {
 			job.id_ = bm_.post.runBehavior(job.name_);
 			
 			// Start a new wait thread.
-			if (wait_thread_.joinable()) wait_thread_.join();
+			join();
 			wait_thread_ = std::thread(std::bind(&BehaviorEngine::wait_, this));
 		
 		// Otherwise, immediately call the done handler.

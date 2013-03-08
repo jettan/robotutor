@@ -100,6 +100,9 @@ namespace robotutor {
 				enqueue(BehaviorJob(args...));
 			}
 			
+			/// Join any background threads created by the behavior engine.
+			void join();
+			
 			/// Drop all queued jobs.
 			/**
 			 * If there is a job currently running, it will continue as normal.

@@ -23,11 +23,13 @@ namespace robotutor {
 	 */
 	void ScriptEngine::join() {
 		speech->join();
+		behavior.join();
 	}
 	
 	/// Run the script.
 	void ScriptEngine::run() {
 		while (current && current->step(*this));
+		if (!current) on_done();
 	}
 	
 }

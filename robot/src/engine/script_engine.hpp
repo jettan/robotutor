@@ -1,4 +1,7 @@
 #pragma once
+
+#include <boost/signal.hpp>
+
 #include "../command/command.hpp"
 #include "speech_engine.hpp"
 #include "behavior_engine.hpp"
@@ -28,6 +31,9 @@ namespace robotutor {
 			
 			/// The current command.
 			command::Command * current;
+			
+			/// Signal invoked when the script finished execution.
+			boost::signal<void ()> on_done;
 			
 		protected:
 			/// The root command.
