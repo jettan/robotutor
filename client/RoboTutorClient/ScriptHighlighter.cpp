@@ -1,7 +1,8 @@
 #include "ScriptHighlighter.h"
 
 ScriptHighlighter::ScriptHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent) {
-	behaviour_format_.setForeground(Qt::darkYellow);
+	behaviour_format_.setForeground(Qt::darkGreen);
+	behaviour_format_.setFontWeight(QFont::Bold);
 	HighlightingRule rule;
 	rule.pattern = QRegExp("\\{[^}].*[^}]*\\}");
 	rule.format = behaviour_format_;

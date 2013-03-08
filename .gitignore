@@ -18,3 +18,5 @@ protoc.exe
 *.db
 *.aps
 GeneratedFiles/
+
+*.swp
