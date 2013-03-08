@@ -2,8 +2,7 @@
 
 //DWORD WINAPI AutomatePowerPointByImport(LPVOID lpParam);
 
-PptController::PptController(void)
-{
+void PptController::init() {
 	try
 	{
 		// CreateInstance
@@ -24,11 +23,6 @@ PptController::PptController(void)
 		wprintf(L"PowerPoint throws the error: %s\n", err.ErrorMessage());
 		wprintf(L"Description: %s\n", (LPCWSTR) err.Description());
 	}
-}
-
-PptController::~PptController(void)
-{
-	
 }
 
 void PptController::closePowerpoint()

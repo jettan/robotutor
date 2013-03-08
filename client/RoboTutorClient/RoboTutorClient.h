@@ -11,19 +11,11 @@
 
 #include <iostream>
 
-#include <boost/asio.hpp>
-
-#include "protobuf.hpp"
-#include "protocol/messages.pb.h"
-#include "connection.hpp"
-#include "client.hpp"
-
-#include "PptController.h"
 #include "ScriptHighlighter.h"
 
 namespace robotutor {
 
-typedef ascf::ProtocolBuffers<ClientMessage, RobotMessage> Protocol;
+class AsioThread;
 
 class RoboTutorClient : public QMainWindow
 {
@@ -33,12 +25,11 @@ public:
 	RoboTutorClient(QWidget *parent = 0);
 	~RoboTutorClient();
 
+	void connectSlots(AsioThread & asio);
+
 private:
 	Ui::RoboTutorClientClass ui_;
-	PptController *ppt_controller_;
 
-	boost::asio::io_service ios_;
-	std::shared_ptr<ascf::Client<Protocol>> client_;
 	bool connected_;
 
 	QString script_path_;
@@ -46,14 +37,13 @@ private:
 
 	ScriptHighlighter *highlighter_;
 
-	QTimer *timer_;
-
-	void handleServerMessage(std::shared_ptr<ascf::Client<Protocol>> connection, RobotMessage const & message);
-	void handleConnect(std::shared_ptr<ascf::Client<Protocol>> connection, boost::system::error_code const & error);
-
 	void setScriptPath(QString path);
-	void setStatus(QString status);
 	void saveScript(QString fileName);
+
+public slots:
+	void setStatus(QString status);
+	void setConnect(bool status);
+	void criticalInformation(QString title, QString info);
 
 private slots:
 	void on_openScript_triggered();
@@ -63,7 +53,9 @@ private slots:
 	void on_connectButton_clicked();
 	void on_runButton_clicked();
 
-	void processOnce();
+signals:
+	void connectRobot(QString host, int port);
+	void sendScript(QString script);
 };
 
 }

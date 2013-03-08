@@ -28,8 +28,7 @@ using namespace VBIDE;
 class PptController
 {
 public:
-	PptController(void);
-	~PptController(void);
+	void init();
 	void openPresentation(std::string fileName);
 	void closePresentation();
 	void closePowerpoint();

@@ -137,6 +137,9 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="inputMask">
+             <string>000.000.000.000</string>
+            </property>
             <property name="text">
              <string>127.0.0.1</string>
             </property>

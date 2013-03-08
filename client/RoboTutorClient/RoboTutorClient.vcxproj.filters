@@ -74,6 +74,15 @@
     <ClCompile Include="ScriptHighlighter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AsioThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AsioThread.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AsioThread.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RoboTutorClient.h">
@@ -86,6 +95,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="CodeEditor.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AsioThread.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
