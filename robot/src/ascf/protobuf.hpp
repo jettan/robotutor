@@ -17,9 +17,9 @@ namespace ascf {
 	template<typename ClientMessageT, typename ServerMessageT, typename TransportT = boost::asio::ip::tcp>
 	struct ProtocolBuffers {
 		typedef ProtocolBuffers<ClientMessageT, ServerMessageT, TransportT> Protocol;
-		typedef ServerMessageT                      ServerMessage;
-		typedef ClientMessageT                      ClientMessage;
-		typedef TransportT                          Transport;
+		typedef ServerMessageT                              ServerMessage;
+		typedef ClientMessageT                              ClientMessage;
+		typedef TransportT                                  Transport;
 		typedef ::ascf::ServerExtension<Protocol>           ServerExtension;
 		typedef ::ascf::ServerConnectionExtension<Protocol> ServerConnectionExtension;
 		typedef ::ascf::ClientExtension<Protocol>           ClientExtension;

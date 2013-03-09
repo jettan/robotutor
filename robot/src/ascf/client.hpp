@@ -16,10 +16,11 @@ namespace ascf {
 		public:
 			typedef ProtocolT                                Protocol;
 			typedef Connection<Protocol, false>              BaseType;
+			typedef std::shared_ptr<Client<Protocol>>        SharedPtr;
 			typedef boost::system::error_code                ErrorCode;
 			
-			typedef std::function<void(std::shared_ptr<Client<Protocol>> connection, typename Protocol::ServerMessage && message)> MessageHandler;
-			typedef std::function<void(std::shared_ptr<Client<Protocol>> connection, ErrorCode const & error)> ConnectHandler;
+			typedef std::function<void(SharedPtr connection, ErrorCode const & error)> EventHandler;
+			typedef std::function<void(SharedPtr connection, typename Protocol::ServerMessage && message)> MessageHandler;
 			
 		protected:
 			/// Protocol defined extension.
@@ -28,8 +29,6 @@ namespace ascf {
 		public:
 			/// The message handler.
 			MessageHandler on_message;
-			/// The connect handler.
-			ConnectHandler on_connect;
 			
 			/// Construct a client connection.
 			/**
@@ -53,7 +52,7 @@ namespace ascf {
 			 * \param ios The IO service to use.
 			 * \return A shared pointer to a new client connection.
 			 */
-			static std::shared_ptr<Client<Protocol>> create(boost::asio::io_service & ios) {
+			static SharedPtr create(boost::asio::io_service & ios) {
 				return std::make_shared<Client<Protocol>>(typename BaseType::must_be_shared_(), ios);
 			}
 			
@@ -61,8 +60,8 @@ namespace ascf {
 			/**
 			 * \param endpoint The endpoint to connect to.
 			 */
-			void connect(typename Protocol::Transport::endpoint const & endpoint) {
-				auto handler = std::bind(&Client<Protocol>::handleConnect_, this, std::placeholders::_1);
+			void connect(typename Protocol::Transport::endpoint const & endpoint, EventHandler callback = nullptr) {
+				auto handler = std::bind(&Client<Protocol>::handleConnect_, this, std::placeholders::_1, callback);
 				this->socket_.async_connect(endpoint, handler);
 			}
 			
@@ -77,8 +76,8 @@ namespace ascf {
 			 * \param arguments The arguments for the endpoint constructor.
 			 */
 			template<typename... Arguments>
-			void connect(Arguments... arguments) {
-				connect(typename Protocol::Transport::endpoint(arguments...));
+			void connect(Arguments... arguments, EventHandler callback = nullptr) {
+				connect(typename Protocol::Transport::endpoint(arguments...), callback);
 			}
 			
 			/// Connect to a TCP endpoint with an IPv4 address.
@@ -87,8 +86,8 @@ namespace ascf {
 			 * \param port    The port number.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void connectIp4(boost::asio::ip::address_v4::bytes_type const & address, unsigned short port) {
-				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4(address), port));
+			void connectIp4(boost::asio::ip::address_v4::bytes_type const & address, unsigned short port, EventHandler callback = nullptr) {
+				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4(address), port), callback);
 			}
 			
 			/// Connect to a TCP endpoint with an IPv4 address.
@@ -97,8 +96,8 @@ namespace ascf {
 			 * \param port    The port number.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void connectIp4(std::string const & address, unsigned short port) {
-				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(address), port));
+			void connectIp4(std::string const & address, unsigned short port, EventHandler callback = nullptr) {
+				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(address), port), callback);
 			}
 			
 			/// Connect to a TCP endpoint with an IPv6 address.
@@ -107,8 +106,8 @@ namespace ascf {
 			 * \param port    The port number.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void connectIp6(boost::asio::ip::address_v6::bytes_type const & address, unsigned short port) {
-				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v6(address), port));
+			void connectIp6(boost::asio::ip::address_v6::bytes_type const & address, unsigned short port, EventHandler callback = nullptr) {
+				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v6(address), port), callback);
 			}
 			
 			/// Connect to a TCP endpoint with an IPv6 address.
@@ -117,28 +116,24 @@ namespace ascf {
 			 * \param port    The port number.
 			 */
 			template<class Enable = std::enable_if<std::is_same<typename Protocol::Transport, boost::asio::ip::tcp>::value>>
-			void connectIp6(std::string const & address, unsigned short port) {
-				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v6::from_string(address), port));
+			void connectIp6(std::string const & address, unsigned short port, EventHandler callback = nullptr) {
+				connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v6::from_string(address), port), callback);
 			}
 			
 		protected:
-			/// Get a shared pointer to this client.
-			/**
-			 * \return A shared pointer to this client.
-			 */
-			std::shared_ptr<Client<Protocol>> get_shared_() {
-				return std::static_pointer_cast<Client<Protocol>>(this->shared_from_this());
-			}
-			
 			/// Handle an asynchronous connect event.
 			/**
 			 * \param error The error that occured, if any.
 			 */
-			void handleConnect_(ErrorCode const & error) {
+			void handleConnect_(ErrorCode const & error, EventHandler callback) {
 				extension_.handleConnect(error);
-				if (on_connect) on_connect(get_shared_(), error);
+				if (callback) {
+					callback(this->get_shared_(), error);
+				} else if (error) {
+					throw ClientError<Protocol>(this->get_shared_(), error);
+				}
 				
-				if (!error) this->asyncRead_();
+				this->asyncRead_();
 			}
 			
 			/// Handle messages by passing them to the user defined message handler.
@@ -147,7 +142,7 @@ namespace ascf {
 			 */
 			void handleMessage_(typename Protocol::ServerMessage && message) {
 				if (extension_.handleMessage(message) && on_message) {
-					on_message(get_shared_(), std::forward<typename Protocol::ServerMessage>(message));
+					on_message(this->get_shared_(), std::forward<typename Protocol::ServerMessage>(message));
 				}
 			}
 			

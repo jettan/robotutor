@@ -23,8 +23,9 @@ namespace ascf {
 		friend class Server<ProtocolT>;
 		
 		public:
-			typedef ProtocolT                    Protocol;
-			typedef Connection<Protocol, true>   BaseType;
+			typedef ProtocolT                                   Protocol;
+			typedef Connection<Protocol, true>                  BaseType;
+			typedef std::shared_ptr<ServerConnection<Protocol>> SharedPtr;
 			
 		protected:
 			/// The server associated with the connection.
@@ -79,14 +80,6 @@ namespace ascf {
 				return std::make_shared<ServerConnection<Protocol>>(typename BaseType::must_be_shared_(), server, std::forward<typename Protocol::Transport::socket>(socket));
 			}
 			
-			/// Get a shared pointer to this server connection.
-			/**
-			 * \return A shared pointer to this server connection.
-			 */
-			std::shared_ptr<ServerConnection<Protocol>> get_shared_() {
-				return std::static_pointer_cast<ServerConnection<Protocol>>(this->shared_from_this());
-			}
-			
 			/// Start reading from the connection.
 			void start_() {
 				extension_.handleConnect();
@@ -99,7 +92,7 @@ namespace ascf {
 			 */
 			void handleMessage_(typename Protocol::ClientMessage && message) {
 				if (extension_.handleMessage(message)) {
-					server_.handleMessage_(get_shared_(), std::forward<typename Protocol::ClientMessage>(message));
+					server_.handleMessage_(this->get_shared_(), std::forward<typename Protocol::ClientMessage>(message));
 				}
 			}
 	};
@@ -110,11 +103,11 @@ namespace ascf {
 		friend class ServerConnection<ProtocolT>;
 		
 		public:
-			typedef boost::system::error_code  ErrorCode;
-			typedef ProtocolT                  Protocol;
-			typedef ServerConnection<Protocol> ConnectionType;
-			typedef std::function<void(std::shared_ptr<ServerConnection<Protocol>> connection, typename Protocol::ClientMessage && message)> MessageHandler;
-			typedef std::function<void(std::shared_ptr<ServerConnection<Protocol>> connection)> AcceptHandler;
+			typedef boost::system::error_code       ErrorCode;
+			typedef ProtocolT                       Protocol;
+			typedef ServerConnection<Protocol>      ConnectionType;
+			typedef std::function<void(typename ConnectionType::SharedPtr connection, typename Protocol::ClientMessage && message)> MessageHandler;
+			typedef std::function<void(typename ConnectionType::SharedPtr connection)> AcceptHandler;
 			
 			/// The message handler to invoke when a message is received.
 			MessageHandler on_message;
