@@ -31,7 +31,7 @@ namespace ascf {
 		 */
 		template<typename MessageType>
 		static std::shared_ptr<std::string> frameMessage(MessageType const & message) {
-			int size = message.ByteSize();
+			unsigned int size = message.ByteSize();
 			auto buffer = std::make_shared<std::string>();
 			buffer->reserve(4 + size);
 			
@@ -58,7 +58,7 @@ namespace ascf {
 			if (buffer.size() < 4) return false;
 			
 			// Read message size in big endian.
-			char const * data = boost::asio::buffer_cast<char const *>(buffer.data());
+			unsigned char const * data = boost::asio::buffer_cast<unsigned char const *>(buffer.data());
 			unsigned int size =
 				  (data[0] << 3 * 8)
 				+ (data[1] << 2 * 8)
