@@ -206,7 +206,7 @@ namespace ascf {
 				
 				for (auto connection : connections_) {
 					if (connection->isOpen()) {
-						connection->asyncWriteBuffer_(buffer);
+						connection->asyncWriteBuffer_(buffer, nullptr);
 					}
 				}
 			}
