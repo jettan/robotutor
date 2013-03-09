@@ -81,6 +81,8 @@ int main(int argc, char ** argv) {
 	std::string nao_host = "localhost";
 	if (argc > 1) nao_host = argv[1];
 	
+	registerCommands();
+	
 	// The main IO service.
 	boost::asio::io_service ios;
 	
@@ -110,17 +112,14 @@ int main(int argc, char ** argv) {
 	engine.server.on_message = on_message;
 	engine.server.on_accept  = on_accept;
 	
-	// Stop the io service when the speech engine is done.
-	engine.on_done.connect(std::bind(&boost::asio::io_service::stop, &ios));
-	
 	// Run the IO service.
 	while (true) {
 		try {
 			ios.run();
 			
 		} catch (ServerError const & e) {
-			std::cout << e.connection.socket().remote_endpoint() << ": " << e.what() << std::endl;
-			e.connection.close();
+			std::cout << e.connection->socket().remote_endpoint() << ": " << e.what() << std::endl;
+			e.connection->close();
 			
 		} catch (std::exception const & e) {
 			ios.reset();
