@@ -4,7 +4,7 @@ naoqi_path     ?= /opt/naoqi-sdk
 
 CXX             = c++
 PROTOC          = protoc
-CXXFLAGS_EXTRA += -std=c++11 -Wall -MP -MMD
+CXXFLAGS_EXTRA += -std=c++11 -Wall -MP -MMD -fPIC
 CXXFLAGS_EXTRA += -I$(naoqi_path)/include
 CXXFLAGS_EXTRA += -I /usr/include/opencv2
 
@@ -14,17 +14,33 @@ LDFLAGS_EXTRA  += -L$(naoqi_path)/lib/naoqi
 LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib
 LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib/naoqi
 
-engine_src    = speech_engine.cpp script_engine.cpp behavior_engine.cpp
-commands_src  = core_commands.cpp commands/behavior_commands.cpp commands/presentation_commands.cpp
-parser_src    = command.cpp script_parser.cpp command_factory.cpp
-protocol_src  = messages.pb.cxx
 
+# Core components
+engine_src     = speech_engine.cpp script_engine.cpp behavior_engine.cpp
 engine_lib    += boost_signals-mt
 engine_lib    += alcommon alproxies alvalue alsoap alerror althread
 engine_lib    += qi rttools protobuf
-commands_lib  += opencv_core opencv_highgui
+
+commands_src   = core_commands.cpp command.cpp
+commands_lib  +=
+
+parser_src     = script_parser.cpp command_factory.cpp
 parser_lib    +=
+
+protocol_src   = messages.pb.cxx
 protocol_lib  += protobuf boost_system-mt
+
+
+# Command plugins
+presentation_src  = commands/presentation_commands.cpp
+presentation_lib += opencv_core opencv_highgui
+presentation_bin  = presentation_commands.so
+
+behavior_src      = commands/behavior_commands.cpp
+behavior_lib     +=
+behavior_bin      = behavior_commands.so
+
+
 
 server_src    = robotutor_server.cpp noise_detector.cpp $(engine_src) $(commands_src) $(parser_src) $(protocol_src)
 server_lib    = alaudio alextractor $(engine_lib) $(commands_lib) $(parser_lib) $(protocol_lib)
@@ -37,7 +53,7 @@ client_bin    = robotutor-client
 -include Makefile.local
 
 .PHONY: default
-default: $(source_dir)/messages.pb.h $(server_bin) $(client_bin)
+default: $(source_dir)/messages.pb.h $(server_bin) $(client_bin) $(presentation_bin) $(behavior_bin)
 
 include Makefile.in
 
@@ -55,7 +71,8 @@ clean: clean_protobuf
 
 
 
-
 $(call define_subdir,commands)
 $(call define_program,server)
 $(call define_program,client)
+$(call define_library,presentation)
+$(call define_library,behavior)

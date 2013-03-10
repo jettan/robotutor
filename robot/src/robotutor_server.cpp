@@ -27,9 +27,6 @@ command::Factory factory;
 void registerCommands() {
 	factory.add<command::Stop>();
 	factory.add<command::Execute>();
-	factory.add<command::Behavior>();
-	factory.add<command::Slide>();
-	factory.add<command::ShowImage>();
 }
 
 

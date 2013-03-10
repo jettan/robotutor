@@ -46,11 +46,18 @@ $$(build_dir)/$1: $$(dir $$(build_dir)/$1)
 endef
 
 
+define library_template
+$$($1_bin): $$(call program_objects,$1)
+	$$(call log_tool,$$(CXX),$$(log_link)) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -shared -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
+endef
 
-program_objects   = $(addprefix $(build_dir)/,$(addsuffix .o,$(basename $($1_src))))
-program_libs      = $(addprefix -l,$($1_lib))
-define_program    = $(eval $(call program_template,$1))
-define_subdir     = $(eval $(call subdir_template,$1))
+
+
+program_objects       = $(addprefix $(build_dir)/,$(addsuffix .o,$(basename $($1_src))))
+program_libs          = $(addprefix -l,$($1_lib))
+define_program        = $(eval $(call program_template,$1))
+define_library        = $(eval $(call library_template,$1))
+define_subdir         = $(eval $(call subdir_template,$1))
 
 clean:
 	$(suppress) rm -rf '$(build_dir)'

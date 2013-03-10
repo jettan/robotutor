@@ -21,4 +21,5 @@ GeneratedFiles/
 robot/robotutor-server
 robot/robotutor-client
 
+*.so
 *.swp
