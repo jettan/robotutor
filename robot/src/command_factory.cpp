@@ -25,12 +25,21 @@ namespace robotutor {
 			if (creator == creators_.end()) throw std::runtime_error("Command `" + name + "' not found.");
 			return creator->second(parent, std::move(name), std::move(args), *this);
 		}
+		
 		/// Load commands from a shared object.
 		/**
 		 * \param pathname The pathname of the shared object.
 		 * \return True if the import succeeded.
 		 */
 		bool Factory::load(std::string const & pathname) {
+			void * plugin = dlopen(pathname.c_str(), RTLD_LAZY);
+			if (plugin) {
+				loadCommands load = reinterpret_cast<loadCommands>(dlsym(plugin, "loadCommands"));
+				if (load) {
+					load(*this);
+					return true;
+				}
+			}
 			return false;
 		}
 		

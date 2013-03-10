@@ -30,12 +30,22 @@ $(build_dir):
 -include $(build_dir)/*.d
 
 define program_template
-$$($1_bin): $$(call program_objects,$1)
+$$($1_bin): $$(call program_objects,$1) $$($1_dep)
 	$$(call log_tool,$$(CXX),$$(log_link)) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
 	
-.PHONY: __clean_$1
-clean: __clean_$1
-__clean_$1:
+.PHONY: clean_$1
+clean: clean_$1
+clean_$1::
+	$$(suppress) rm -f $$($1_bin)
+endef
+
+define library_template
+$$($1_bin): $$(call program_objects,$1) $$($1_dep)
+	$$(call log_tool,$$(CXX),$$(log_link)) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -shared -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
+	
+.PHONY: clean_$1
+clean: clean_$1
+clean_$1::
 	$$(suppress) rm -f $$($1_bin)
 endef
 
@@ -43,12 +53,6 @@ define subdir_template
 __build_tree: $$(build_dir)/$1
 $$(build_dir)/$1: $$(dir $$(build_dir)/$1)
 	$(suppress) test -d $$@ || mkdir $$@
-endef
-
-
-define library_template
-$$($1_bin): $$(call program_objects,$1)
-	$$(call log_tool,$$(CXX),$$(log_link)) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -shared -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
 endef
 
 
