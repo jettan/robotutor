@@ -1,4 +1,5 @@
 #include <memory>
+#include <stdexcept>
 
 #include <boost/lexical_cast.hpp>
 

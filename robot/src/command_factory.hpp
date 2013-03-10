@@ -1,7 +1,8 @@
 #pragma once
-
+#include <vector>
+#include <map>
 #include <functional>
-#include <stdexcept>
+#include <memory>
 
 
 namespace robotutor {
@@ -10,11 +11,12 @@ namespace robotutor {
 		
 		class Command;
 		
+		
 		/// Create a command from a name and an argument list.
 		class Factory {
 			protected:
 				/// Function type for creator functions.
-				typedef std::function<SharedPtr (Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory)> Creator;
+				typedef std::function<std::shared_ptr<Command> (Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory)> Creator;
 				
 				/// Map type for the creator map.
 				typedef std::map<std::string, Creator> CreatorMap;
@@ -29,11 +31,7 @@ namespace robotutor {
 				 * \param name The name of the command.
 				 * \param args The argument list for the command.
 				 */
-				SharedPtr create(Command * parent,  std::string && name, std::vector<std::string> && args) {
-					CreatorMap::iterator creator = creators_.find(name);
-					if (creator == creators_.end()) throw std::runtime_error("Command `" + name + "' not found.");
-					return creator->second(parent, std::move(name), std::move(args), *this);
-				}
+				std::shared_ptr<Command> create(Command * parent,  std::string && name, std::vector<std::string> && args);
 				
 				/// Register a creator.
 				/**

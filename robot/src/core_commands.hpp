@@ -2,11 +2,44 @@
 #include <string>
 #include <deque>
 #include <memory>
+#include <ostream>
 
-#include "../command.hpp"
+#include "command.hpp"
 
 namespace robotutor {
 	namespace command {
+		
+		/// Command to execute other commands.
+		struct Execute : public Command {
+			
+			/// Next subcommand.
+			unsigned int next;
+			
+			/// Construct the command.
+			Execute(Command * parent = nullptr) :
+				Command(parent),
+				next(0) {}
+			
+			/// Construct the command.
+			Execute(Command * parent, ArgList && arguments) :
+				Command(parent, std::move(arguments)),
+				next(0) {}
+			
+			/// Create the command.
+			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory);
+			
+			/// The name of the command.
+			static std::string static_name() { return "execute"; }
+			
+			/// Get the name of the command.
+			/**
+			 * \return The name of the command.
+			 */
+			std::string name() const { return Execute::static_name(); }
+			
+			/// Execute one step.
+			bool step(ScriptEngine & engine);
+		};
 		
 		/// Text command.
 		/**
@@ -66,10 +99,7 @@ namespace robotutor {
 			Stop(Command * parent) : Command(parent) {}
 			
 			/// Create a stop command.
-			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
-				if (arguments.size()) throw std::runtime_error("Stop command takes zero arguments.");
-				return std::make_shared<Stop>(parent);
-			}
+			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &);
 			
 			/// The name of the command.
 			static std::string static_name() { return "stop"; }

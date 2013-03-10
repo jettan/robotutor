@@ -1,10 +1,24 @@
-#include <ostream>
+#include <stdexcept>
 
-#include "speech_commands.hpp"
-#include "../script_engine.hpp"
+#include "core_commands.hpp"
+#include "script_engine.hpp"
+#include "script_parser.hpp"
 
 namespace robotutor {
 	namespace command {
+		
+		/// Execute one step.
+		bool Execute::step(ScriptEngine & engine) {
+			std::cout << "Execute " << this << " ";
+			if (next < arguments.size()) {
+				std::cout << "step " << next << std::endl;
+				engine.current = arguments[next++].get();
+			} else {
+				std::cout << "done" << std::endl;
+				engine.current = parent;
+			}
+			return true;
+		}
 		
 		/// Write the command to a stream.
 		/**
@@ -13,6 +27,16 @@ namespace robotutor {
 		void Speech::write(std::ostream & stream) const {
 			stream << text;
 			for (auto & argument : arguments) stream << "\n" << *argument;
+		}
+		
+		/// Create the command.
+		SharedPtr Execute::create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory) {
+			auto result = std::make_shared<Execute>(parent);
+			for (auto const & argument : arguments) {
+				result->arguments.push_back(parseScript(factory, argument));
+				result->arguments.back()->parent = result.get();
+			}
+			return result;
 		}
 		
 		/// Run the command.
@@ -55,15 +79,23 @@ namespace robotutor {
 			}
 		}
 		
+		/// Called when a bookmark is encountered.
 		void Speech::onBookmark(ScriptEngine & engine, unsigned int bookmark) {
 			engine.current = arguments[bookmark - 1].get();
 			engine.run();
 		}
 		
+		/// Called when the speech engine finished saying us.
 		void Speech::onDone(ScriptEngine & engine, bool interrupted) {
 			if (!interrupted) {
 				engine.run();
 			}
+		}
+		
+		/// Create a stop command.
+		SharedPtr Stop::create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
+			if (arguments.size()) throw std::runtime_error("Stop command takes zero arguments.");
+			return std::make_shared<Stop>(parent);
 		}
 		
 		/// Run the command.

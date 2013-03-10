@@ -6,7 +6,7 @@
 #include "parse.hpp"
 #include "command_factory.hpp"
 #include "command.hpp"
-#include "commands/speech_commands.hpp"
+#include "core_commands.hpp"
 
 namespace robotutor {
 	

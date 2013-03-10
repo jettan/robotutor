@@ -1,8 +1,6 @@
 #pragma once
-
 #include <string>
 #include <vector>
-#include <map>
 #include <ostream>
 #include <memory>
 
@@ -74,39 +72,6 @@ namespace robotutor {
 				bool done_(ScriptEngine & engine) const;
 				
 		};
-		
-		/// Command to execute other commands.
-		struct Execute : public Command {
-			
-			/// Next subcommand.
-			unsigned int next;
-			
-			/// Construct the command.
-			Execute(Command * parent = nullptr) :
-				Command(parent),
-				next(0) {}
-			
-			/// Construct the command.
-			Execute(Command * parent, ArgList && arguments) :
-				Command(parent, std::move(arguments)),
-				next(0) {}
-			
-			/// Create the command.
-			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory);
-			
-			/// The name of the command.
-			static std::string static_name() { return "execute"; }
-			
-			/// Get the name of the command.
-			/**
-			 * \return The name of the command.
-			 */
-			std::string name() const { return Execute::static_name(); }
-			
-			/// Execute one step.
-			bool step(ScriptEngine & engine);
-		};
-		
 		
 		/// Write a command to a stream.
 		/**

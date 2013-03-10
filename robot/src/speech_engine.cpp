@@ -4,7 +4,7 @@
 #include <alproxies/almemoryproxy.h>
 
 #include "speech_engine.hpp"
-#include "commands/speech_commands.hpp"
+#include "core_commands.hpp"
 
 
 namespace robotutor {

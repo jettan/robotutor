@@ -14,7 +14,7 @@
 #include "noise_detector.hpp"
 #include "messages.pb.h"
 
-#include "commands/speech_commands.hpp"
+#include "core_commands.hpp"
 #include "commands/behavior_commands.hpp"
 #include "commands/presentation_commands.hpp"
 
