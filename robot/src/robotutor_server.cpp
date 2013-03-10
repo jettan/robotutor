@@ -27,6 +27,7 @@ command::Factory factory;
 void registerCommands() {
 	factory.add<command::Stop>();
 	factory.add<command::Execute>();
+	std::cout << "Loaded " << factory.loadFolder("./") << " plugins." << std::endl;
 }
 
 

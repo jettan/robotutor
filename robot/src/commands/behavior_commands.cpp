@@ -3,9 +3,20 @@
 
 #include "behavior_commands.hpp"
 #include "../script_engine.hpp"
+#include "../command_factory.hpp"
 
 namespace robotutor {
 	namespace command {
+		
+		/// Load the commands in a factory.
+		/**
+		 * Load all commands of a plugin into a factory.
+		 * 
+		 * \param factory The factory to add the commands to.
+		 */
+		extern "C" void loadCommands(Factory & factory) {
+			factory.add<Behavior>();
+		}
 		
 		/// Construct the command.
 		/**

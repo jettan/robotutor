@@ -1,10 +1,19 @@
 #include <stdexcept>
 
+extern "C" {
+#include <dlfcn.h>
+}
+
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+
 #include "command_factory.hpp"
 
 
 namespace robotutor {
 	namespace command {
+		
+		typedef void (* loadCommands) (Factory & factory);
 		
 		/// Create a command.
 		/**
@@ -34,7 +43,14 @@ namespace robotutor {
 		 * \return The amount of objects loaded.
 		 */
 		unsigned int Factory::loadFolder(std::string const & pathname) {
-			return 0;
+			boost::filesystem::path path(pathname);
+			unsigned int total = 0;
+			if (boost::filesystem::is_directory(path)) {
+				for (boost::filesystem::directory_iterator i(path); i != boost::filesystem::directory_iterator(); ++i) {
+					if (i->path().extension() == ".so" && load(i->path().native())) ++total;
+				}
+			}
+			return total;
 		}
 		
 	}

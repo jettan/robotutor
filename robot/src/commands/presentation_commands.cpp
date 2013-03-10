@@ -4,12 +4,14 @@
 #include <alproxies/alvideodeviceproxy.h>
 #include <alvision/alimage.h>
 #include <alvision/alvisiondefinitions.h>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 #include "presentation_commands.hpp"
 #include "../script_engine.hpp"
 #include "../parser_common.hpp"
+#include "../command_factory.hpp"
 
 namespace robotutor {
 	
@@ -68,6 +70,17 @@ namespace robotutor {
 	}
 	
 	namespace command {
+		
+		/// Load the commands in a factory.
+		/**
+		 * Load all commands of a plugin into a factory.
+		 * 
+		 * \param factory The factory to add the commands to.
+		 */
+		extern "C" void loadCommands(Factory & factory) {
+			factory.add<Slide>();
+			factory.add<ShowImage>();
+		}
 		
 		/// Construct a slide command.
 		/**
