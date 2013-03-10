@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "parse.hpp"
+#include "command_factory.hpp"
 #include "command.hpp"
 #include "commands/speech_commands.hpp"
 

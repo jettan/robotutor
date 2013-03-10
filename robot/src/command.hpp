@@ -5,8 +5,6 @@
 #include <map>
 #include <ostream>
 #include <memory>
-#include <functional>
-#include <stdexcept>
 
 
 namespace robotutor {
@@ -116,62 +114,6 @@ namespace robotutor {
 		 * \param text   The text command to write.
 		 */
 		std::ostream & operator << (std::ostream & stream, Command const & command);
-		
-		/// Create a command from a name and an argument list.
-		class Factory {
-			protected:
-				/// Function type for creator functions.
-				typedef std::function<SharedPtr (Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory)> Creator;
-				
-				/// Map type for the creator map.
-				typedef std::map<std::string, Creator> CreatorMap;
-				
-				/// Map holding creator functions.
-				CreatorMap creators_;
-				
-			public:
-				
-				/// Create a command.
-				/**
-				 * \param name The name of the command.
-				 * \param args The argument list for the command.
-				 */
-				SharedPtr create(Command * parent,  std::string && name, std::vector<std::string> && args) {
-					CreatorMap::iterator creator = creators_.find(name);
-					if (creator == creators_.end()) throw std::runtime_error("Command `" + name + "' not found.");
-					return creator->second(parent, std::move(name), std::move(args), *this);
-				}
-				
-				/// Register a creator.
-				/**
-				 * \param name The name of the command.
-				 * \param creator The creator function to instantiate the command.
-				 */
-				void add(std::string const & name, Creator creator) {
-					creators_[name] = creator;
-				}
-				
-				/// Register a command.
-				/**
-				 * The type parameter must have a static create function of the right type.
-				 *
-				 * \param name The name of the command.
-				 */
-				template<typename T>
-				void add(std::string const & name) {
-					creators_[name] = &T::create;
-				}
-				
-				/// Register a command.
-				/**
-				 * The type parameter must have a static create function
-				 * and a static static_name method.
-				 */
-				template<typename T>
-				void add() {
-					creators_[T::static_name()] = &T::create;
-				}
-		};
 		
 	}
 }
