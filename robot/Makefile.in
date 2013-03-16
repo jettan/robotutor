@@ -1,5 +1,7 @@
 .PHONY: clean
 
+ECHO ?= /bin/echo
+
 log_link     = \033[36mLinking\033[0;1m $@\033[0m...
 log_compile  = \033[33mCompiling\033[0;1m $<\033[0m...
 
@@ -7,7 +9,7 @@ ifdef V
 log_tool     = $1
 suppress     =
 else
-log_tool     = @echo '$2' && $1
+log_tool     = @$(ECHO) -e '$2' && $1
 suppress     = @
 endif
 
