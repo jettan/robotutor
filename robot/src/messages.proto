@@ -17,11 +17,19 @@ message RobotMessage {
 	optional ShowImage show_image = 3;
 }
 
-message RunScript {
+
+message Run {
 	optional string script = 1;
 	optional string file   = 2;
 }
 
+message Stop   {}
+message Pause  {}
+message Resume {}
+
 message ClientMessage {
-	optional RunScript run_script = 1;
+	optional Run    run    = 1;
+	optional Stop   stop   = 2;
+	optional Pause  pause  = 3;
+	optional Resume resume = 4;
 }

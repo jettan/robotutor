@@ -37,17 +37,16 @@ command::SharedPtr parseFile(command::Factory & factory, std::string const & nam
 	return parseScript(factory, stream);
 }
 
-void handleMessage(ScriptEngine & engine, ClientMessage && message) {
-	std::cout << "Message received: " << message.DebugString() << std::endl;
-	if (message.has_run_script()) {
+void processScriptMessage(ScriptEngine & engine, ClientMessage const & message) {
+	if (message.has_run()) {
 		std::shared_ptr<command::Command> script;
 		
 		// Check if there is a script to parse.
 		try {
-			if (message.run_script().has_script()) {
-				script = parseScript(factory, message.run_script().script());
-			} else if (message.run_script().has_file()) {
-				script = parseFile(factory, message.run_script().file());
+			if (message.run().has_script()) {
+				script = parseScript(factory, message.run().script());
+			} else if (message.run().has_file()) {
+				script = parseFile(factory, message.run().file());
 			}
 		} catch (std::exception const & e) {
 			std::cout << "Error parsing script: " << e.what() << std::endl;
@@ -57,12 +56,11 @@ void handleMessage(ScriptEngine & engine, ClientMessage && message) {
 		if (script) {
 			std::cout << "Script parsed.";
 			// If the engine is busy, stop it and wait for everything to finish before running the new script.
-			if (engine.busy()) {
-				auto load_script = [&engine, script] () {
+			if (engine.started()) {
+				engine.stop([&engine, script] () {
 					engine.load(script);
-					engine.run();
-				};
-				engine.stop(load_script);
+					engine.start();
+				});
 				
 			// If the engine wasn't busy, just run the script.
 			} else {
@@ -71,6 +69,20 @@ void handleMessage(ScriptEngine & engine, ClientMessage && message) {
 			}
 		}
 	}
+}
+
+void processControlMessage(ScriptEngine & engine, ClientMessage & message) {
+	if (message.has_pause()) {
+		engine.stop();
+	} else if (message.has_resume()) {
+		engine.start();
+	}
+}
+
+void handleMessage(ScriptEngine & engine, ClientMessage && message) {
+	std::cout << "Message received: " << message.DebugString() << std::endl;
+	processScriptMessage(engine, message);
+	processControlMessage(engine, message);
 }
 
 

@@ -39,11 +39,17 @@ namespace robotutor {
 			boost::signal<void ()> on_done;
 			
 		protected:
+			/// The IO service to use.
+			boost::asio::io_service & ios_;
+			
 			/// The root command.
 			std::shared_ptr<command::Command> root_;
 			
 			/// Thread to wait in the background.
 			std::thread wait_thread_;
+			
+			/// True if the engine is started.
+			bool started_ = false;
 			
 		public:
 			/// Construct the script engine.
@@ -61,9 +67,9 @@ namespace robotutor {
 			
 			/// Check if the engine is executing a script.
 			/**
-			 * \return True if the engine is currently running a script.
+			 * \return True if the engine is currently executing a script.
 			 */
-			bool busy() { return current; }
+			bool started() { return started_; }
 			
 			/// Join any background threads created by the engine.
 			/**
@@ -71,6 +77,9 @@ namespace robotutor {
 			 * or it may still process events that use the engine.
 			 */
 			void join();
+			
+			/// Start the engine.
+			void start();
 			
 			/// Stop the engine as soon as possible.
 			/**

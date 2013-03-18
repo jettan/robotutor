@@ -51,7 +51,7 @@ namespace {
 		std::string script = buffer.str();
 		ios.post([script, client] () {
 			ClientMessage message;
-			message.mutable_run_script()->set_script(script);
+			message.mutable_run()->set_script(script);
 			client->sendMessage(message, onMessageSent);
 		});
 	}
