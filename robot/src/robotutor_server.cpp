@@ -45,10 +45,10 @@ void processScriptMessage(ScriptEngine & engine, ClientMessage const & message) 
 			std::cout << "Script parsed.";
 			// If the engine is busy, stop it and wait for everything to finish before running the new script.
 			if (engine.started()) {
-				engine.stop([&engine, script] () {
-					engine.load(script);
-					engine.start();
-				});
+				engine.stop();
+				engine.join();
+				engine.load(script);
+				engine.start();
 				
 			// If the engine wasn't busy, just run the script.
 			} else {
@@ -61,11 +61,12 @@ void processScriptMessage(ScriptEngine & engine, ClientMessage const & message) 
 
 void processControlMessage(ScriptEngine & engine, ClientMessage & message) {
 	if (message.has_stop()) {
-		engine.stop([&engine] () {
-			engine.load(nullptr);
-		});
-	else if (message.has_pause()) {
 		engine.stop();
+		engine.join();
+		engine.load(nullptr);
+	} else if (message.has_pause()) {
+		engine.stop();
+		engine.join();
 	} else if (message.has_resume()) {
 		engine.start();
 	}

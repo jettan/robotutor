@@ -14,8 +14,7 @@ namespace robotutor {
 		speech(SpeechEngine::create(ios, broker, "RTISE")),
 		behavior(ios, broker),
 		server(ios),
-		ios_(ios),
-		current_(nullptr)
+		ios_(ios)
 	{
 		server.listenIp4(8311);
 	}
@@ -32,8 +31,9 @@ namespace robotutor {
 	 * or it may still process events that use the engine.
 	 */
 	void ScriptEngine::join() {
-		wait_(nullptr);
-		wait_thread_.join();
+		speech->join();
+		behavior.join();
+		if (wait_thread_.joinable()) wait_thread_.join();
 	}
 	
 	/// Start the engine.
@@ -41,10 +41,7 @@ namespace robotutor {
 	 * Does nothing if the engine was already started.
 	 */
 	void ScriptEngine::start() {
-		if (!started_) {
-			started_ = true;
-			continue_();
-		}
+		if (!started_.exchange(true)) continue_();
 	}
 	
 	/// Stop the engine as soon as possible.
@@ -72,10 +69,8 @@ namespace robotutor {
 	void ScriptEngine::wait_(std::function<void ()> handler) {
 		speech->join();
 		behavior.join();
-		ios_.post([this, handler] () {
-			started_ = false;
-			if (handler) handler();
-		});
+		started_ = false;
+		if (handler) ios_.post(handler);
 	}
 	
 }

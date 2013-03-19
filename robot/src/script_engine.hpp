@@ -1,4 +1,6 @@
 #pragma once
+#include <atomic>
+#include <thread>
 
 #include <boost/signal.hpp>
 
@@ -45,16 +47,16 @@ namespace robotutor {
 			boost::asio::io_service & ios_;
 			
 			/// The root command.
-			std::shared_ptr<command::Command> root_;
+			std::shared_ptr<command::Command> root_ = nullptr;
 			
 			/// The current command.
-			command::Command * current_;
+			command::Command * current_ = nullptr;
+			
+			/// True if the engine is started.
+			std::atomic_bool started_ { false };
 			
 			/// Thread to wait in the background.
 			std::thread wait_thread_;
-			
-			/// True if the engine is started.
-			bool started_ = false;
 			
 		public:
 			/// Construct the script engine.
