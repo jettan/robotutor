@@ -49,7 +49,7 @@ namespace robotutor {
 	 * If there is a job currently running, it will continue as normal.
 	 */
 	void BehaviorEngine::drop() {
-		queue_.erase(queue_.begin() + 1, queue_.end());
+		if (queue_.size() > 1) queue_.erase(queue_.begin() + 1, queue_.end());
 	}
 	
 	/// Process the head of the queue.
