@@ -8,12 +8,22 @@ extern "C" {
 #include <boost/algorithm/string.hpp>
 
 #include "command_factory.hpp"
+#include "core_commands.hpp"
 
 
 namespace robotutor {
 	namespace command {
 		
 		typedef void (* loadCommands) (Factory & factory);
+		
+		/// Construct a command factory.
+		/**
+		 * The command factory will automatically load all core commands.
+		 */
+		Factory::Factory() {
+			add<command::Execute>();
+			add<command::Stop>();
+		}
 		
 		/// Create a command.
 		/**

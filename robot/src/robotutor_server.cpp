@@ -14,22 +14,10 @@
 #include "noise_detector.hpp"
 #include "messages.pb.h"
 
-#include "core_commands.hpp"
-#include "commands/behavior_commands.hpp"
-#include "commands/presentation_commands.hpp"
-
-
 
 using namespace robotutor;
 
 command::Factory factory;
-
-void registerCommands() {
-	factory.add<command::Stop>();
-	factory.add<command::Execute>();
-	std::cout << "Loaded " << factory.loadFolder("./") << " plugins." << std::endl;
-}
-
 
 command::SharedPtr parseFile(command::Factory & factory, std::string const & name) {
 	std::ifstream stream(name);
@@ -91,7 +79,8 @@ int main(int argc, char ** argv) {
 	std::string nao_host = "localhost";
 	if (argc > 1) nao_host = argv[1];
 	
-	registerCommands();
+	// Load plugins.
+	std::cout << "Loaded " << factory.loadFolder("./") << " plugins." << std::endl;
 	
 	// The main IO service.
 	boost::asio::io_service ios;

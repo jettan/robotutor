@@ -25,6 +25,11 @@ namespace robotutor {
 				CreatorMap creators_;
 				
 			public:
+				/// Construct a command factory.
+				/**
+				 * The command factory will automatically load all core commands.
+				 */
+				Factory();
 				
 				/// Create a command.
 				/**
