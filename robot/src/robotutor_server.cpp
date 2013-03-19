@@ -65,7 +65,7 @@ void processScriptMessage(ScriptEngine & engine, ClientMessage const & message) 
 			// If the engine wasn't busy, just run the script.
 			} else {
 				engine.load(script);
-				engine.run();
+				engine.start();
 			}
 		}
 	}

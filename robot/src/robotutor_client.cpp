@@ -35,10 +35,10 @@ namespace {
 		}
 	}
 	
-	void read_script(SharedClient client) {
+	void readScript(SharedClient client) {
 		std::stringstream buffer;
-		if (argc > 2) {
-			std::ifstream file(argv[2]);
+		if (argc > 3) {
+			std::ifstream file(argv[3]);
 			if (!file.good()) {
 				std::cout << "Failed to read input file." << std::endl;
 				return stop(-2);
@@ -57,14 +57,26 @@ namespace {
 	}
 	
 	void onConnect(SharedClient client, Client::ErrorCode const & error) {
+		std::string command(argv[2]);
 		if (error) {
 			std::cout << "Connection error: " << error.message() << std::endl;
 			stop(-1);
-		} else {
-			std::cout << "Connected." << std::endl;
+		} else if (command == "run") {
 			read_thread = std::thread([client] () {
-				read_script(client);
+				readScript(client);
 			});
+		} else if (command == "stop") {
+			ClientMessage message;
+			message.mutable_stop();
+			client->sendMessage(message, onMessageSent);
+		} else if (command == "pause") {
+			ClientMessage message;
+			message.mutable_pause();
+			client->sendMessage(message, onMessageSent);
+		} else if (command == "resume") {
+			ClientMessage message;
+			message.mutable_resume();
+			client->sendMessage(message, onMessageSent);
 		}
 	}
 }
@@ -73,10 +85,15 @@ int main(int argc, char ** argv) {
 	::argc = argc;
 	::argv = argv;
 	
+	if (argc < 3) {
+		std::cout << "Usage: " << std::string(argv[0]) << " server-ip command [options]" << std::endl;
+		return -1;
+	}
+	
 	// Get the server IP from command line.
 	std::string host = "127.0.0.1";
-	if (argc > 1) host = argv[1];
-	
+	std::string command;
+	host    = argv[1];
 	
 	auto client = Client::create(ios);
 	client->connectIp4(host, 8311, onConnect);
