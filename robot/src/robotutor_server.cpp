@@ -60,7 +60,11 @@ void processScriptMessage(ScriptEngine & engine, ClientMessage const & message) 
 }
 
 void processControlMessage(ScriptEngine & engine, ClientMessage & message) {
-	if (message.has_pause()) {
+	if (message.has_stop()) {
+		engine.stop([&engine] () {
+			engine.load(nullptr);
+		});
+	else if (message.has_pause()) {
 		engine.stop();
 	} else if (message.has_resume()) {
 		engine.start();
