@@ -13,12 +13,17 @@ namespace AL {
 
 namespace robotutor {
 	
+	namespace command {
+		class Command;
+	}
+	
 	/// Collection of engines required by commands.
 	/**
 	 * Commands get access to the script engine during executing.
 	 * All state must be saved in the script engine, commands may not keep state.
 	 */
 	class ScriptEngine {
+		friend class command::Command;
 		public:
 			/// The AL broker for naoqi communication.
 			boost::shared_ptr<AL::ALBroker> broker;
@@ -32,9 +37,6 @@ namespace robotutor {
 			/// The server engine.
 			Server server;
 			
-			/// The current command.
-			command::Command * current;
-			
 			/// Signal invoked when the script finished execution.
 			boost::signal<void ()> on_done;
 			
@@ -44,6 +46,9 @@ namespace robotutor {
 			
 			/// The root command.
 			std::shared_ptr<command::Command> root_;
+			
+			/// The current command.
+			command::Command * current_;
 			
 			/// Thread to wait in the background.
 			std::thread wait_thread_;
@@ -59,11 +64,7 @@ namespace robotutor {
 			ScriptEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
 			
 			/// Load a script.
-			void load(std::shared_ptr<command::Command> script) {
-				root_ = script;
-				current = root_.get();
-				std::cout << "Script loaded:\n" << *root_ << std::endl;
-			}
+			void load(std::shared_ptr<command::Command> script);
 			
 			/// Check if the engine is executing a script.
 			/**
@@ -87,15 +88,15 @@ namespace robotutor {
 			 */
 			void stop(std::function<void ()> handler = nullptr);
 			
-			/// Run the script.
-			void run();
-			
 		protected:
 			/// Wait for the engine to cleanly stop.
 			/**
 			 * \param handler The callback to invoke when the waiting is done.
 			 */
 			void wait_(std::function<void ()> callback = nullptr);
+			
+			/// Continue the script.
+			void continue_();
 	};
 	
 }

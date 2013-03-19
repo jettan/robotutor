@@ -9,15 +9,12 @@ namespace robotutor {
 		
 		/// Execute one step.
 		bool Execute::step(ScriptEngine & engine) {
-			std::cout << "Execute " << this << " ";
 			if (next < arguments.size()) {
-				std::cout << "step " << next << std::endl;
-				engine.current = arguments[next++].get();
+				setNext_(engine, arguments[next++].get());
+				return true;
 			} else {
-				std::cout << "done" << std::endl;
-				engine.current = parent;
+				return done_(engine);
 			}
-			return true;
 		}
 		
 		/// Write the command to a stream.
@@ -50,7 +47,7 @@ namespace robotutor {
 				// The command has to be delayed.
 				if (engine.speech->job()) {
 					engine.speech->job()->command->delayed.push_back(this);
-					engine.current = parent;
+					setNext_(engine, parent);
 					return true;
 					
 				// The engine isn't busy, the command should be synthesized.
@@ -68,27 +65,26 @@ namespace robotutor {
 				
 			// There are delayed commands to execute.
 			} else if (delayed.size()) {
-				engine.current = delayed.front();
+				setNext_(engine, delayed.front());
 				delayed.pop_front();
 				return true;
 				
 			// This command is totally done, we can go to our parent.
 			} else {
-				std::cout << "Speech done: " << parent << std::endl;
 				return done_(engine);
 			}
 		}
 		
 		/// Called when a bookmark is encountered.
 		void Speech::onBookmark(ScriptEngine & engine, unsigned int bookmark) {
-			engine.current = arguments[bookmark - 1].get();
-			engine.run();
+			setNext_(engine, arguments[bookmark - 1].get());
+			continue_(engine);
 		}
 		
 		/// Called when the speech engine finished saying us.
 		void Speech::onDone(ScriptEngine & engine, bool interrupted) {
 			if (!interrupted) {
-				engine.run();
+				continue_(engine);
 			}
 		}
 		
@@ -103,8 +99,9 @@ namespace robotutor {
 		 * \param engine The script engine to use for executing the command.
 		 */
 		bool Stop::step(ScriptEngine & engine) {
-			engine.speech->cancel();
-			return done_(engine);
+			engine.stop();
+			setNext_(engine, parent);
+			return false;
 		}
 	}
 }

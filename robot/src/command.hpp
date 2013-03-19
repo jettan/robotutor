@@ -62,6 +62,18 @@ namespace robotutor {
 				virtual std::string name() const = 0;
 				
 			protected:
+				/// Set the next command to be executed.
+				/**
+				 * \param next The next command to execute.
+				 */
+				void setNext_(ScriptEngine & engine, Command * next);
+				
+				/// Continue the script engine.
+				/**
+				 * Should be called by commands when an asynchronous operation completed.
+				 */
+				void continue_(ScriptEngine & engine);
+				
 				/// Should be called when the command is done.
 				/**
 				 * Sets the current command of the engine to the parent of this command.
@@ -69,7 +81,7 @@ namespace robotutor {
 				 * \param engine The script engine to modify.
 				 * \return True.
 				 */
-				bool done_(ScriptEngine & engine) const;
+				bool done_(ScriptEngine & engine);
 				
 		};
 		

@@ -14,10 +14,16 @@ namespace robotutor {
 		speech(SpeechEngine::create(ios, broker, "RTISE")),
 		behavior(ios, broker),
 		server(ios),
-		current(nullptr),
-		ios_(ios)
+		ios_(ios),
+		current_(nullptr)
 	{
 		server.listen(boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8311));
+	}
+	
+	/// Load a script.
+	void ScriptEngine::load(std::shared_ptr<command::Command> script) {
+		root_ = script;
+		current_ = root_.get();
 	}
 	
 	/// Join any background threads created by the engine.
@@ -37,7 +43,7 @@ namespace robotutor {
 	void ScriptEngine::start() {
 		if (!started_) {
 			started_ = true;
-			run();
+			continue_();
 		}
 	}
 	
@@ -54,9 +60,9 @@ namespace robotutor {
 	}
 	
 	/// Run the script.
-	void ScriptEngine::run() {
-		while (current && current->step(*this));
-		if (!current) on_done();
+	void ScriptEngine::continue_() {
+		while (current_ && current_->step(*this));
+		if (!current_) on_done();
 	}
 	
 	/// Wait for the engine to stop cleanly.

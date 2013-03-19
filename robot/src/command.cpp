@@ -26,6 +26,22 @@ namespace robotutor {
 			stream << "}";
 		}
 		
+		/// Set the next command to be executed.
+		/**
+		 * \param next The next command to execute.
+		 */
+		void Command::setNext_(ScriptEngine & engine, Command * next) {
+			engine.current_ = next;
+		}
+		
+		/// Continue the script engine.
+		/**
+		 * Should be called by commands when an asynchronous operation completed.
+		 */
+		void Command::continue_(ScriptEngine & engine) {
+			engine.continue_();
+		}
+		
 		/// Should be called when the command is done.
 		/**
 		 * Sets the current command of the engine to the parent of this command.
@@ -33,8 +49,8 @@ namespace robotutor {
 		 * \param engine The script engine to modify.
 		 * \return True.
 		 */
-		bool Command::done_(ScriptEngine & engine) const {
-			engine.current = parent;
+		bool Command::done_(ScriptEngine & engine) {
+			setNext_(engine, parent);
 			return true;
 		}
 		
