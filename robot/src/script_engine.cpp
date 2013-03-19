@@ -17,7 +17,7 @@ namespace robotutor {
 		ios_(ios),
 		current_(nullptr)
 	{
-		server.listen(boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8311));
+		server.listenIp4(8311);
 	}
 	
 	/// Load a script.
