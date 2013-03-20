@@ -56,12 +56,12 @@ client_bin    = robotutor-client
 # Presentation plugin.
 presentation_src  = commands/presentation_commands.cpp command.cpp
 presentation_lib += opencv_core opencv_highgui
-presentation_bin  = presentation_commands.so
+presentation_bin  = lib/presentation_commands.so
 
 # Behavior plugin.
 behavior_src      = commands/behavior_commands.cpp command.cpp
 behavior_lib     +=
-behavior_bin      = behavior_commands.so
+behavior_bin      = lib/behavior_commands.so
 
 -include Makefile.local
 

@@ -85,7 +85,7 @@ int main(int argc, char ** argv) {
 	if (argc > 1) nao_host = argv[1];
 	
 	// Load plugins.
-	std::cout << "Loaded " << factory.loadFolder("./") << " plugins." << std::endl;
+	std::cout << "Loaded " << factory.loadFolder("lib") << " plugins." << std::endl;
 	
 	// The main IO service.
 	boost::asio::io_service ios;
