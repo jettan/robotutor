@@ -13,48 +13,55 @@ log_tool     = @$(ECHO) -e '$2' && $1
 suppress     = @
 endif
 
+__link       = $(call log_tool,$(CXX),$(log_link)) $(LDFLAGS_EXTRA) $(LDFLAGS)
+__compile    = $(call log_tool,$(CXX),$(log_compile)) $(CXXFLAGS_EXTRA) $(CXXFLAGS)
 
-$(build_dir)/%.o: $(source_dir)/%.cpp | __build_tree
-	$(call log_tool,$(CXX),$(log_compile)) $(CXXFLAGS_EXTRA) $(CXXFLAGS) -c -o '$@' '$<'
+$(build_dir)/%.o: $(source_dir)/%.cpp
+	$(suppress) test -d './$(dir $@)' || mkdir -p './$(dir $@)'
+	$(__compile) -c -o '$@' '$<'
 
-$(build_dir)/%.o: $(source_dir)/%.cxx | __build_tree
-	$(call log_tool,$(CXX),$(log_compile)) $(CXXFLAGS_EXTRA) $(CXXFLAGS) -c -o '$@' '$<'
+$(build_dir)/%.o: $(source_dir)/%.cxx
+	$(suppress) test -d './$(dir $@)' || mkdir -p './$(dir $@)'
+	$(__compile) -c -o '$@' '$<'
 
-$(build_dir)/%.o: $(source_dir)/%.cc | __build_tree
-	$(call log_tool,$(CXX),$(log_compile)) $(CXXFLAGS_EXTRA) $(CXXFLAGS) -c -o '$@' '$<'
+$(build_dir)/%.o: $(source_dir)/%.cc
+	$(suppress) test -d './$(dir $@)' || mkdir -p './$(dir $@)'
+	$(__compile) -c -o '$@' '$<'
 
-
-.PHONY: __build_tree
-__build_tree: $(build_dir)
-$(build_dir):
-	$(suppress) test -d $@ || mkdir $@
-
--include $(build_dir)/*.d
 
 define program_template
+$(foreach builddir,$(call get_builddirs,$1),$(call define_builddir,$(builddir)))
 $$($1_bin): $$(call program_objects,$1) $$($1_dep)
-	$$(call log_tool,$$(CXX),$$(log_link)) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
-	
-.PHONY: clean_$1
-clean: clean_$1
-clean_$1::
+	$$(suppress) test -d './$(dir $@)' || mkdir -p './$(dir $@)'
+	$$(__link) -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
+
+.PHONY: __clean_$1
+clean: __clean_$1
+__clean_$1::
 	$$(suppress) rm -f $$($1_bin)
 endef
 
 define library_template
+$(foreach builddir,$(call get_builddirs,$1),$(call define_builddir,$(builddir)))
 $$($1_bin): $$(call program_objects,$1) $$($1_dep)
-	$$(call log_tool,$$(CXX),$$(log_link)) $$(LDFLAGS_EXTRA) $$(LDFLAGS) -shared -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
-	
-.PHONY: clean_$1
-clean: clean_$1
-clean_$1::
+	$$(suppress) test -d './$(dir $@)' || mkdir -p './$(dir $@)'
+	$$(__link) -shared -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
+
+.PHONY: __clean_$1
+clean: __clean_$1
+__clean_$1::
 	$$(suppress) rm -f $$($1_bin)
 endef
 
-define subdir_template
-__build_tree: $$(build_dir)/$1
-$$(build_dir)/$1: $$(dir $$(build_dir)/$1)
-	$(suppress) test -d $$@ || mkdir $$@
+define builddir_template
+ifndef __dir_$1
+__dir_$1 = 1
+-include $1/*.d
+.PHONY: __clean_$1
+clean: __clean_$1
+__clean_$1:
+	$(suppress) rm -rf '$1'
+endif
 endef
 
 
@@ -63,7 +70,5 @@ program_objects       = $(addprefix $(build_dir)/,$(addsuffix .o,$(basename $($1
 program_libs          = $(addprefix -l,$($1_lib))
 define_program        = $(eval $(call program_template,$1))
 define_library        = $(eval $(call library_template,$1))
-define_subdir         = $(eval $(call subdir_template,$1))
-
-clean:
-	$(suppress) rm -rf '$(build_dir)'
+define_builddir       = $(eval $(call builddir_template,$1))
+get_builddirs         = $(filter-out ./,$(sort $(dir $(call program_objects,$1))))

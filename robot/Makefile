@@ -67,7 +67,6 @@ behavior_bin      = behavior_commands.so
 
 
 include Makefile.in
-$(call define_subdir,commands)
 $(call define_library,robotutor)
 $(call define_program,server)
 $(call define_program,client)
@@ -83,6 +82,7 @@ $(source_dir)/messages.pb.h: $(source_dir)/messages.proto
 
 $(source_dir)/messages.pb.cc: $(source_dir)/messages.proto
 
+.PHONY: clean_protobuf
 clean_protobuf:
 	$(suppress) rm -f '$(source_dir)/messages.pb.cc'
 	$(suppress) rm -f '$(source_dir)/messages.pb.h'
