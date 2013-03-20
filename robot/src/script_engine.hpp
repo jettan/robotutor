@@ -68,6 +68,12 @@ namespace robotutor {
 			/// Load a script.
 			void load(std::shared_ptr<command::Command> script);
 			
+			/// Get the IO service used by the engine.
+			/**
+			 * \return The IO service.
+			 */
+			boost::asio::io_service & ios() { return ios_; }
+			
 			/// Check if the engine is executing a script.
 			/**
 			 * \return True if the engine is currently executing a script.

@@ -42,13 +42,15 @@ void processScriptMessage(ScriptEngine & engine, ClientMessage const & message) 
 		
 		// Run the parsed script.
 		if (script) {
-			std::cout << "Script parsed.";
+			std::cout << "Script parsed." << std::endl;
 			// If the engine is busy, stop it and wait for everything to finish before running the new script.
 			if (engine.started()) {
 				engine.stop();
 				engine.join();
-				engine.load(script);
-				engine.start();
+				engine.ios().post([&engine, script] () {
+					engine.load(script);
+					engine.start();
+				});
 				
 			// If the engine wasn't busy, just run the script.
 			} else {
