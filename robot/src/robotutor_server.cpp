@@ -17,8 +17,6 @@
 
 using namespace robotutor;
 
-command::Factory factory;
-
 command::SharedPtr parseFile(command::Factory & factory, std::string const & name) {
 	std::ifstream stream(name);
 	if (!stream.good()) throw std::runtime_error("Failed to open file `" + name + "'.");
@@ -32,9 +30,9 @@ void processScriptMessage(ScriptEngine & engine, ClientMessage const & message) 
 		// Check if there is a script to parse.
 		try {
 			if (message.run().has_script()) {
-				script = parseScript(factory, message.run().script());
+				script = parseScript(engine.factory, message.run().script());
 			} else if (message.run().has_file()) {
-				script = parseFile(factory, message.run().file());
+				script = parseFile(engine.factory, message.run().file());
 			}
 		} catch (std::exception const & e) {
 			std::cout << "Error parsing script: " << e.what() << std::endl;
@@ -86,9 +84,6 @@ int main(int argc, char ** argv) {
 	std::string nao_host = "localhost";
 	if (argc > 1) nao_host = argv[1];
 	
-	// Load plugins.
-	std::cout << "Loaded " << factory.loadFolder("lib") << " plugins." << std::endl;
-	
 	// The main IO service.
 	boost::asio::io_service ios;
 	
@@ -106,6 +101,9 @@ int main(int argc, char ** argv) {
 	
 	// Initialize the script engine.
 	ScriptEngine engine(ios, broker);
+	
+	// Load plugins.
+	std::cout << "Loaded " << engine.loadPlugins("lib") << " plugins." << std::endl;
 	
 	// Register message handler.
 	auto on_message = [&engine] (SharedServerConnection connection, ClientMessage && message) {

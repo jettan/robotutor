@@ -1,10 +1,10 @@
 #pragma once
 #include <atomic>
 #include <thread>
-
-#include <boost/signal.hpp>
+#include <functional>
 
 #include "command.hpp"
+#include "command_factory.hpp"
 #include "speech_engine.hpp"
 #include "behavior_engine.hpp"
 #include "robotutor_protocol.hpp"
@@ -15,10 +15,6 @@ namespace AL {
 
 namespace robotutor {
 	
-	namespace command {
-		class Command;
-	}
-	
 	/// Collection of engines required by commands.
 	/**
 	 * Commands get access to the script engine during executing.
@@ -27,6 +23,8 @@ namespace robotutor {
 	class ScriptEngine {
 		friend class command::Command;
 		public:
+			typedef std::function<void (ScriptEngine & engine, SharedServerConnection connection, ClientMessage const & message)> MessageHandler;
+			
 			/// The AL broker for naoqi communication.
 			boost::shared_ptr<AL::ALBroker> broker;
 			
@@ -39,8 +37,8 @@ namespace robotutor {
 			/// The server engine.
 			Server server;
 			
-			/// Signal invoked when the script finished execution.
-			boost::signal<void ()> on_done;
+			/// Command factory to use when parsing scripts.
+			command::Factory factory;
 			
 		protected:
 			/// The IO service to use.
@@ -57,6 +55,9 @@ namespace robotutor {
 			
 			/// Thread to wait in the background.
 			std::thread wait_thread_;
+			
+			/// Vector of message handlers.
+			std::vector<MessageHandler> message_handlers_;
 			
 		public:
 			/// Construct the script engine.
@@ -96,7 +97,34 @@ namespace robotutor {
 			 */
 			void stop(std::function<void ()> handler = nullptr);
 			
+			/// Add a message handler.
+			/**
+			 * \param handler The message handler.
+			 */
+			void addMessageHandler(MessageHandler handler);
+			
+			/// Load a plugin from a shared library.
+			/**
+			 * \param name The name of the shared library.
+			 */
+			bool loadPlugin(std::string const & name);
+			
+			/// Load plugins from a directory.
+			/**
+			 * All files with a ".so" extension will be loaded as plugins.
+			 *
+			 * \param directory The directory containing the plugins.
+			 */
+			unsigned int loadPlugins(std::string const & directory);
+			
 		protected:
+			/// Handle messages by passing them to all registered message handlers.
+			/**
+			 * \param connection The connection that sent the message.
+			 * \param message The message.
+			 */
+			void handleMessage_(SharedServerConnection connection, ClientMessage && message);
+			
 			/// Wait for the engine to cleanly stop.
 			/**
 			 * \param handler The callback to invoke when the waiting is done.

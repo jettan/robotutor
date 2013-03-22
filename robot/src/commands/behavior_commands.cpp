@@ -47,14 +47,13 @@ namespace robotutor {
 			}
 		};
 		
-		/// Load the commands in a factory.
+		/// Register the plugin with a script engine.
 		/**
-		 * Load all commands of a plugin into a factory.
-		 * 
-		 * \param factory The factory to add the commands to.
+		 * \param engine The script engine.
 		 */
-		extern "C" void loadCommands(Factory & factory) {
-			factory.add<Behavior>();
+		extern "C" bool registerPlugin(ScriptEngine & engine) {
+			engine.factory.add<Behavior>();
+			return true;
 		}
 	}
 }
