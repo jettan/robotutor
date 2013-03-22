@@ -7,11 +7,10 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 
 	boost::asio::io_service ios;
-	robotutor::RoboTutorClient gui;
 	robotutor::AsioThread io(ios);
+	robotutor::RoboTutorClient gui(io);
 
 	io.connectSlots(gui);
-	gui.connectSlots(io);
 
 	boost::thread ios_thread(std::bind(&robotutor::AsioThread::run, &io));
 

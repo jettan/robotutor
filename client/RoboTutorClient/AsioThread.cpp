@@ -9,10 +9,6 @@ AsioThread::AsioThread(boost::asio::io_service & ios) :
 {
 	client_->message_handler = std::bind(&AsioThread::handleServerMessage, this, std::placeholders::_1, std::placeholders::_2);
 	client_->connect_handler = std::bind(&AsioThread::handleConnect, this, std::placeholders::_1, std::placeholders::_2);
-
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
-
-	ppt_controller_.init();
 }
 
 void AsioThread::connectSlots(RoboTutorClient & gui) {
@@ -29,10 +25,10 @@ void AsioThread::quit() {
 
 void AsioThread::handleServerMessage(std::shared_ptr<ascf::Client<Protocol>> connection, RobotMessage const & message) {
 	if (message.has_slide()) {// && ppt_controller_ != NULL) {
-		emit setStatus("Message had slide!");
 		ppt_controller_.setSlide(message.slide().offset(), message.slide().relative());
 	}
-	else if (message.has_show_image()) {
+	
+	if (message.has_show_image()) {
 		ppt_controller_.createSlide("http://" + host_ + "/capture.jpg");
 	}
 }
@@ -49,12 +45,17 @@ void AsioThread::handleConnect(std::shared_ptr<ascf::Client<Protocol>> connectio
 void AsioThread::run() {
 	emit setStatus("Running IO thread.");
 
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
+	ppt_controller_.init();
+
 	while (running_) {
 		try {
 			boost::asio::io_service::work work(ios_);
 			ios_.run();
 		} catch (std::exception &e) {
 			ios_.reset();
+			client_->close();
 
 			emit setConnect(false);
 			emit setStatus("Failed to connect.");

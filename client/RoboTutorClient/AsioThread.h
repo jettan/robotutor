@@ -33,13 +33,14 @@ public:
 	void handleServerMessage(std::shared_ptr<ascf::Client<Protocol>> connection, RobotMessage const & message);
 	void handleConnect(std::shared_ptr<ascf::Client<Protocol>> connection, boost::system::error_code const & error);
 
-public slots:
 	void connectRobot(QString host, int port);
 	void disconnect();
 	void sendScript(QString script);
 	void openPresentation(QString file);
 	void pauseScript(bool pause);
 	void stopScript();
+
+	boost::asio::io_service & getIos() { return ios_; }
 
 private:
 	bool running_;

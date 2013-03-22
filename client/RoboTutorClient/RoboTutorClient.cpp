@@ -3,8 +3,8 @@
 
 namespace robotutor {
 
-RoboTutorClient::RoboTutorClient(QWidget *parent) :
-	QMainWindow(parent), status_label_(""), connected_(false), paused_(false)
+RoboTutorClient::RoboTutorClient(AsioThread & io, QWidget *parent) :
+	io_(io), QMainWindow(parent), status_label_(""), connected_(false), paused_(false)
 {
 	ui_.setupUi(this);
 
@@ -16,15 +16,6 @@ RoboTutorClient::RoboTutorClient(QWidget *parent) :
 
 RoboTutorClient::~RoboTutorClient() {
 	delete highlighter_;
-}
-
-void RoboTutorClient::connectSlots(AsioThread & asio) {
-	connect(this, SIGNAL(connectRobot(QString, int)), &asio, SLOT(connectRobot(QString, int)));
-	connect(this, SIGNAL(disconnect()), &asio, SLOT(disconnect()));
-	connect(this, SIGNAL(sendScript(QString)), &asio, SLOT(sendScript(QString)));
-	connect(this, SIGNAL(openPresentation(QString)), &asio, SLOT(openPresentation(QString)));
-	connect(this, SIGNAL(pauseScript(bool)), &asio, SLOT(pauseScript(bool)));
-	connect(this, SIGNAL(stopScript()), &asio, SLOT(stopScript()));
 }
 
 void RoboTutorClient::parseTpXml() {
@@ -69,7 +60,7 @@ void RoboTutorClient::on_presentationButton_clicked() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Choose Presentation"), "", tr("Powerpoint Files (*.ppt *.pptx);;All files (*.*)"));
 	if (fileName != "") {
 		ui_.presentationEdit->setText(fileName);
-		emit openPresentation(fileName);
+		io_.getIos().post(std::bind(&AsioThread::openPresentation, &io_, fileName));
 	}
 }
 
@@ -111,12 +102,12 @@ void RoboTutorClient::on_saveScriptAs_triggered() {
 void RoboTutorClient::on_connectButton_clicked() {
 	try {
 		if (connected_) {
-			emit disconnect();
+			io_.getIos().post(std::bind(&AsioThread::disconnect, &io_));
 			setStatus("Disconnected...");
 			setConnect(false);
 		}
 		else {
-			emit connectRobot(ui_.serverEdit->text(), ui_.portSpinBox->value());
+			io_.getIos().post(std::bind(&AsioThread::connectRobot, &io_, ui_.serverEdit->text(), ui_.portSpinBox->value()));
 			ui_.connectButton->setEnabled(false);
 			setStatus("Connecting...");
 		}
@@ -127,7 +118,7 @@ void RoboTutorClient::on_connectButton_clicked() {
 }
 
 void RoboTutorClient::on_runButton_clicked() {
-	emit sendScript(ui_.scriptEditor->toPlainText());
+	io_.getIos().post(std::bind(&AsioThread::sendScript, &io_, ui_.scriptEditor->toPlainText()));
 }
 
 void RoboTutorClient::saveScript(QString fileName) {
@@ -171,11 +162,11 @@ void RoboTutorClient::setConnect(bool status) {
 void RoboTutorClient::on_pauseButton_clicked() {
 	paused_ = !paused_;
 	ui_.pauseButton->setText(paused_ ? "Unpause" : "Pause");
-	emit pauseScript(paused_);
+	io_.getIos().post(std::bind(&AsioThread::pauseScript, &io_, paused_));
 }
 
 void RoboTutorClient::on_stopButton_clicked() {
-	emit stopScript();
+	io_.getIos().post(std::bind(&AsioThread::stopScript, &io_));
 }
 
 }

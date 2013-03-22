@@ -2,6 +2,7 @@
 #define ROBOTUTORCLIENT_H
 
 #include <iostream>
+#include <functional>
 
 #include <boost/asio/io_service.hpp>
 
@@ -16,6 +17,8 @@
 
 #include "ScriptHighlighter.h"
 
+class AsioThread;
+
 namespace robotutor {
 
 class AsioThread;
@@ -25,13 +28,13 @@ class RoboTutorClient : public QMainWindow
 	Q_OBJECT
 
 public:
-	RoboTutorClient(QWidget *parent = 0);
+	RoboTutorClient(AsioThread & io, QWidget *parent = 0);
 	~RoboTutorClient();
-
-	void connectSlots(AsioThread & asio);
 
 private:
 	Ui::RoboTutorClientClass ui_;
+
+	AsioThread & io_;
 
 	bool connected_;
 	bool paused_;
@@ -61,14 +64,6 @@ private slots:
 	void on_runButton_clicked();
 	void on_pauseButton_clicked();
 	void on_stopButton_clicked();
-
-signals:
-	void connectRobot(QString host, int port);
-	void disconnect();
-	void openPresentation(QString file);
-	void sendScript(QString script);
-	void pauseScript(bool);
-	void stopScript();
 };
 
 }
