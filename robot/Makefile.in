@@ -32,7 +32,7 @@ $(build_dir)/%.o: $(source_dir)/%.cc
 define program_template
 $(foreach builddir,$(call get_builddirs,$1),$(call define_builddir,$(builddir)))
 $$($1_bin): $$(call program_objects,$1) $$($1_dep)
-	$$(suppress) test -d './$(dir $@)' || mkdir -p './$(dir $@)'
+	$$(suppress) test -d './$$(dir $$@)' || mkdir -p './$$(dir $$@)'
 	$$(__link) -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
 
 .PHONY: __clean_$1
@@ -44,7 +44,7 @@ endef
 define library_template
 $(foreach builddir,$(call get_builddirs,$1),$(call define_builddir,$(builddir)))
 $$($1_bin): $$(call program_objects,$1) $$($1_dep)
-	$$(suppress) test -d './$(dir $@)' || mkdir -p './$(dir $@)'
+	$$(suppress) test -d './$$(dir $$@)' || mkdir -p './$$(dir $$@)'
 	$$(__link) -shared -o '$$@' $$(call program_objects,$1) $$(call program_libs,$1)
 
 .PHONY: __clean_$1
