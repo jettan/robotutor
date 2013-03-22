@@ -42,7 +42,7 @@ robotutor_bin = librobotutor.so
 # Server executable.
 server_src    = robotutor_server.cpp noise_detector.cpp
 server_lib   += alaudio alextractor alcommon alvalue alerror
-server_lib   += boost_system-mt robotutor
+server_lib   += boost_system-mt robotutor protobuf
 server_dep    = $(robotutor_bin)
 server_bin    = robotutor-server
 
