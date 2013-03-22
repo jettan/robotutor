@@ -1,5 +1,6 @@
-#include <stdexcept>
+#include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 #include "../script_engine.hpp"
 #include "../robotutor_protocol.hpp"
@@ -29,6 +30,7 @@ namespace robotutor {
 				// Run the parsed script.
 				if (script) {
 					std::cout << "Script parsed." << std::endl;
+					std::cout << *script << std::endl;
 					// If the engine is busy, stop it and wait for everything to finish before running the new script.
 					if (engine.started()) {
 						engine.stop();
