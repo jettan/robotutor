@@ -75,7 +75,6 @@ namespace robotutor {
 			tts_.stop(job_->id);
 			job_->on_done(true);
 			job_->id = 0;
-			job_ = std::shared_ptr<SpeechJob>();
 		}
 	}
 	
