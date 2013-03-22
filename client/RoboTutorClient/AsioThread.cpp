@@ -7,9 +7,6 @@ AsioThread::AsioThread(boost::asio::io_service & ios) :
 	ios_(ios), 
 	running_(true), client_(ascf::Client<Protocol>::create(ios_))
 {
-	ppt_controller_.init();
-	ppt_controller_.openPresentation("C:\\Users\\Anass\\Documents\\GitHub\\robotutor\\Nao.ppt");
-	ppt_controller_.startSlideShow();
 	client_->message_handler = std::bind(&AsioThread::handleServerMessage, this, std::placeholders::_1, std::placeholders::_2);
 	client_->connect_handler = std::bind(&AsioThread::handleConnect, this, std::placeholders::_1, std::placeholders::_2);
 
