@@ -17,9 +17,10 @@ message TurningPointMessage {
 }
 
 message RobotMessage {
-	optional Alive     alive      = 1;
-	optional Slide     slide      = 2;
-	optional ShowImage show_image = 3;
+	optional Alive     alive      		  = 1;
+	optional Slide     slide      		  = 2;
+	optional ShowImage show_image 		  = 3;
+	optional TurningPointMessage feedback = 4;
 }
 
 

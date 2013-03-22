@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include <algorithm>
 
 //#import "libid:2DF8D04C-5BFA-101B-BDE5-00AA0044DE52" \

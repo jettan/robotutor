@@ -6,8 +6,9 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
+	boost::asio::io_service ios;
 	robotutor::RoboTutorClient gui;
-	robotutor::AsioThread io;
+	robotutor::AsioThread io(ios);
 
 	io.connectSlots(gui);
 	gui.connectSlots(io);

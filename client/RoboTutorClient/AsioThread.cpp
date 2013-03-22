@@ -3,9 +3,13 @@
 
 namespace robotutor {
 
-AsioThread::AsioThread() : 
+AsioThread::AsioThread(boost::asio::io_service & ios) :
+	ios_(ios), 
 	running_(true), client_(ascf::Client<Protocol>::create(ios_))
 {
+	ppt_controller_.init();
+	ppt_controller_.openPresentation("C:\\Users\\Anass\\Documents\\GitHub\\robotutor\\Nao.ppt");
+	ppt_controller_.startSlideShow();
 	client_->message_handler = std::bind(&AsioThread::handleServerMessage, this, std::placeholders::_1, std::placeholders::_2);
 	client_->connect_handler = std::bind(&AsioThread::handleConnect, this, std::placeholders::_1, std::placeholders::_2);
 
@@ -28,7 +32,11 @@ void AsioThread::quit() {
 
 void AsioThread::handleServerMessage(std::shared_ptr<ascf::Client<Protocol>> connection, RobotMessage const & message) {
 	if (message.has_slide()) {// && ppt_controller_ != NULL) {
+		emit setStatus("Message had slide!");
 		ppt_controller_.setSlide(message.slide().offset(), message.slide().relative());
+	}
+	else if (message.has_show_image()) {
+		ppt_controller_.createSlide("http://" + host_ + "/capture.jpg");
 	}
 }
 
@@ -59,6 +67,8 @@ void AsioThread::run() {
 }
 
 void AsioThread::connectRobot(QString host, int port) {
+	host_  = host.toStdString();;
+	port_  = port;
 	client_->connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(host.toStdString()), port));
 }
 

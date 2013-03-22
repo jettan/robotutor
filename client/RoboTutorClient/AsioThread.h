@@ -24,7 +24,7 @@ class AsioThread : public QObject {
 	Q_OBJECT
 
 public:
-	AsioThread();
+	AsioThread(boost::asio::io_service & ios);
 
 	void connectSlots(RoboTutorClient & gui);
 	void run();
@@ -44,7 +44,9 @@ public slots:
 private:
 	bool running_;
 	PptController ppt_controller_;
-	boost::asio::io_service ios_;
+	boost::asio::io_service & ios_;
+	std::string host_;
+	int port_;
 	std::shared_ptr<ascf::Client<Protocol>> client_;
 
 signals:

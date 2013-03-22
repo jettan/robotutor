@@ -1,6 +1,10 @@
 #ifndef ROBOTUTORCLIENT_H
 #define ROBOTUTORCLIENT_H
 
+#include <iostream>
+
+#include <boost/asio/io_service.hpp>
+
 #include <QtWidgets/QMainWindow>
 #include "ui_RoboTutorClient.h"
 #include <QMessageBox>
@@ -9,8 +13,6 @@
 #include <QLabel>
 #include <QTimer>
 #include <QDomDocument>
-
-#include <iostream>
 
 #include "ScriptHighlighter.h"
 
