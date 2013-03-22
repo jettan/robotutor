@@ -11,6 +11,8 @@ RoboTutorClient::RoboTutorClient(QWidget *parent) :
 	ui_.statusBar->addWidget(&status_label_);
 	highlighter_ = new ScriptHighlighter(ui_.scriptEditor->document());
 
+	turning_point_path_ = QString(getenv("APPDATA")) + QString("\\Turning Technologies\\TurningPoint\\Current Session\\");
+
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 }
 
@@ -21,6 +23,44 @@ RoboTutorClient::~RoboTutorClient() {
 void RoboTutorClient::connectSlots(AsioThread & asio) {
 	connect(this, SIGNAL(connectRobot(QString, int)), &asio, SLOT(connectRobot(QString, int)));
 	connect(this, SIGNAL(sendScript(QString)), &asio, SLOT(sendScript(QString)));
+}
+
+void RoboTutorClient::parseTpXml() {
+	QString filename("TPSession.xml");
+	int errorLine, errorColumn;
+	QString errorMsg;
+	QFile file(turning_point_path_ + filename);
+	QDomDocument document;
+
+	if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
+		QString error("Syntax error line %1, column %2:\n%3");
+		error = error.arg(errorLine).arg(errorColumn).arg(errorMsg);
+		log(error);
+		return;
+	}
+
+	QDomElement lastQuestionNode = document.firstChild().firstChild().lastChild().toElement();
+	QDomElement responsesNode = lastQuestionNode.lastChild().toElement();
+	QDomElement answersNode = responsesNode.previousSibling().toElement();
+	
+	int participants = document.firstChild().lastChild().lastChild().toElement().attribute("count").toInt();
+
+	std::vector<std::pair<QString, int>> responses;
+	for (QDomNode node = answersNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
+		responses.push_back(std::make_pair(node.firstChild().toElement().text(), 0));
+	}
+
+	for (QDomNode node = responsesNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
+		QDomElement element = node.toElement();
+		QString test = element.text();
+		responses[element.text().toInt() - 1].second++;
+	}
+
+	file.close();
+}
+
+void RoboTutorClient::log(QString info) {
+	ui_.logEdit->append(info);
 }
 
 void RoboTutorClient::on_presentationButton_clicked() {
@@ -37,7 +77,8 @@ void RoboTutorClient::on_openScript_triggered() {
 	QFile script(fileName);
 	if (script.open(QIODevice::ReadOnly | QIODevice::Text) == false)
 	{
-		QMessageBox::warning(this, tr("Cannot open file"), "The file that was selected could not be opened.");
+		//QMessageBox::warning(this, tr("Cannot open file"), "The file that was selected could not be opened.");
+		log("The file that was selected could not be opened.");
 		return;
 	}
 
@@ -69,7 +110,8 @@ void RoboTutorClient::on_connectButton_clicked() {
 		ui_.connectButton->setEnabled(false);
 		setStatus("Connecting...");
 	} catch (std::exception const &e) {
-		QMessageBox::critical(this, tr("Cannot connect"), QString("Failed to connect to the server: ") + QString(e.what()));
+		//QMessageBox::critical(this, tr("Cannot connect"), QString("Failed to connect to the server: ") + QString(e.what()));
+		log(QString("Failed to connect to the server: ") + QString(e.what()));
 	}
 }
 
@@ -81,7 +123,8 @@ void RoboTutorClient::saveScript(QString fileName) {
 	QFile script(fileName);
 	if (script.open(QIODevice::WriteOnly | QIODevice::Text) == false)
 	{
-		QMessageBox::warning(this, tr("Cannot save file"), "The file that was selected could not be saved.");
+		//QMessageBox::warning(this, tr("Cannot save file"), "The file that was selected could not be saved.");
+		log("The file that was selected could not be saved.");
 		return;
 	}
 
@@ -108,10 +151,6 @@ void RoboTutorClient::setStatus(QString status) {
 void RoboTutorClient::setConnect(bool status) {
 	ui_.connectButton->setEnabled(!status);
 	ui_.runButton->setEnabled(status);
-}
-
-void RoboTutorClient::criticalInformation(QString title, QString info) {
-	QMessageBox::critical(this, title, info);
 }
 
 }

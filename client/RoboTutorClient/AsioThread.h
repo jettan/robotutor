@@ -45,7 +45,7 @@ private:
 signals:
 	void setStatus(QString status);
 	void setConnect(bool status);
-	void criticalInformation(QString title, QString info);
+	void log(QString info);
 };
 
 }

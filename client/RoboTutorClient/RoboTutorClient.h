@@ -8,6 +8,7 @@
 #include <QTextStream>
 #include <QLabel>
 #include <QTimer>
+#include <QDomDocument>
 
 #include <iostream>
 
@@ -34,16 +35,19 @@ private:
 
 	QString script_path_;
 	QLabel status_label_;
+	QString turning_point_path_;
 
 	ScriptHighlighter *highlighter_;
 
 	void setScriptPath(QString path);
 	void saveScript(QString fileName);
 
+	void parseTpXml();
+
 public slots:
 	void setStatus(QString status);
 	void setConnect(bool status);
-	void criticalInformation(QString title, QString info);
+	void log(QString info);
 
 private slots:
 	void on_openScript_triggered();
