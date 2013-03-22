@@ -54,12 +54,12 @@ client_bin    = robotutor-client
 
 
 # Presentation plugin.
-presentation_src  = commands/presentation_commands.cpp command.cpp
+presentation_src  = plugins/presentation_commands.cpp
 presentation_lib += opencv_core opencv_highgui boost_system-mt protobuf alproxies alvalue robotutor
 presentation_bin  = lib/presentation_commands.so
 
 # Behavior plugin.
-behavior_src      = commands/behavior_commands.cpp command.cpp
+behavior_src      = plugins/behavior_commands.cpp
 behavior_lib     += boost_system-mt robotutor
 behavior_bin      = lib/behavior_commands.so
 
