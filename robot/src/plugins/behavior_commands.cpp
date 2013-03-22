@@ -4,7 +4,6 @@
 
 #include "../script_engine.hpp"
 #include "../command.hpp"
-#include "../command_factory.hpp"
 
 namespace robotutor {
 	namespace command {

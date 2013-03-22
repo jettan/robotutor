@@ -11,7 +11,6 @@
 #include "presentation_commands.hpp"
 #include "../script_engine.hpp"
 #include "../parser_common.hpp"
-#include "../command_factory.hpp"
 
 namespace robotutor {
 	

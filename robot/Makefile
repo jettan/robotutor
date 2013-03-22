@@ -53,15 +53,20 @@ client_dep    = $(robotutor_bin)
 client_bin    = robotutor-client
 
 
-# Presentation plugin.
-presentation_src  = plugins/presentation_commands.cpp
-presentation_lib += opencv_core opencv_highgui boost_system-mt protobuf alproxies alvalue robotutor
-presentation_bin  = lib/presentation_commands.so
+# Control plugin.
+control_src      = plugins/control_messages.cpp
+control_lib     += robotutor
+control_bin      = lib/control_messages.so
 
 # Behavior plugin.
 behavior_src      = plugins/behavior_commands.cpp
 behavior_lib     += boost_system-mt robotutor
 behavior_bin      = lib/behavior_commands.so
+
+# Presentation plugin.
+presentation_src  = plugins/presentation_commands.cpp
+presentation_lib += opencv_core opencv_highgui boost_system-mt protobuf alproxies alvalue robotutor
+presentation_bin  = lib/presentation_commands.so
 
 -include Makefile.local
 
@@ -70,10 +75,11 @@ include Makefile.in
 $(call define_library,robotutor)
 $(call define_program,server)
 $(call define_program,client)
-$(call define_library,presentation)
+$(call define_library,control)
 $(call define_library,behavior)
+$(call define_library,presentation)
 
-default: $(source_dir)/messages.pb.h $(server_bin) $(robotutor_bin) $(client_bin) $(presentation_bin) $(behavior_bin)
+default: $(source_dir)/messages.pb.h $(server_bin) $(robotutor_bin) $(client_bin) $(presentation_bin) $(behavior_bin) $(control_bin)
 
 
 # Call protoc to generate protobuffer C++ files.
