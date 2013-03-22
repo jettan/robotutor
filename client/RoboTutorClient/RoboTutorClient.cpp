@@ -22,6 +22,7 @@ RoboTutorClient::~RoboTutorClient() {
 
 void RoboTutorClient::connectSlots(AsioThread & asio) {
 	connect(this, SIGNAL(connectRobot(QString, int)), &asio, SLOT(connectRobot(QString, int)));
+	connect(this, SIGNAL(disconnect()), &asio, SLOT(disconnect()));
 	connect(this, SIGNAL(sendScript(QString)), &asio, SLOT(sendScript(QString)));
 }
 
@@ -106,9 +107,16 @@ void RoboTutorClient::on_saveScriptAs_triggered() {
 
 void RoboTutorClient::on_connectButton_clicked() {
 	try {
-		emit connectRobot(ui_.serverEdit->text(), ui_.portSpinBox->value());
-		ui_.connectButton->setEnabled(false);
-		setStatus("Connecting...");
+		if (connected_) {
+			emit disconnect();
+			setStatus("Disconnected...");
+			setConnect(false);
+		}
+		else {
+			emit connectRobot(ui_.serverEdit->text(), ui_.portSpinBox->value());
+			ui_.connectButton->setEnabled(false);
+			setStatus("Connecting...");
+		}
 	} catch (std::exception const &e) {
 		//QMessageBox::critical(this, tr("Cannot connect"), QString("Failed to connect to the server: ") + QString(e.what()));
 		log(QString("Failed to connect to the server: ") + QString(e.what()));
@@ -149,8 +157,12 @@ void RoboTutorClient::setStatus(QString status) {
 }
 
 void RoboTutorClient::setConnect(bool status) {
-	ui_.connectButton->setEnabled(!status);
+	connected_ = status;
+	ui_.connectButton->setEnabled(true);
+	ui_.connectButton->setText(connected_ ? "Disconnect" : "Connect");
 	ui_.runButton->setEnabled(status);
+	ui_.serverEdit->setEnabled(!status);
+	ui_.portSpinBox->setEnabled(!status);
 }
 
 }

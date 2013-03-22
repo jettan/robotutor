@@ -57,6 +57,10 @@ void AsioThread::connectRobot(QString host, int port) {
 	client_->connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(host.toStdString()), port));
 }
 
+void AsioThread::disconnect() {
+	client_->close();
+}
+
 void AsioThread::sendScript(QString script) {
 	try {
 		ClientMessage message;

@@ -59,6 +59,7 @@ private slots:
 
 signals:
 	void connectRobot(QString host, int port);
+	void disconnect();
 	void sendScript(QString script);
 };
 

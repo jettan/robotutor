@@ -34,6 +34,7 @@ public:
 
 public slots:
 	void connectRobot(QString host, int port);
+	void disconnect();
 	void sendScript(QString script);
 
 private:
