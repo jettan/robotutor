@@ -15,8 +15,7 @@ void PptController::init() {
 
 		_putws(L"PowerPoint.Application is started");
 
-		// By default PowerPoint is invisible, till you make it visible:
-		ppt_->put_Visible(Office::MsoTriState::msoFalse);
+		ppt_->put_Visible(Office::MsoTriState::msoTrue);
 	}
 	catch (_com_error &err)
 	{
@@ -43,7 +42,6 @@ void PptController::openPresentation(std::string fileName)
 	_putws(L"Opening presentation..");
 	try
 	{
-		ppt_->put_Visible(Office::MsoTriState::msoTrue);
 		pres_ = ppt_->Presentations->Open(_bstr_t(fileName.c_str()),
 										  Office::MsoTriState::msoTrue,
 										  Office::MsoTriState::msoTrue,

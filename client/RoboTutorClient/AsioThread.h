@@ -5,6 +5,7 @@
 #include <boost/asio.hpp>
 
 #include <QObject>
+#include <QString>
 
 #include "protobuf.hpp"
 #include "protocol/messages.pb.h"
@@ -36,6 +37,9 @@ public slots:
 	void connectRobot(QString host, int port);
 	void disconnect();
 	void sendScript(QString script);
+	void openPresentation(QString file);
+	void pauseScript(bool pause);
+	void stopScript();
 
 private:
 	bool running_;

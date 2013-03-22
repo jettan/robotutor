@@ -32,6 +32,7 @@ private:
 	Ui::RoboTutorClientClass ui_;
 
 	bool connected_;
+	bool paused_;
 
 	QString script_path_;
 	QLabel status_label_;
@@ -56,11 +57,16 @@ private slots:
 	void on_presentationButton_clicked();
 	void on_connectButton_clicked();
 	void on_runButton_clicked();
+	void on_pauseButton_clicked();
+	void on_stopButton_clicked();
 
 signals:
 	void connectRobot(QString host, int port);
 	void disconnect();
+	void openPresentation(QString file);
 	void sendScript(QString script);
+	void pauseScript(bool);
+	void stopScript();
 };
 
 }

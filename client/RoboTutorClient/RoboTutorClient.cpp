@@ -4,7 +4,7 @@
 namespace robotutor {
 
 RoboTutorClient::RoboTutorClient(QWidget *parent) :
-	QMainWindow(parent), status_label_(""), connected_(false)
+	QMainWindow(parent), status_label_(""), connected_(false), paused_(false)
 {
 	ui_.setupUi(this);
 
@@ -12,8 +12,6 @@ RoboTutorClient::RoboTutorClient(QWidget *parent) :
 	highlighter_ = new ScriptHighlighter(ui_.scriptEditor->document());
 
 	turning_point_path_ = QString(getenv("APPDATA")) + QString("\\Turning Technologies\\TurningPoint\\Current Session\\");
-
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 }
 
 RoboTutorClient::~RoboTutorClient() {
@@ -24,6 +22,9 @@ void RoboTutorClient::connectSlots(AsioThread & asio) {
 	connect(this, SIGNAL(connectRobot(QString, int)), &asio, SLOT(connectRobot(QString, int)));
 	connect(this, SIGNAL(disconnect()), &asio, SLOT(disconnect()));
 	connect(this, SIGNAL(sendScript(QString)), &asio, SLOT(sendScript(QString)));
+	connect(this, SIGNAL(openPresentation(QString)), &asio, SLOT(openPresentation(QString)));
+	connect(this, SIGNAL(pauseScript(bool)), &asio, SLOT(pauseScript(bool)));
+	connect(this, SIGNAL(stopScript()), &asio, SLOT(stopScript()));
 }
 
 void RoboTutorClient::parseTpXml() {
@@ -66,8 +67,10 @@ void RoboTutorClient::log(QString info) {
 
 void RoboTutorClient::on_presentationButton_clicked() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Choose Presentation"), "", tr("Powerpoint Files (*.ppt *.pptx);;All files (*.*)"));
-	if (fileName != "")
+	if (fileName != "") {
 		ui_.presentationEdit->setText(fileName);
+		emit openPresentation(fileName);
+	}
 }
 
 void RoboTutorClient::on_openScript_triggered() {
@@ -163,6 +166,16 @@ void RoboTutorClient::setConnect(bool status) {
 	ui_.runButton->setEnabled(status);
 	ui_.serverEdit->setEnabled(!status);
 	ui_.portSpinBox->setEnabled(!status);
+}
+
+void RoboTutorClient::on_pauseButton_clicked() {
+	paused_ = !paused_;
+	ui_.pauseButton->setText(paused_ ? "Unpause" : "Pause");
+	emit pauseScript(paused_);
+}
+
+void RoboTutorClient::on_stopButton_clicked() {
+	emit stopScript();
 }
 
 }
