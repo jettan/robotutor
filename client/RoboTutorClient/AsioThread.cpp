@@ -18,7 +18,6 @@ void AsioThread::connectSlots(RoboTutorClient & gui) {
 }
 
 void AsioThread::quit() {
-	ppt_controller_.closePowerpoint();
 	running_ = false;
 	ios_.stop();
 }
@@ -62,6 +61,8 @@ void AsioThread::run() {
 			emit log("[Critical] IO error occured: " + QString(e.what()));
 		}
 	}
+
+	ppt_controller_.closePowerpoint();
 }
 
 void AsioThread::connectRobot(QString host, int port) {
