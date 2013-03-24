@@ -1,13 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <functional>
-#include <type_traits>
-
-#include <boost/asio.hpp>
-
-#include "connection.hpp"
-
 namespace ascf {
 	
 	template<typename ProtocolT>

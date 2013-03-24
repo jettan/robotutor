@@ -1,22 +1,6 @@
 #ifndef ROBOTUTORCLIENT_H
 #define ROBOTUTORCLIENT_H
 
-#include <iostream>
-#include <functional>
-
-#include <boost/asio/io_service.hpp>
-
-#include <QtWidgets/QMainWindow>
-#include "ui_RoboTutorClient.h"
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QTextStream>
-#include <QLabel>
-#include <QTimer>
-#include <QDomDocument>
-
-#include "ScriptHighlighter.h"
-
 class AsioThread;
 
 namespace robotutor {

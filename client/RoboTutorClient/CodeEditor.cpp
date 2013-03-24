@@ -38,8 +38,7 @@
 **
 ****************************************************************************/
 
-#include <QtWidgets>
-#include "CodEeditor.h"
+#include "StdAfx.h"
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 	lineNumberArea = new LineNumberArea(this);

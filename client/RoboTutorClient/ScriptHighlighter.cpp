@@ -1,4 +1,4 @@
-#include "ScriptHighlighter.h"
+#include "StdAfx.h"
 
 ScriptHighlighter::ScriptHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent) {
 	behaviour_format_.setForeground(Qt::darkGreen);

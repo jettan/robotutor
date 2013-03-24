@@ -1,5 +1,4 @@
-#include "AsioThread.h"
-#include "RoboTutorClient.h"
+#include "StdAfx.h"
 
 namespace robotutor {
 

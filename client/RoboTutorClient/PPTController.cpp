@@ -1,4 +1,4 @@
-#include "PptController.h"
+#include "StdAfx.h"
 
 //DWORD WINAPI AutomatePowerPointByImport(LPVOID lpParam);
 

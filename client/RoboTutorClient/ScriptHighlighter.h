@@ -1,5 +1,4 @@
 #pragma once
-#include <QSyntaxHighlighter>
 
 struct HighlightingRule {
 	QRegExp pattern;

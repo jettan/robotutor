@@ -1,6 +1,4 @@
-#include "RoboTutorClient.h"
-#include "AsioThread.h"
-#include <QtWidgets/QApplication>
+#include "StdAfx.h"
 
 int main(int argc, char *argv[])
 {

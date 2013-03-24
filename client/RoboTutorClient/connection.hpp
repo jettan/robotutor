@@ -1,12 +1,5 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <functional>
-
-#include <boost/asio.hpp>
-
-
 namespace ascf {
 	template<typename Protocol, bool IsServer> class Connection;
 	template<typename Protocol> class Server;

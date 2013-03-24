@@ -1,14 +1,5 @@
 #pragma once
 
-#include <string>
-#include <memory>
-
-#include <boost/asio.hpp>
-#include <boost/optional.hpp>
-
-#include "connection.hpp"
-#include "client.hpp"
-
 namespace ascf {
 	
 	/// Protocol Buffers protocol.

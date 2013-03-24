@@ -36,7 +36,6 @@
 
 #include <QtWidgets>
 #include <QtWidgets/QApplication>
-#include <QString>
 #include <QPlainTextEdit>
 #include <QtWidgets/QMainWindow>
 #include <QMessageBox>

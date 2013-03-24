@@ -1,19 +1,6 @@
 #ifndef ASIOTHREAD_H
 #define ASIOTHREAD_H
 
-#include <boost/thread.hpp>
-#include <boost/asio.hpp>
-
-#include <QObject>
-#include <QString>
-
-#include "protobuf.hpp"
-#include "protocol/messages.pb.h"
-#include "connection.hpp"
-
-#include "client.hpp"
-#include "PptController.h"
-
 namespace robotutor {
 
 class RoboTutorClient;
