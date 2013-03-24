@@ -19,7 +19,7 @@ namespace robotutor {
 	ScriptEngine::ScriptEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker) :
 		broker(broker),
 		speech(SpeechEngine::create(ios, broker, "RTISE")),
-		behavior(ios, broker),
+		behavior(ios, broker, random),
 		server(ios),
 		ios_(ios)
 	{
@@ -29,7 +29,7 @@ namespace robotutor {
 	
 	/// Load a script.
 	void ScriptEngine::load(std::shared_ptr<command::Command> script) {
-		root_ = script;
+		root_    = script;
 		current_ = root_.get();
 	}
 	

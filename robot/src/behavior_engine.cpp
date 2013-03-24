@@ -1,5 +1,8 @@
-#include <functional>
+#include <vector>
 
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 #include <boost/asio/io_service.hpp>
 
 #include "behavior_engine.hpp"
@@ -22,10 +25,12 @@ namespace robotutor {
 	/**
 	 * \param ios The IO service to use.
 	 * \param broker The ALBroker to use for communicating with naoqi.
+	 * \param random Random number generator to use.
 	 */
-	BehaviorEngine::BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker) :
+	BehaviorEngine::BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, boost::random::mt19937 & random) :
 		ios_(ios),
-		bm_(broker) {}
+		bm_(broker),
+		random_(random) {}
 	
 	
 	/// Queue a job for execution.
@@ -37,6 +42,21 @@ namespace robotutor {
 		if (queue_.size() == 1) {
 			unqueue_();
 		}
+	}
+	
+	/// Queue a random behavior.
+	/**
+	 * \param prefix The prefix to select behaviors from.
+	 */
+	void BehaviorEngine::enqueueRandom(std::string const & prefix) {
+		std::vector<std::string> installed = bm_.getInstalledBehaviors();
+		std::vector<std::string> matching;
+		for (auto const & behavior : installed) {
+			if (boost::starts_with(behavior, prefix)) matching.push_back(behavior);
+		}
+		
+		boost::random::uniform_int_distribution<> range(0, matching.size() - 1);
+		enqueue(matching[range(random_)]);
 	}
 	
 	/// Join any background threads created by the engine.

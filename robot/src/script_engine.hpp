@@ -3,6 +3,8 @@
 #include <thread>
 #include <functional>
 
+#include <boost/random/mersenne_twister.hpp>
+
 #include "command.hpp"
 #include "command_factory.hpp"
 #include "speech_engine.hpp"
@@ -39,6 +41,9 @@ namespace robotutor {
 			
 			/// Command factory to use when parsing scripts.
 			command::Factory factory;
+			
+			/// Random number generator.
+			boost::random::mt19937 random;
 			
 		protected:
 			/// The IO service to use.

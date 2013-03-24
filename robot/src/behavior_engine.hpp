@@ -6,6 +6,7 @@
 #include <thread>
 
 #include <boost/signal.hpp>
+#include <boost/random/mersenne_twister.hpp>
 
 #include <alproxies/albehaviormanagerproxy.h>
 
@@ -73,19 +74,29 @@ namespace robotutor {
 			/// Thread to wait for job completion.
 			std::thread wait_thread_;
 			
+			/// Random number generator.
+			boost::random::mt19937 & random_;
+			
 		public:
 			/// Construct the behaviour engine.
 			/**
 			 * \param ios The IO service to use.
 			 * \param broker The ALBroker to use for communicating with naoqi.
+			 * \param random Random number generator to use.
 			 */
-			BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker);
+			BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, boost::random::mt19937 & random);
 			
 			/// Queue a job for execution.
 			/**
 			 * \param job The job.
 			 */
 			void enqueue(BehaviorJob const & job);
+			
+			/// Queue a random behavior.
+			/**
+			 * \param prefix The prefix to select behaviors from.
+			 */
+			void enqueueRandom(std::string const & prefix);
 			
 			/// Queue a job for execution.
 			/**
