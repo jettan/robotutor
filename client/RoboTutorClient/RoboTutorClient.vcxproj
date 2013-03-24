@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -64,6 +64,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;libprotobuf.lib;Qt5Xmld.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+   <CustomBuild>
+      <Command>$(ProjectDir)protocol\protoc --cpp_out=$(ProjectDir)protocol\ --proto_path=$(ProjectDir)protocol\ $(ProjectDir)protocol\messages.proto</Command>
+      <Outputs>$(ProjectDir)protocol\messages.pb.cc;$(ProjectDir)protocol\messages.pb.h</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -81,6 +85,10 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;libprotobuf.lib;Qt5Xml.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+   <CustomBuild>
+      <Command>$(ProjectDir)protocol\protoc --cpp_out=$(ProjectDir)protocol\ --proto_path=$(ProjectDir)protocol\ $(ProjectDir)protocol\messages.proto</Command>
+      <Outputs>$(ProjectDir)protocol\messages.pb.cc;$(ProjectDir)protocol\messages.pb.h</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AsioThread.cpp" />
@@ -184,6 +192,11 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RoboTutorClient.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="protocol\messages.proto">
+      <FileType>Document</FileType>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -39,6 +39,9 @@
     <Filter Include="Header Files\protocol">
       <UniqueIdentifier>{09186b7a-b995-41be-b557-f84adbfbb53e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Messages">
+      <UniqueIdentifier>{3a8e30b4-3d56-4fa5-bb95-637aa93ee010}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -58,9 +61,6 @@
     </ClCompile>
     <ClCompile Include="PptController.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="protocol\messages.pb.cc">
-      <Filter>Source Files\protocol</Filter>
     </ClCompile>
     <ClCompile Include="CodeEditor.cpp">
       <Filter>Source Files</Filter>
@@ -83,6 +83,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_AsioThread.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="protocol\messages.pb.cc">
+      <Filter>Source Files\protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RoboTutorClient.h">
@@ -99,6 +102,9 @@
     </CustomBuild>
     <CustomBuild Include="AsioThread.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="protocol\messages.proto">
+      <Filter>Messages</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -117,11 +123,11 @@
     <ClInclude Include="PptController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="protocol\messages.pb.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptHighlighter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\messages.pb.h">
+      <Filter>Header Files\protocol</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
