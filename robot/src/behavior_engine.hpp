@@ -86,6 +86,9 @@ namespace robotutor {
 			 */
 			BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, boost::random::mt19937 & random);
 			
+			/// Get the number of queued jobs.
+			unsigned int queued() { return queue_.size(); }
+			
 			/// Queue a job for execution.
 			/**
 			 * \param job The job.

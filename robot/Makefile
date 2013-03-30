@@ -20,7 +20,7 @@ LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib
 LDFLAGS_EXTRA  += -Wl,-rpath,$(naoqi_path)/lib/naoqi
 
 # Core components
-engine_src     = speech_engine.cpp script_engine.cpp behavior_engine.cpp
+engine_src     = speech_engine.cpp script_engine.cpp behavior_engine.cpp pose_changer.cpp
 engine_lib    += boost_signals-mt
 engine_lib    += alcommon alproxies alvalue alsoap alerror althread
 engine_lib    += qi rttools protobuf
