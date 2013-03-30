@@ -9,6 +9,7 @@
 #include "command_factory.hpp"
 #include "speech_engine.hpp"
 #include "behavior_engine.hpp"
+#include "pose_changer.hpp"
 #include "robotutor_protocol.hpp"
 
 namespace AL {
@@ -44,6 +45,9 @@ namespace robotutor {
 			
 			/// Random number generator.
 			boost::random::mt19937 random;
+			
+			/// Random pose changer.
+			PoseChanger pose_changer;
 			
 		protected:
 			/// The IO service to use.

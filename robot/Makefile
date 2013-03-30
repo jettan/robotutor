@@ -68,6 +68,11 @@ presentation_src  = plugins/presentation.cpp
 presentation_lib += opencv_core opencv_highgui boost_system-mt protobuf alproxies alvalue robotutor
 presentation_bin  = lib/presentation.so
 
+# Pose changes plugin.
+pose_src      = plugins/pose_changes.cpp
+pose_lib     += robotutor
+pose_bin      = lib/pose_changes.so
+
 -include Makefile.local
 
 
@@ -78,8 +83,9 @@ $(call define_program,client)
 $(call define_library,control)
 $(call define_library,behavior)
 $(call define_library,presentation)
+$(call define_library,pose)
 
-default: $(source_dir)/messages.pb.h $(server_bin) $(robotutor_bin) $(client_bin) $(presentation_bin) $(behavior_bin) $(control_bin)
+default: $(source_dir)/messages.pb.h $(server_bin) $(robotutor_bin) $(client_bin) $(presentation_bin) $(behavior_bin) $(control_bin) $(pose_bin)
 
 
 # Call protoc to generate protobuffer C++ files.

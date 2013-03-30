@@ -21,6 +21,7 @@ namespace robotutor {
 		speech(SpeechEngine::create(ios, broker, "RTISE")),
 		behavior(ios, broker, random),
 		server(ios),
+		pose_changer(ios, random, behavior, "short"),
 		ios_(ios)
 	{
 		server.listenIp4(8311);
