@@ -8,6 +8,7 @@
 namespace robotutor {
 	
 	class ScriptEngine;
+	class Plugin;
 	
 	/// Namespace to contain all commands.
 	namespace command {
@@ -19,7 +20,7 @@ namespace robotutor {
 		typedef std::shared_ptr<Command> SharedPtr;
 		
 		/// Argument list, containing shared pointers to commands.
-		typedef std::vector<SharedPtr> ArgList;
+		typedef std::vector<SharedPtr> CommandList;
 		
 		/// Base class for executables.
 		class Command : public std::enable_shared_from_this<Command> {
@@ -27,17 +28,23 @@ namespace robotutor {
 				/// The parent command.
 				Command * parent;
 				
+				/// The plugin for the command.
+				Plugin * plugin;
+				
 				/// Arguments for the command.
-				ArgList arguments;
+				CommandList children;
 				
 				/// Construct a command without arguments.
-				Command(Command * parent = nullptr) : parent(parent) {}
+				Command(Command * parent, Plugin * plugin) :
+					parent(parent),
+					plugin(plugin) {}
 				
-				/// Construct a command with arguments.
-				Command(Command * parent, ArgList const & arguments) : arguments(arguments) {}
-				
-				/// Construct a command with arguments.
-				Command(Command * parent, ArgList && arguments) : arguments(std::move(arguments)) {}
+				/// Construct a command with children.
+				template<typename Children>
+				Command(Command * parent, Plugin * plugin, Children && children) :
+					parent(parent),
+					plugin(plugin),
+					children(std::forward<Children>(children)) {}
 				
 				/// Virtual destructor.
 				virtual ~Command() {};

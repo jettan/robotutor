@@ -9,7 +9,6 @@
 #include "command_factory.hpp"
 #include "speech_engine.hpp"
 #include "behavior_engine.hpp"
-#include "pose_changer.hpp"
 #include "robotutor_protocol.hpp"
 
 namespace AL {
@@ -21,12 +20,10 @@ namespace robotutor {
 	/// Collection of engines required by commands.
 	/**
 	 * Commands get access to the script engine during executing.
-	 * All state must be saved in the script engine, commands may not keep state.
 	 */
 	class ScriptEngine {
 		friend class command::Command;
 		public:
-			typedef std::function<void (ScriptEngine & engine, SharedServerConnection connection, ClientMessage const & message)> MessageHandler;
 			
 			/// The AL broker for naoqi communication.
 			boost::shared_ptr<AL::ALBroker> broker;
@@ -46,27 +43,24 @@ namespace robotutor {
 			/// Random number generator.
 			boost::random::mt19937 random;
 			
-			/// Random pose changer.
-			PoseChanger pose_changer;
-			
 		protected:
 			/// The IO service to use.
 			boost::asio::io_service & ios_;
 			
+			/// Registered plugins.
+			std::vector<std::shared_ptr<Plugin>> plugins_;
+			
 			/// The root command.
-			std::shared_ptr<command::Command> root_ = nullptr;
+			std::shared_ptr<command::Command> root_ { nullptr };
 			
 			/// The current command.
-			command::Command * current_ = nullptr;
+			command::Command * current_ { nullptr };
 			
 			/// True if the engine is started.
 			std::atomic_bool started_ { false };
 			
 			/// Thread to wait in the background.
 			std::thread wait_thread_;
-			
-			/// Vector of message handlers.
-			std::vector<MessageHandler> message_handlers_;
 			
 		public:
 			/// Construct the script engine.
@@ -105,12 +99,6 @@ namespace robotutor {
 			 * \param callback Callback to invoke when the engine was stopped.
 			 */
 			void stop(std::function<void ()> handler = nullptr);
-			
-			/// Add a message handler.
-			/**
-			 * \param handler The message handler.
-			 */
-			void addMessageHandler(MessageHandler handler);
 			
 			/// Load a plugin from a shared library.
 			/**

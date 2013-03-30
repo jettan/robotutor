@@ -42,10 +42,9 @@ int main(int argc, char ** argv) {
 	std::cout << "Loaded " << engine.loadPlugins("lib") << " plugins." << std::endl;
 	
 	// Register accept handler.
-	auto on_accept = [&engine] (SharedServerConnection connection) {
+	engine.server.on_accept = [&engine] (SharedServerConnection connection) {
 		std::cout << connection->socket().remote_endpoint() << ": Connection accepted." << std::endl;
 	};
-	engine.server.on_accept  = on_accept;
 	
 	// Run the IO service.
 	while (true) {

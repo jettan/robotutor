@@ -68,8 +68,8 @@ namespace robotutor {
 		
 		command::SharedPtr result;
 		// If we read exactly one command, just return that instead.
-		if (root_->arguments.size() == 1) {
-			result = root_->arguments[0];
+		if (root_->children.size() == 1) {
+			result = root_->children[0];
 			result->parent = nullptr;
 		// Otherwise, return the aggregate command.
 		} else {
@@ -174,7 +174,7 @@ namespace robotutor {
 	
 	/// Flush the last read sentence
 	void ScriptParser::flushSentence_() {
-		root_->arguments.push_back(sentence_);
+		root_->children.push_back(sentence_);
 		sentence_ = std::make_shared<command::Speech>(root_.get());
 	}
 	
@@ -189,10 +189,10 @@ namespace robotutor {
 	void ScriptParser::flushCommand_() {
 		trim(command_name_);
 		if (sentence_->text.size()) {
-			sentence_->arguments.push_back(factory_.create(sentence_.get(), std::move(command_name_), std::move(command_args_)));
-			sentence_->text += "\\mrk=" + boost::lexical_cast<std::string>(sentence_->arguments.size()) + "\\";
+			sentence_->children.push_back(factory_.create(sentence_.get(), std::move(command_name_), std::move(command_args_)));
+			sentence_->text += "\\mrk=" + boost::lexical_cast<std::string>(sentence_->children.size()) + "\\";
 		} else {
-			root_->arguments.push_back(factory_.create(root_.get(), std::move(command_name_), std::move(command_args_)));
+			root_->children.push_back(factory_.create(root_.get(), std::move(command_name_), std::move(command_args_)));
 		}
 		
 		command_name_.clear();

@@ -1,16 +1,9 @@
-extern "C" {
-#include <dlfcn.h>
-}
-
 #include <boost/filesystem.hpp>
 
 #include "script_engine.hpp"
+#include "plugin.hpp"
 
 namespace robotutor {
-	
-	namespace {
-		typedef bool (*registerPlugin) (ScriptEngine & engine);
-	}
 	
 	/// Construct the script engine.
 	/**
@@ -21,7 +14,6 @@ namespace robotutor {
 		speech(SpeechEngine::create(ios, broker, "RTISE")),
 		behavior(ios, broker, random),
 		server(ios),
-		pose_changer(ios, random, behavior, "short"),
 		ios_(ios)
 	{
 		server.listenIp4(8311);
@@ -43,6 +35,7 @@ namespace robotutor {
 		speech->join();
 		behavior.join();
 		if (wait_thread_.joinable()) wait_thread_.join();
+		for (auto & plugin : plugins_) plugin->join();
 	}
 	
 	/// Start the engine.
@@ -50,7 +43,10 @@ namespace robotutor {
 	 * Does nothing if the engine was already started.
 	 */
 	void ScriptEngine::start() {
-		if (!started_.exchange(true)) continue_();
+		if (!started_.exchange(true)) {
+			continue_();
+			for (auto & plugin : plugins_) plugin->start();
+		}
 	}
 	
 	/// Stop the engine as soon as possible.
@@ -58,6 +54,8 @@ namespace robotutor {
 	 * \param callback Callback to invoke when the engine was stopped.
 	 */
 	void ScriptEngine::stop(std::function<void ()> handler) {
+		for (auto & plugin : plugins_) plugin->stop();
+		
 		speech->cancel();
 		behavior.drop();
 		
@@ -65,24 +63,16 @@ namespace robotutor {
 		wait_thread_ = std::thread(std::bind(&ScriptEngine::wait_, this, handler));
 	}
 	
-	/// Add a message handler.
-	/**
-	 * \param handler The message handler.
-	 */
-	void ScriptEngine::addMessageHandler(MessageHandler handler) {
-		message_handlers_.push_back(handler);
-	}
-	
 	/// Load a plugin from a shared library.
 	/**
 	 * \param name The name of the shared library.
-	 * \return bool True if the plugin was loaded succesfully.
+	 * \return True if the plugin was loaded succesfully.
 	 */
 	bool ScriptEngine::loadPlugin(std::string const & name) {
-		void * plugin = dlopen(name.c_str(), RTLD_LAZY);
+		std::shared_ptr<Plugin> plugin = Plugin::load(name, *this);
 		if (plugin) {
-			registerPlugin register_plugin = reinterpret_cast<registerPlugin>(dlsym(plugin, "registerPlugin"));
-			if (register_plugin) return register_plugin(*this);
+			plugins_.push_back(plugin);
+			return true;
 		}
 		return false;
 	}
@@ -105,13 +95,13 @@ namespace robotutor {
 		return total;
 	}
 	
-	/// Handle messages by passing them to all registered message handlers.
+	/// Handle messages by passing them to all registered plugins.
 	/**
 	 * \param connection The connection that sent the message.
 	 * \param message The message.
 	 */
 	void ScriptEngine::handleMessage_(SharedServerConnection connection, ClientMessage && message) {
-		for (auto & handler : message_handlers_) handler(*this, connection, message);
+		for (auto & plugin : plugins_) plugin->handleMessage(connection, message);
 	}
 	
 	/// Wait for the engine to stop cleanly.

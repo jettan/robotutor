@@ -12,8 +12,8 @@ namespace robotutor {
 		 * The command factory will automatically load all core commands.
 		 */
 		Factory::Factory() {
-			add<command::Execute>();
-			add<command::Stop>();
+			add<command::Execute>(nullptr);
+			add<command::Stop>(nullptr);
 		}
 		
 		/// Create a command.
@@ -21,10 +21,11 @@ namespace robotutor {
 		 * \param name The name of the command.
 		 * \param args The argument list for the command.
 		 */
-		std::shared_ptr<Command> Factory::create(Command * parent,  std::string && name, std::vector<std::string> && args) {
+		std::shared_ptr<Command> Factory::create(Command * parent, std::string const & name, std::vector<std::string> && args) {
 			CreatorMap::iterator creator = creators_.find(name);
 			if (creator == creators_.end()) throw std::runtime_error("Command `" + name + "' not found.");
-			return creator->second(parent, std::move(name), std::move(args), *this);
+			Entry const & entry = creator->second;
+			return entry.creator(parent, entry.plugin, std::move(args), *this);
 		}
 		
 	}

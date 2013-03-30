@@ -17,16 +17,17 @@ namespace robotutor {
 			
 			/// Construct the command.
 			Execute(Command * parent = nullptr) :
-				Command(parent),
+				Command(parent, nullptr),
 				next(0) {}
 			
 			/// Construct the command.
-			Execute(Command * parent, ArgList && arguments) :
-				Command(parent, std::move(arguments)),
+			template<typename Children>
+			Execute(Command * parent, Children && children) :
+				Command(parent, nullptr, std::forward<Children>(children)),
 				next(0) {}
 			
 			/// Create the command.
-			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory);
+			static SharedPtr create(Command * parent, Plugin *, std::vector<std::string> && arguments, Factory & factory);
 			
 			/// The name of the command.
 			static std::string static_name() { return "execute"; }
@@ -61,7 +62,7 @@ namespace robotutor {
 			
 			/// Construct a sentence command.
 			Speech(Command * parent, std::string const & text = "") :
-				Command(parent),
+				Command(parent, nullptr),
 				text(text),
 				mark(0),
 				synthesized(false) {}
@@ -96,10 +97,11 @@ namespace robotutor {
 		struct Stop : public Command {
 			
 			/// Construct a stop command.
-			Stop(Command * parent) : Command(parent) {}
+			Stop(Command * parent) :
+				Command(parent, nullptr) {}
 			
 			/// Create a stop command.
-			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &);
+			static SharedPtr create(Command * parent, Plugin *, std::vector<std::string> && arguments, Factory &);
 			
 			/// The name of the command.
 			static std::string static_name() { return "stop"; }
@@ -108,7 +110,7 @@ namespace robotutor {
 			/**
 			 * \return The name of the command.
 			 */
-			std::string name() const { return Stop::static_name(); }
+			std::string name() const { return static_name(); }
 			
 			/// Run the command.
 			/**

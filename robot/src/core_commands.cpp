@@ -9,8 +9,8 @@ namespace robotutor {
 		
 		/// Execute one step.
 		bool Execute::step(ScriptEngine & engine) {
-			if (next < arguments.size()) {
-				setNext_(engine, arguments[next++].get());
+			if (next < children.size()) {
+				setNext_(engine, children[next++].get());
 				return true;
 			} else {
 				return done_(engine);
@@ -23,15 +23,15 @@ namespace robotutor {
 		 */
 		void Speech::write(std::ostream & stream) const {
 			stream << text;
-			for (auto & argument : arguments) stream << "\n" << *argument;
+			for (auto & child : children) stream << "\n" << *child;
 		}
 		
 		/// Create the command.
-		SharedPtr Execute::create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory & factory) {
+		SharedPtr Execute::create(Command * parent, Plugin *, std::vector<std::string> && arguments, Factory & factory) {
 			auto result = std::make_shared<Execute>(parent);
 			for (auto const & argument : arguments) {
-				result->arguments.push_back(parseScript(factory, argument));
-				result->arguments.back()->parent = result.get();
+				result->children.push_back(parseScript(factory, argument));
+				result->children.back()->parent = result.get();
 			}
 			return result;
 		}
@@ -77,7 +77,7 @@ namespace robotutor {
 		
 		/// Called when a bookmark is encountered.
 		void Speech::onBookmark(ScriptEngine & engine, unsigned int bookmark) {
-			setNext_(engine, arguments[bookmark - 1].get());
+			setNext_(engine, children[bookmark - 1].get());
 			continue_(engine);
 		}
 		
@@ -89,8 +89,8 @@ namespace robotutor {
 		}
 		
 		/// Create a stop command.
-		SharedPtr Stop::create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
-			if (arguments.size()) throw std::runtime_error("Stop command takes zero arguments.");
+		SharedPtr Stop::create(Command * parent, Plugin *, std::vector<std::string> && arguments, Factory &) {
+			if (arguments.size()) throw std::runtime_error("Command `" + static_name() + "' takes zero arguments.");
 			return std::make_shared<Stop>(parent);
 		}
 		
