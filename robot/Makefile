@@ -69,9 +69,9 @@ presentation_lib += opencv_core opencv_highgui boost_system-mt protobuf alproxie
 presentation_bin  = lib/presentation.so
 
 # Pose changes plugin.
-pose_src      = plugins/pose_changes.cpp
+pose_src      = plugins/pose_changer.cpp
 pose_lib     += robotutor
-pose_bin      = lib/pose_changes.so
+pose_bin      = lib/pose_changer.so
 
 -include Makefile.local
 

@@ -8,7 +8,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "presentation.hpp"
+#include "../plugin.hpp"
+#include "../command.hpp"
 #include "../script_engine.hpp"
 #include "../parser_common.hpp"
 
@@ -70,82 +71,89 @@ namespace robotutor {
 	
 	namespace command {
 		
-		/// Register the plugin with a script engine.
-		/**
-		 * \param engine The script engine.
-		 */
-		extern "C" bool registerPlugin(ScriptEngine & engine) {
-			engine.factory.add<Slide>();
-			engine.factory.add<ShowImage>();
-			return true;
-		}
-		
-		/// Construct a slide command.
-		/**
-		 * \param parent The parent command.
-		 * \param offset The offset.
-		 * \param If true, the offset is relative.
-		 */
-		Slide::Slide(Command * parent, int offset, bool relative) :
-			Command(parent),
-			offset(offset),
-			relative(relative) {}
-		
-		/// Create the command.
-		SharedPtr Slide::create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
-			if (arguments.size() == 0) {
-				return std::make_shared<Slide>(parent, 1, true);
-			} else if (arguments.size() == 1) {
-				std::pair<int, bool> offset = parseOffset(arguments[0]);
-				return std::make_shared<Slide>(parent, offset.first, offset.second);
-			} else {
-				throw std::runtime_error("Too many arguments given for slide command. Expected 0 or 1 arguments.");
+		/// Command to go to a different slide.
+		struct Slide : public Command {
+			
+			/// The offset.
+			int offset;
+			
+			/// If true, the offset is relative to the current slide.
+			/// If false, the offset is relative to slide 0.
+			bool relative;
+			
+			Slide(Command * parent, Plugin * plugin, int offset, bool relative) :
+				Command(parent, plugin),
+				offset(offset),
+				relative(relative) {}
+			
+			static std::string static_name() { return "slide"; }
+			
+			std::string name() const { return static_name(); }
+			
+			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
+				if (arguments.size() == 0) {
+					return std::make_shared<Slide>(parent, plugin, 1, true);
+				} else if (arguments.size() == 1) {
+					std::pair<int, bool> offset = parseOffset(arguments[0]);
+					return std::make_shared<Slide>(parent, plugin, offset.first, offset.second);
+				} else {
+					throw std::runtime_error("Too many arguments given for slide command. Expected 0 or 1 arguments.");
+				}
 			}
-		}
-		
-		/// Run the command.
-		/**
-		 * \param engine The script engine to use for executing the command.
-		 */
-		bool Slide::step(ScriptEngine & engine) {
-			RobotMessage message;
-			message.mutable_slide()->set_offset(offset);
-			message.mutable_slide()->set_relative(relative);
-			engine.server.sendMessage(message);
 			
-			return done_(engine);
-		}
-		
-		
-		/// Construct a ShowImage command.
-		/**
-		 * \param parent The parent command.
-		 */
-		ShowImage::ShowImage(Command * parent) :
-			Command(parent) {}
-		
-		/// Create the command.
-		SharedPtr ShowImage::create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
-			if (arguments.size() == 0) {
-				return std::make_shared<ShowImage>(parent);
-			} else {
-				throw std::runtime_error("Too many arguments given for show image command. Expected 0.");
+			bool step(ScriptEngine & engine) {
+				RobotMessage message;
+				message.mutable_slide()->set_offset(offset);
+				message.mutable_slide()->set_relative(relative);
+				engine.server.sendMessage(message);
+				
+				return done_(engine);
 			}
-		}
+		};
 		
-		/// Run the command.
-		/**
-		 * \param engine The script engine to use for executing the command.
-		 */
-		bool ShowImage::step(ScriptEngine & engine) {
-			grabImage(engine.broker);
+		
+		struct ShowImage : public Command {
+			/// Construct a show image command.
+			/**
+			 * \param parent The parent command.
+			 * \param plugin Plugin that created us.
+			 */
+			ShowImage(Command * parent, Plugin * plugin) :
+				Command(parent, plugin) {}
 			
-			RobotMessage msg;
-			msg.mutable_show_image();
-			engine.server.sendMessage(msg);
+			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
+				if (arguments.size() == 0) {
+					return std::make_shared<ShowImage>(parent, plugin);
+				} else {
+					throw std::runtime_error("Too many arguments given for show image command. Expected 0.");
+				}
+			}
 			
-			return done_(engine);
+			static std::string static_name() { return "show image"; }
+			
+			std::string name() const { return static_name(); }
+			
+			bool step(ScriptEngine & engine) {
+				grabImage(engine.broker);
+				
+				RobotMessage msg;
+				msg.mutable_show_image();
+				engine.server.sendMessage(msg);
+				
+				return done_(engine);
+			}
+		};
+	}
+	
+	struct PresentationPlugin : public Plugin {
+		PresentationPlugin(ScriptEngine & engine) : Plugin(engine) {
+			engine.factory.add<command::Slide>();
+			engine.factory.add<command::ShowImage>();
 		}
+	};
+	
+	extern "C" Plugin * createPlugin(ScriptEngine & engine) {
+		return new PresentationPlugin(engine);
 	}
 }
 

@@ -2,15 +2,30 @@
 #include <fstream>
 #include <stdexcept>
 
+#include "../plugin.hpp"
 #include "../script_engine.hpp"
 #include "../robotutor_protocol.hpp"
 #include "../script_parser.hpp"
 
 namespace robotutor {
-	namespace {
+	
+	/// Plugin to react to control 
+	struct ControlPlugin : public Plugin {
+		ControlPlugin(ScriptEngine & engine) :
+			Plugin(engine) {}
+		
+		/// Process server messages.
+		/**
+		 * \param connection The connection that sent the message.
+		 * \param message The message.
+		 */
+		virtual void handleMessage(SharedServerConnection connection, ClientMessage const & message) {
+			handleScriptMessage(connection, message);
+			handleControlMessage(connection, message);
+		}
 		
 		/// Handle script messages.
-		void handleScriptMessage(ScriptEngine & engine, SharedServerConnection connection, ClientMessage const & message) {
+		void handleScriptMessage(SharedServerConnection connection, ClientMessage const & message) {
 			if (message.has_run()) {
 				std::shared_ptr<command::Command> script;
 				
@@ -35,7 +50,7 @@ namespace robotutor {
 					if (engine.started()) {
 						engine.stop();
 						engine.join();
-						engine.ios().post([&engine, script] () {
+						engine.ios().post([this, script] () {
 							engine.load(script);
 							engine.start();
 						});
@@ -50,7 +65,7 @@ namespace robotutor {
 		}
 		
 		/// Handle control messages.
-		void handleControlMessage(ScriptEngine & engine, SharedServerConnection connection, ClientMessage const & message) {
+		void handleControlMessage(SharedServerConnection connection, ClientMessage const & message) {
 			if (message.has_stop()) {
 				engine.stop();
 				engine.join();
@@ -63,16 +78,14 @@ namespace robotutor {
 			}
 		}
 		
-	}
+	};
 	
 	/// Register the plugin with a script engine.
 	/**
 	 * \param engine The script engine.
 	 */
-	extern "C" bool registerPlugin(ScriptEngine & engine) {
-		engine.addMessageHandler(handleScriptMessage);
-		engine.addMessageHandler(handleControlMessage);
-		return true;
+	extern "C" Plugin * createPlugin(ScriptEngine & engine) {
+		return new ControlPlugin(engine);
 	}
 }
 
