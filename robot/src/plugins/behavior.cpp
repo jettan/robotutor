@@ -20,7 +20,7 @@ namespace robotutor {
 				behavior(behavior) {}
 			
 			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
-				if (arguments.size() != 1) throw std::runtime_error("Behavior command expects 1 argument.");
+				if (arguments.size() != 1) throw std::runtime_error("Command `" + static_name() + "' expects 1 argument.");
 				return std::make_shared<Behavior>(parent, plugin, arguments[0]);
 			}
 			
@@ -44,7 +44,7 @@ namespace robotutor {
 				prefix(prefix) {}
 			
 			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
-				if (arguments.size() != 1) throw std::runtime_error("Random behavior command expects 1 argument.");
+				if (arguments.size() != 1) throw std::runtime_error("Command `" + static_name() + "' expects 1 argument.");
 				return std::make_shared<Behavior>(parent, plugin, arguments[0]);
 			}
 			
@@ -60,8 +60,8 @@ namespace robotutor {
 		
 		struct BehaviorPlugin : public Plugin {
 			BehaviorPlugin(ScriptEngine & engine) : Plugin(engine) {
-				engine.factory.add<command::Behavior>();
-				engine.factory.add<command::RandomBehavior>();
+				engine.factory.add<command::Behavior>(this);
+				engine.factory.add<command::RandomBehavior>(this);
 			}
 		};
 		

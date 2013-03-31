@@ -38,7 +38,7 @@ namespace robotutor {
 			
 			// All remaining characters should be numerical.
 			for (; i != input.end(); ++i) {
-				if (!parser::isDigit(*i)) throw std::runtime_error("Unexpected character encountered slide command argument.");
+				if (!parser::isDigit(*i)) throw std::runtime_error("Unexpected character encountered in offset.");
 				result.first = result.first * 10 + *i - '0';
 			}
 			if (input[0] == '-') result.first *= -1;
@@ -97,7 +97,7 @@ namespace robotutor {
 					std::pair<int, bool> offset = parseOffset(arguments[0]);
 					return std::make_shared<Slide>(parent, plugin, offset.first, offset.second);
 				} else {
-					throw std::runtime_error("Too many arguments given for slide command. Expected 0 or 1 arguments.");
+					throw std::runtime_error("Command `" + static_name() + "' expects 0 or 1 arguments.");
 				}
 			}
 			
@@ -125,7 +125,7 @@ namespace robotutor {
 				if (arguments.size() == 0) {
 					return std::make_shared<ShowImage>(parent, plugin);
 				} else {
-					throw std::runtime_error("Too many arguments given for show image command. Expected 0.");
+					throw std::runtime_error("Command `" + static_name() + "' expects 0 arguments.");
 				}
 			}
 			
@@ -147,8 +147,8 @@ namespace robotutor {
 	
 	struct PresentationPlugin : public Plugin {
 		PresentationPlugin(ScriptEngine & engine) : Plugin(engine) {
-			engine.factory.add<command::Slide>();
-			engine.factory.add<command::ShowImage>();
+			engine.factory.add<command::Slide>(this);
+			engine.factory.add<command::ShowImage>(this);
 		}
 	};
 	
