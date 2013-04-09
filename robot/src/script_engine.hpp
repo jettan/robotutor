@@ -78,6 +78,12 @@ namespace robotutor {
 			 */
 			boost::asio::io_service & ios() { return ios_; }
 			
+			/// Get the current command.
+			/**
+			 * \return The command currently executing.
+			 */
+			command::Command * current() { return current_; }
+			
 			/// Check if the engine is executing a script.
 			/**
 			 * \return True if the engine is currently executing a script.

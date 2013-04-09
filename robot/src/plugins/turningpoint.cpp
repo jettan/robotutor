@@ -1,33 +1,64 @@
-#include <string>
-#include <stdexcept>
+#include <algorithm>
+#include <iterator>
 #include <memory>
+#include <numeric>
+#include <stdexcept>
+#include <string>
 
 #include <boost/lexical_cast.hpp>
 
-#include "../script_engine.hpp"
+#include "../plugin.hpp"
 #include "../command.hpp"
-#include "../command_factory.hpp"
-#include "../messages.pb.h"
+#include "../script_engine.hpp"
+#include "../script_parser.hpp"
+#include "../robotutor_protocol.hpp"
 
 namespace robotutor {
 	namespace command {
 		
 		/// Interface for turningpoint commands.
-		class TurningPoint : public Command {
-			
+		class TurningPointCommand : public Command {
 			protected:
-				/// Indicates whether a result has been requested.
+				/// Indicates whether the results have been requested.
 				bool results_requested_ = false;
 				
-			public:
-				/// Construct the command.
-				/**
-				 * \param arguments The arguments for the command.
-				 */
-				TurningPoint(Command * parent) :
-					Command(parent) {}
+				/// True if the child command has been executed.
+				bool executed_ = false;
 				
-				virtual void processResults(TurningPointMessage & results) = 0;
+				/// The branch to take.
+				int branch_ = -1;
+				
+			public:
+				TurningPointCommand(Command * parent, Plugin * plugin) :
+					Command(parent, plugin) {}
+				
+				virtual ~TurningPointCommand() {}
+				
+				/// Process the turning point results.
+				/**
+				 * \param results The results.
+				 */
+				virtual void processResults(ScriptEngine & engine, TurningPointResults const & results) = 0;
+				
+				/// Run the command.
+				virtual bool step(ScriptEngine & engine) {
+					// Request results first.
+					if (!results_requested_) {
+						requestResults_(engine);
+						return false;
+					
+					// Handle the results.
+					} else if (!executed_) {
+						executed_ = true;
+						if (branch_ >= 0 && branch_ < children.size()) {
+							setNext_(engine, children[branch_].get());
+							return true;
+						}
+					}
+					
+					// No valid branch, or branch finished.
+					return done_(engine);
+				}
 				
 			protected:
 				/// Request turningpoint results from server.
@@ -40,121 +71,150 @@ namespace robotutor {
 		};
 		
 		/// Command to run a turningpoint choice.
-		struct TurningPointChoice : public TurningPoint {
-			/// Construct the command.
-			/**
-			 * \param arguments The arguments for the command.
-			 */
-			TurningPointChoice(Command * parent) :
-				TurningPoint(parent) {}
+		struct TurningPointChoice : public TurningPointCommand {
+			
+			TurningPointChoice(Command * parent, Plugin * plugin) :
+				TurningPointCommand(parent, plugin) {}
 			
 			/// Create the command.
-			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
-				auto result = std::make_shared<Execute>(parent);
+			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory & factory) {
+				auto result = std::make_shared<TurningPointChoice>(parent, plugin);
 				for (auto const & argument : arguments) {
-					result->arguments.push_back(parseScript(factory, argument));
-					result->arguments.back()->parent = result.get();
+					result->children.push_back(parseScript(factory, argument));
+					result->children.back()->parent = result.get();
 				}
 				return result;
 			}
 			
-			/// The name of the command.
 			static std::string static_name() { return "turningpoint choice"; }
+			std::string name() const { return static_name(); }
 			
-			/// Get the name of the command.
+			/// Process the turning point results.
 			/**
-			 * \return The name of the command.
+			 * \param results The results.
 			 */
-			std::string name() const { return TurningPointChoice::static_name(); }
-			
-			/// Run the command.
-			/**
-			 * \param engine The script engine to use for executing the command.
-			 */
-			bool step(ScriptEngine & engine) {
-				if (!results_requested_) {
-					requestResults(engine);
-					return false;
+			void processResults(ScriptEngine & engine, TurningPointResults const & results) {
+				int max = 0;
+				for (int i = 1; i < results.votes().size(); ++i) {
+					if (results.votes().Get(i) > results.votes().Get(max)) max = i;
 				}
-				return done_(engine);
+				branch_ = max;
+				continue_(engine);
 			}
+			
 		};
 		
 		/// Command to run a turningpoint quiz.
-		struct TurningPointQuiz : public TurningPoint {
+		struct TurningPointQuiz : public TurningPointCommand {
+			
 			/// The index of the correct answer.
-			unsigned int correct_index;
+			int correct_index = -1;
 			
 			/// The correct answer as string.
 			std::string correct_answer;
 			
-			/// The flag to decide if we use an index or a string.
-			bool use_string;
+			/// If true the first argument was a string and not an int.
+			bool use_string = false;
 			
-			/// Construct the command.
-			/**
-			 * \param arguments The arguments for the command.
-			 */
-			TurningPointQuiz(Command * parent, unsigned int index, std::string const & answer, bool use_string) :
-				TurningPoint(parent),
+			TurningPointQuiz(Command * parent, Plugin * plugin, unsigned int index, std::string const & answer, bool use_string) :
+				TurningPointCommand(parent, plugin),
 				correct_index(index),
 				correct_answer(answer),
 				use_string(use_string) {}
 			
 			/// Create the command.
-			static SharedPtr create(Command * parent, std::string && name, std::vector<std::string> && arguments, Factory &) {
-				if (arguments.size() < 2 || arguments.size() > 4) throw std::runtime_error("TurningPointQuiz command expects 2-4 arguments!");
-				unsigned int index;
+			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory & factory) {
+				if (arguments.size() < 2 || arguments.size() > 4) throw std::runtime_error("Command `" + static_name() + "' command expects 2 to 4 arguments.");
+				
+				int index;
 				std::string answer;
 				bool use_string = false;
 				
+				// First argument can be an int or string identifying the correct answer.
 				try {
-					index = boost::lexical_cast<unsigned int>(arguments[0]);
+					index = boost::lexical_cast<int>(arguments[0]);
 				} catch (boost::bad_lexical_cast const &) {
 					use_string = true;
 					answer     = arguments[0];
 				}
 				
-				auto result = std::make_shared<Execute>(parent, index, answer, use_string);
+				// The remaining arguments are alternatives to execute depending on the results.
+				auto result = std::make_shared<TurningPointQuiz>(parent, plugin, index, answer, use_string);
 				for (auto argument = arguments.begin()+1; argument != arguments.end(); ++argument) {
-					result->arguments.push_back(parseScript(factory, *argument));
-					result->arguments.back()->parent = result.get();
+					result->children.push_back(parseScript(factory, *argument));
+					result->children.back()->parent = result.get();
 				}
 				return result;
 			}
 			
-			/// The name of the command.
 			static std::string static_name() { return "turningpoint quiz"; }
-			
-			/// Get the name of the command.
-			/**
-			 * \return The name of the command.
-			 */
 			std::string name() const { return TurningPointQuiz::static_name(); }
 			
-			/// Run the command.
+			/// Process the turning point results.
 			/**
-			 * \param engine The script engine to use for executing the command.
+			 * \param results The results.
 			 */
-			bool step(ScriptEngine & engine) {
-				if (!results_requested_) {
-					requestResults(engine);
-					return false;
+			void processResults(ScriptEngine & engine, TurningPointResults const & results) override {
+				// Get the total votes and top two answers.
+				//int total  = std::accumulate(results.votes().begin(), results.votes().end(), 0);
+				int max[2] = {0, 0};
+				
+				for (int i = 2; i < results.votes().size(); ++i) {
+					if (results.votes().Get(i) > results.votes().Get(max[0])) {
+						max[1] = max[0];
+						max[0] = i;
+					} else if (results.votes().Get(i) > results.votes().Get(max[1])) {
+						max[1] = i;
+					}
 				}
-				return done_(engine);
+				
+				// Get the index of the correct answer.
+				if (use_string) {
+					auto i = std::find(results.answers().begin(), results.answers().end(), correct_answer);
+					if (i == results.answers().end()) {
+						correct_index = -1;
+					} else {
+						correct_index = std::distance(results.answers().begin(), i);
+					}
+				}
+				
+				// No correct answer in the results.
+				// Execute nothing.
+				if (correct_index < 0) {
+					branch_ = -1;
+					
+				// Correct answer didn't win.
+				// Execute the last branch.
+				} else if (max[0] != correct_index) {
+					branch_ = children.size();
+					
+				// Correct answer won.
+				// Execute the first branch.
+				} else if (max[0] == correct_index) {
+					branch_ = 0;
+				}
+				continue_(engine);
 			}
+			
 		};
-		
-		/// Load the commands in a factory.
-		/**
-		 * Load all commands of a plugin into a factory.
-		 * 
-		 * \param factory The factory to add the commands to.
-		 */
-		extern "C" void loadCommands(Factory & factory) {
-			factory.add<TurningPointChoice>();
-			factory.add<TurningPointQuiz>();
+	}
+	
+	struct TurningPointPlugin : public Plugin {
+		TurningPointPlugin(ScriptEngine & engine) : Plugin(engine) {
+			engine.factory.add<command::TurningPointChoice>(this);
+			engine.factory.add<command::TurningPointQuiz>(this);
 		}
+		
+		void handleMessage(SharedServerConnection connection, ClientMessage const & message) override {
+			if (!message.has_turningpoint()) return;
+			if (auto command = dynamic_cast<command::TurningPointCommand *>(engine.current())) {
+				command->processResults(engine, message.turningpoint());
+			}
+		}
+	};
+	
+	extern "C" Plugin * createPlugin(ScriptEngine & engine) {
+		return new TurningPointPlugin(engine);
 	}
 }
 
