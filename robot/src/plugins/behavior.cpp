@@ -57,16 +57,16 @@ namespace robotutor {
 				return done_(engine);
 			}
 		};
-		
-		struct BehaviorPlugin : public Plugin {
-			BehaviorPlugin(ScriptEngine & engine) : Plugin(engine) {
-				engine.factory.add<command::Behavior>(this);
-				engine.factory.add<command::RandomBehavior>(this);
-			}
-		};
-		
-		extern "C" Plugin * createPlugin(ScriptEngine & engine) {
-			return new BehaviorPlugin(engine);
+	}
+	
+	struct BehaviorPlugin : public Plugin {
+		BehaviorPlugin(ScriptEngine & engine) : Plugin(engine) {
+			engine.factory.add<command::Behavior>(this);
+			engine.factory.add<command::RandomBehavior>(this);
 		}
+	};
+	
+	extern "C" Plugin * createPlugin(ScriptEngine & engine) {
+		return new BehaviorPlugin(engine);
 	}
 }

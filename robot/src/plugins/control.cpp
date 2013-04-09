@@ -19,7 +19,7 @@ namespace robotutor {
 		 * \param connection The connection that sent the message.
 		 * \param message The message.
 		 */
-		virtual void handleMessage(SharedServerConnection connection, ClientMessage const & message) {
+		void handleMessage(SharedServerConnection connection, ClientMessage const & message) {
 			handleScriptMessage(connection, message);
 			handleControlMessage(connection, message);
 		}
