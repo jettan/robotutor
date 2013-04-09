@@ -54,9 +54,9 @@ client_bin    = robotutor-client
 
 
 # Control plugin.
-control_src      = plugins/control.cpp
-control_lib     += robotutor
-control_bin      = lib/control.so
+control_src       = plugins/control.cpp
+control_lib      += robotutor
+control_bin       = lib/control.so
 
 # Behavior plugin.
 behavior_src      = plugins/behavior.cpp
@@ -68,10 +68,15 @@ presentation_src  = plugins/presentation.cpp
 presentation_lib += opencv_core opencv_highgui boost_system-mt protobuf alproxies alvalue robotutor
 presentation_bin  = lib/presentation.so
 
-# Pose changes plugin.
-pose_src      = plugins/pose_changer.cpp
-pose_lib     += robotutor
-pose_bin      = lib/pose_changer.so
+# Pose changer plugin.
+posechanger_src   = plugins/pose_changer.cpp
+posechanger_lib  += robotutor
+posechanger_bin   = lib/posechanger.so
+
+# TurningPoint plugin.
+turningpoint_src  = plugins/turningpoint.cpp
+turningpoint_lib += robotutor
+turningpoint_bin  = lib/turningpoint.so
 
 -include Makefile.local
 
@@ -83,9 +88,10 @@ $(call define_program,client)
 $(call define_library,control)
 $(call define_library,behavior)
 $(call define_library,presentation)
-$(call define_library,pose)
+$(call define_library,posechanger)
+$(call define_library,turningpoint)
 
-default: $(source_dir)/messages.pb.h $(server_bin) $(robotutor_bin) $(client_bin) $(presentation_bin) $(behavior_bin) $(control_bin) $(pose_bin)
+default: $(source_dir)/messages.pb.h all
 
 
 # Call protoc to generate protobuffer C++ files.
