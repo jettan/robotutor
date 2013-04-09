@@ -7,6 +7,7 @@
 
 namespace robotutor {
 	
+	class ScriptEngine;
 	class Plugin;
 	
 	namespace command {
@@ -17,12 +18,15 @@ namespace robotutor {
 		class Factory {
 			protected:
 				/// Function type for creator functions.
-				typedef std::function<std::shared_ptr<Command> (Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory & factory)> Creator;
+				typedef std::function<std::shared_ptr<Command> (ScriptEngine & engine, Command * parent, Plugin * plugin, std::vector<std::string> && arguments)> Creator;
 				
 				struct Entry {
 					Creator creator;
 					Plugin * plugin;
 				};
+				
+				/// The script engine to create commands for.
+				ScriptEngine & engine_;
 				
 				/// Map type for the creator map.
 				typedef std::map<std::string, Entry> CreatorMap;
@@ -35,7 +39,7 @@ namespace robotutor {
 				/**
 				 * The command factory will automatically load all core commands.
 				 */
-				Factory();
+				Factory(ScriptEngine & engine);
 				
 				/// Create a command.
 				/**

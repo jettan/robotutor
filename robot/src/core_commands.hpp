@@ -16,18 +16,18 @@ namespace robotutor {
 			unsigned int next;
 			
 			/// Construct the command.
-			Execute(Command * parent = nullptr) :
-				Command(parent, nullptr),
+			Execute(ScriptEngine & engine, Command * parent = nullptr) :
+				Command(engine, parent, nullptr),
 				next(0) {}
 			
 			/// Construct the command.
 			template<typename Children>
-			Execute(Command * parent, Children && children) :
-				Command(parent, nullptr, std::forward<Children>(children)),
+			Execute(ScriptEngine & engine, Command * parent, Children && children) :
+				Command(engine, parent, nullptr, std::forward<Children>(children)),
 				next(0) {}
 			
 			/// Create the command.
-			static SharedPtr create(Command * parent, Plugin *, std::vector<std::string> && arguments, Factory & factory);
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin *, std::vector<std::string> && arguments);
 			
 			/// The name of the command.
 			static std::string static_name() { return "execute"; }
@@ -39,7 +39,7 @@ namespace robotutor {
 			std::string name() const { return Execute::static_name(); }
 			
 			/// Execute one step.
-			bool step(ScriptEngine & engine);
+			bool step();
 		};
 		
 		/// Text command.
@@ -61,8 +61,8 @@ namespace robotutor {
 			std::deque<Command *> delayed;
 			
 			/// Construct a sentence command.
-			Speech(Command * parent, std::string const & text = "") :
-				Command(parent, nullptr),
+			Speech(ScriptEngine & engine, Command * parent, std::string const & text = "") :
+				Command(engine, parent, nullptr),
 				text(text),
 				mark(0),
 				synthesized(false) {}
@@ -74,17 +74,17 @@ namespace robotutor {
 			std::string name() const { return "speech"; }
 			
 			/// Called when a bookmark is encountered.
-			void onBookmark(ScriptEngine & engine, unsigned int bookmark);
+			void onBookmark(unsigned int bookmark);
 			
 			/// Called when the speech engine finished saying us.
-			void onDone(ScriptEngine & engine, bool interrupted);
+			void onDone(bool interrupted);
 			
 			/// Run the command.
 			/**
 			 * \param engine The script engine to use for executing the command.
 			 * \return True if an asynchronous operation was started.
 			 */
-			bool step(ScriptEngine & engine);
+			bool step();
 			
 			/// Write the command to a stream.
 			/**
@@ -97,11 +97,11 @@ namespace robotutor {
 		struct Stop : public Command {
 			
 			/// Construct a stop command.
-			Stop(Command * parent) :
-				Command(parent, nullptr) {}
+			Stop(ScriptEngine & engine, Command * parent) :
+				Command(engine, parent, nullptr) {}
 			
 			/// Create a stop command.
-			static SharedPtr create(Command * parent, Plugin *, std::vector<std::string> && arguments, Factory &);
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin *, std::vector<std::string> && arguments);
 			
 			/// The name of the command.
 			static std::string static_name() { return "stop"; }
@@ -116,7 +116,7 @@ namespace robotutor {
 			/**
 			 * \param engine The script engine to use for executing the command.
 			 */
-			bool step(ScriptEngine & engine);
+			bool step();
 		};
 	}
 }

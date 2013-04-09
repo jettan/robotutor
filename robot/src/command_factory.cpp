@@ -11,7 +11,7 @@ namespace robotutor {
 		/**
 		 * The command factory will automatically load all core commands.
 		 */
-		Factory::Factory() {
+		Factory::Factory(ScriptEngine & engine) : engine_(engine) {
 			add<command::Execute>(nullptr);
 			add<command::Stop>(nullptr);
 		}
@@ -25,7 +25,7 @@ namespace robotutor {
 			CreatorMap::iterator creator = creators_.find(name);
 			if (creator == creators_.end()) throw std::runtime_error("Command `" + name + "' not found.");
 			Entry const & entry = creator->second;
-			return entry.creator(parent, entry.plugin, std::move(args), *this);
+			return entry.creator(engine_, parent, entry.plugin, std::move(args));
 		}
 		
 	}

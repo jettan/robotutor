@@ -14,6 +14,7 @@ namespace robotutor {
 		speech(SpeechEngine::create(ios, broker, "RTISE")),
 		behavior(ios, broker, random),
 		server(ios),
+		factory(*this),
 		ios_(ios)
 	{
 		server.listenIp4(8311);
@@ -117,7 +118,7 @@ namespace robotutor {
 	
 	/// Run the script.
 	void ScriptEngine::continue_() {
-		while (current_ && current_->step(*this));
+		while (current_ && current_->step());
 	}
 	
 }

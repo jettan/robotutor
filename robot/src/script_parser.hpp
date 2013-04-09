@@ -10,6 +10,8 @@
 
 namespace robotutor {
 	
+	class ScriptEngine;
+	
 	/// Parser for text executables.
 	/**
 	 * This parser will read an entire text executable from the input.
@@ -23,8 +25,8 @@ namespace robotutor {
 				command_args,
 			} state_;
 			
-			/// Factory to create commands.
-			command::Factory & factory_;
+			/// Script engine to create commands for.
+			ScriptEngine & engine_;
 			
 			/// Buffer for the root command.
 			std::shared_ptr<command::Execute> root_;
@@ -45,11 +47,11 @@ namespace robotutor {
 			unsigned int level_;
 			
 		public:
-			/// Construct a text parser.
+			/// Construct a script parser.
 			/**
-			 * \param factory The command factory to use to instantiate commands found in the text.
+			 * \param engine The script engine to create commands for.
 			 */
-			ScriptParser(command::Factory & factory);
+			ScriptParser(ScriptEngine & engine);
 			
 			/// Reset the parser so that it can parse a new command.
 			void reset();
@@ -89,8 +91,8 @@ namespace robotutor {
 	 * \return The parsed script.
 	 */
 	template<typename... Args>
-	command::SharedPtr parseScript(command::Factory & factory, Args&&... args) {
-		ScriptParser parser(factory);
+	command::SharedPtr parseScript(ScriptEngine & engine, Args&&... args) {
+		ScriptParser parser(engine);
 		parse(parser, std::forward<Args>(args)...);
 		return parser.result();
 	}

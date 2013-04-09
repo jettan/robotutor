@@ -3,6 +3,7 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include "script_engine.hpp"
 #include "script_parser.hpp"
 #include "parser_common.hpp"
 
@@ -30,10 +31,11 @@ namespace robotutor {
 		}
 	}
 	
-	/// Construct a text parser.
-	ScriptParser::ScriptParser(command::Factory & factory) :
-		factory_(factory)
-	{
+	/// Construct a script parser.
+	/**
+	 * \param engine The script engine to create commands for.
+	 */
+	ScriptParser::ScriptParser(ScriptEngine & engine) : engine_(engine) {
 		reset();
 	}
 	
@@ -41,8 +43,8 @@ namespace robotutor {
 	void ScriptParser::reset() {
 		state_ = State::text;
 		
-		root_     = std::make_shared<command::Execute>(nullptr);
-		sentence_ = std::make_shared<command::Speech>(root_.get());
+		root_     = std::make_shared<command::Execute>(engine_, nullptr);
+		sentence_ = std::make_shared<command::Speech>(engine_, root_.get());
 		
 		command_name_.clear();
 		command_args_.clear();
@@ -175,7 +177,7 @@ namespace robotutor {
 	/// Flush the last read sentence
 	void ScriptParser::flushSentence_() {
 		root_->children.push_back(sentence_);
-		sentence_ = std::make_shared<command::Speech>(root_.get());
+		sentence_ = std::make_shared<command::Speech>(engine_, root_.get());
 	}
 	
 	/// Flush the last read command argument.
@@ -189,10 +191,10 @@ namespace robotutor {
 	void ScriptParser::flushCommand_() {
 		trim(command_name_);
 		if (sentence_->text.size()) {
-			sentence_->children.push_back(factory_.create(sentence_.get(), std::move(command_name_), std::move(command_args_)));
+			sentence_->children.push_back(engine_.factory.create(sentence_.get(), std::move(command_name_), std::move(command_args_)));
 			sentence_->text += "\\mrk=" + boost::lexical_cast<std::string>(sentence_->children.size()) + "\\";
 		} else {
-			root_->children.push_back(factory_.create(root_.get(), std::move(command_name_), std::move(command_args_)));
+			root_->children.push_back(engine_.factory.create(root_.get(), std::move(command_name_), std::move(command_args_)));
 		}
 		
 		command_name_.clear();

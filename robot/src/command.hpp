@@ -25,6 +25,9 @@ namespace robotutor {
 		/// Base class for executables.
 		class Command : public std::enable_shared_from_this<Command> {
 			public:
+				/// The associated script engine.
+				ScriptEngine & engine;
+				
 				/// The parent command.
 				Command * parent;
 				
@@ -35,13 +38,15 @@ namespace robotutor {
 				CommandList children;
 				
 				/// Construct a command without arguments.
-				Command(Command * parent, Plugin * plugin) :
+				Command(ScriptEngine & engine, Command * parent, Plugin * plugin) :
+					engine(engine),
 					parent(parent),
 					plugin(plugin) {}
 				
 				/// Construct a command with children.
 				template<typename Children>
-				Command(Command * parent, Plugin * plugin, Children && children) :
+				Command(ScriptEngine & engine, Command * parent, Plugin * plugin, Children && children) :
+					engine(engine),
 					parent(parent),
 					plugin(plugin),
 					children(std::forward<Children>(children)) {}
@@ -51,10 +56,9 @@ namespace robotutor {
 				
 				/// Run the command.
 				/**
-				 * \param engine The engine to use when run a command.
 				 * \return True if the engine should continue processing commands.
 				 */
-				virtual bool step(ScriptEngine & engine) = 0;
+				virtual bool step() = 0;
 				
 				/// Write the command to a stream.
 				/**
@@ -73,22 +77,21 @@ namespace robotutor {
 				/**
 				 * \param next The next command to execute.
 				 */
-				void setNext_(ScriptEngine & engine, Command * next);
+				void setNext_(Command * next);
 				
 				/// Continue the script engine.
 				/**
 				 * Should be called by commands when an asynchronous operation completed.
 				 */
-				void continue_(ScriptEngine & engine);
+				void continue_();
 				
 				/// Should be called when the command is done.
 				/**
 				 * Sets the current command of the engine to the parent of this command.
 				 * 
-				 * \param engine The script engine to modify.
 				 * \return True.
 				 */
-				bool done_(ScriptEngine & engine);
+				bool done_();
 				
 		};
 		
