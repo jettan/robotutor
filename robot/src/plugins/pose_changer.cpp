@@ -107,41 +107,41 @@ namespace robotutor {
 		
 		/// Command to enable random pose changes.
 		struct EnablePoseChanger : public Command {
-			EnablePoseChanger(Command * parent, Plugin * plugin) :
-				Command(parent, plugin) {}
+			EnablePoseChanger(ScriptEngine & engine, Command * parent, Plugin * plugin) :
+				Command(engine, parent, plugin) {}
 			
-			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin * plugin, std::vector<std::string> && arguments) {
 				if (arguments.size() != 0) throw std::runtime_error("Command `" + static_name() + "' expects 0 arguments.");
-				return std::make_shared<EnablePoseChanger>(parent, plugin);
+				return std::make_shared<EnablePoseChanger>(engine, parent, plugin);
 			}
 			
 			static std::string static_name() { return "enable pose changer"; }
 			
 			std::string name() const { return static_name(); }
 			
-			bool step(ScriptEngine & engine) {
+			bool step() {
 				static_cast<PoseChangerPlugin *>(plugin)->pose_changer.start();
-				return done_(engine);
+				return done_();
 			}
 		};
 		
 		/// Command to disable random pose changes.
 		struct DisablePoseChanger : public Command {
-			DisablePoseChanger(Command * parent, Plugin * plugin) :
-				Command(parent, plugin) {}
+			DisablePoseChanger(ScriptEngine & engine, Command * parent, Plugin * plugin) :
+				Command(engine, parent, plugin) {}
 			
-			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin * plugin, std::vector<std::string> && arguments) {
 				if (arguments.size() != 0) throw std::runtime_error("Command `" + static_name() + "' expects 0 arguments.");
-				return std::make_shared<DisablePoseChanger>(parent, plugin);
+				return std::make_shared<DisablePoseChanger>(engine, parent, plugin);
 			}
 			
 			static std::string static_name() { return "disable pose changer"; }
 			
 			std::string name() const { return static_name(); }
 			
-			bool step(ScriptEngine & engine) {
+			bool step() {
 				static_cast<PoseChangerPlugin *>(plugin)->pose_changer.cancel();
-				return done_(engine);
+				return done_();
 			}
 		};
 		
@@ -149,22 +149,22 @@ namespace robotutor {
 		struct PoseChangerPrefix : public Command {
 			std::string prefix;
 			
-			PoseChangerPrefix(Command * parent, Plugin * plugin, std::string const & prefix) :
-				Command(parent, plugin),
+			PoseChangerPrefix(ScriptEngine & engine, Command * parent, Plugin * plugin, std::string const & prefix) :
+				Command(engine, parent, plugin),
 				prefix(prefix) {}
 			
-			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin * plugin, std::vector<std::string> && arguments) {
 				if (arguments.size() != 1) throw std::runtime_error("Command `" + static_name() + "' expects 1 arguments.");
-				return std::make_shared<PoseChangerPrefix>(parent, plugin, arguments[0]);
+				return std::make_shared<PoseChangerPrefix>(engine, parent, plugin, arguments[0]);
 			}
 			
 			static std::string static_name() { return "pose prefix"; }
 			
 			std::string name() const { return static_name(); }
 			
-			bool step(ScriptEngine & engine) {
+			bool step() {
 				static_cast<PoseChangerPlugin *>(plugin)->pose_changer.prefix = prefix;
-				return done_(engine);
+				return done_();
 			}
 		};
 	}

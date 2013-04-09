@@ -32,11 +32,11 @@ namespace robotutor {
 				// Check if there is a script to parse.
 				try {
 					if (message.run().has_script()) {
-						script = parseScript(engine.factory, message.run().script());
+						script = parseScript(engine, message.run().script());
 					} else if (message.run().has_file()) {
 						std::ifstream stream(message.run().file());
 						if (!stream.good()) throw std::runtime_error("Failed to open file `" + message.run().file() + "'.");
-						script =  parseScript(engine.factory, stream);
+						script =  parseScript(engine, stream);
 					}
 				} catch (std::exception const & e) {
 					std::cout << "Error parsing script: " << e.what() << std::endl;

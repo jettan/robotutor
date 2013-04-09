@@ -81,8 +81,8 @@ namespace robotutor {
 			/// If false, the offset is relative to slide 0.
 			bool relative;
 			
-			Slide(Command * parent, Plugin * plugin, int offset, bool relative) :
-				Command(parent, plugin),
+			Slide(ScriptEngine & engine, Command * parent, Plugin * plugin, int offset, bool relative) :
+				Command(engine, parent, plugin),
 				offset(offset),
 				relative(relative) {}
 			
@@ -90,24 +90,24 @@ namespace robotutor {
 			
 			std::string name() const { return static_name(); }
 			
-			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin * plugin, std::vector<std::string> && arguments) {
 				if (arguments.size() == 0) {
-					return std::make_shared<Slide>(parent, plugin, 1, true);
+					return std::make_shared<Slide>(engine, parent, plugin, 1, true);
 				} else if (arguments.size() == 1) {
 					std::pair<int, bool> offset = parseOffset(arguments[0]);
-					return std::make_shared<Slide>(parent, plugin, offset.first, offset.second);
+					return std::make_shared<Slide>(engine, parent, plugin, offset.first, offset.second);
 				} else {
 					throw std::runtime_error("Command `" + static_name() + "' expects 0 or 1 arguments.");
 				}
 			}
 			
-			bool step(ScriptEngine & engine) {
+			bool step() {
 				RobotMessage message;
 				message.mutable_slide()->set_offset(offset);
 				message.mutable_slide()->set_relative(relative);
 				engine.server.sendMessage(message);
 				
-				return done_(engine);
+				return done_();
 			}
 		};
 		
@@ -118,12 +118,12 @@ namespace robotutor {
 			 * \param parent The parent command.
 			 * \param plugin Plugin that created us.
 			 */
-			ShowImage(Command * parent, Plugin * plugin) :
-				Command(parent, plugin) {}
+			ShowImage(ScriptEngine & engine, Command * parent, Plugin * plugin) :
+				Command(engine, parent, plugin) {}
 			
-			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory &) {
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin * plugin, std::vector<std::string> && arguments) {
 				if (arguments.size() == 0) {
-					return std::make_shared<ShowImage>(parent, plugin);
+					return std::make_shared<ShowImage>(engine, parent, plugin);
 				} else {
 					throw std::runtime_error("Command `" + static_name() + "' expects 0 arguments.");
 				}
@@ -133,14 +133,14 @@ namespace robotutor {
 			
 			std::string name() const { return static_name(); }
 			
-			bool step(ScriptEngine & engine) {
+			bool step() {
 				grabImage(engine.broker);
 				
 				RobotMessage msg;
 				msg.mutable_show_image();
 				engine.server.sendMessage(msg);
 				
-				return done_(engine);
+				return done_();
 			}
 		};
 	}

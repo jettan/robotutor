@@ -29,8 +29,8 @@ namespace robotutor {
 				int branch_ = -1;
 				
 			public:
-				TurningPointCommand(Command * parent, Plugin * plugin) :
-					Command(parent, plugin) {}
+				TurningPointCommand(ScriptEngine & engine, Command * parent, Plugin * plugin) :
+					Command(engine, parent, plugin) {}
 				
 				virtual ~TurningPointCommand() {}
 				
@@ -38,31 +38,31 @@ namespace robotutor {
 				/**
 				 * \param results The results.
 				 */
-				virtual void processResults(ScriptEngine & engine, TurningPointResults const & results) = 0;
+				virtual void processResults(TurningPointResults const & results) = 0;
 				
 				/// Run the command.
-				virtual bool step(ScriptEngine & engine) {
+				virtual bool step() {
 					// Request results first.
 					if (!results_requested_) {
-						requestResults_(engine);
+						requestResults_();
 						return false;
 					
 					// Handle the results.
 					} else if (!executed_) {
 						executed_ = true;
 						if (branch_ >= 0 && branch_ < children.size()) {
-							setNext_(engine, children[branch_].get());
+							setNext_(children[branch_].get());
 							return true;
 						}
 					}
 					
 					// No valid branch, or branch finished.
-					return done_(engine);
+					return done_();
 				}
 				
 			protected:
 				/// Request turningpoint results from server.
-				void requestResults_(ScriptEngine & engine) {
+				void requestResults_() {
 					results_requested_= true;
 					RobotMessage message;
 					message.set_fetch_turningpoint(true);
@@ -73,14 +73,14 @@ namespace robotutor {
 		/// Command to run a turningpoint choice.
 		struct TurningPointChoice : public TurningPointCommand {
 			
-			TurningPointChoice(Command * parent, Plugin * plugin) :
-				TurningPointCommand(parent, plugin) {}
+			TurningPointChoice(ScriptEngine & engine, Command * parent, Plugin * plugin) :
+				TurningPointCommand(engine, parent, plugin) {}
 			
 			/// Create the command.
-			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory & factory) {
-				auto result = std::make_shared<TurningPointChoice>(parent, plugin);
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin * plugin, std::vector<std::string> && arguments) {
+				auto result = std::make_shared<TurningPointChoice>(engine, parent, plugin);
 				for (auto const & argument : arguments) {
-					result->children.push_back(parseScript(factory, argument));
+					result->children.push_back(parseScript(engine, argument));
 					result->children.back()->parent = result.get();
 				}
 				return result;
@@ -93,13 +93,14 @@ namespace robotutor {
 			/**
 			 * \param results The results.
 			 */
-			void processResults(ScriptEngine & engine, TurningPointResults const & results) {
+			void processResults(TurningPointResults const & results) {
 				int max = 0;
 				for (int i = 1; i < results.votes().size(); ++i) {
 					if (results.votes().Get(i) > results.votes().Get(max)) max = i;
 				}
 				branch_ = max;
-				continue_(engine);
+				
+				continue_();
 			}
 			
 		};
@@ -116,14 +117,14 @@ namespace robotutor {
 			/// If true the first argument was a string and not an int.
 			bool use_string = false;
 			
-			TurningPointQuiz(Command * parent, Plugin * plugin, unsigned int index, std::string const & answer, bool use_string) :
-				TurningPointCommand(parent, plugin),
+			TurningPointQuiz(ScriptEngine & engine, Command * parent, Plugin * plugin, unsigned int index, std::string const & answer, bool use_string) :
+				TurningPointCommand(engine, parent, plugin),
 				correct_index(index),
 				correct_answer(answer),
 				use_string(use_string) {}
 			
 			/// Create the command.
-			static SharedPtr create(Command * parent, Plugin * plugin, std::vector<std::string> && arguments, Factory & factory) {
+			static SharedPtr create(ScriptEngine & engine, Command * parent, Plugin * plugin, std::vector<std::string> && arguments) {
 				if (arguments.size() < 2 || arguments.size() > 4) throw std::runtime_error("Command `" + static_name() + "' command expects 2 to 4 arguments.");
 				
 				int index;
@@ -139,9 +140,9 @@ namespace robotutor {
 				}
 				
 				// The remaining arguments are alternatives to execute depending on the results.
-				auto result = std::make_shared<TurningPointQuiz>(parent, plugin, index, answer, use_string);
+				auto result = std::make_shared<TurningPointQuiz>(engine, parent, plugin, index, answer, use_string);
 				for (auto argument = arguments.begin()+1; argument != arguments.end(); ++argument) {
-					result->children.push_back(parseScript(factory, *argument));
+					result->children.push_back(parseScript(engine, *argument));
 					result->children.back()->parent = result.get();
 				}
 				return result;
@@ -154,7 +155,7 @@ namespace robotutor {
 			/**
 			 * \param results The results.
 			 */
-			void processResults(ScriptEngine & engine, TurningPointResults const & results) override {
+			void processResults(TurningPointResults const & results) override {
 				// Get the total votes and top two answers.
 				//int total  = std::accumulate(results.votes().begin(), results.votes().end(), 0);
 				int max[2] = {0, 0};
@@ -193,7 +194,8 @@ namespace robotutor {
 				} else if (max[0] == correct_index) {
 					branch_ = 0;
 				}
-				continue_(engine);
+				
+				continue_();
 			}
 			
 		};
@@ -208,7 +210,7 @@ namespace robotutor {
 		void handleMessage(SharedServerConnection connection, ClientMessage const & message) override {
 			if (!message.has_turningpoint()) return;
 			if (auto command = dynamic_cast<command::TurningPointCommand *>(engine.current())) {
-				command->processResults(engine, message.turningpoint());
+				command->processResults(message.turningpoint());
 			}
 		}
 	};
