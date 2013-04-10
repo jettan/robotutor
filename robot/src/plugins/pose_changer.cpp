@@ -6,7 +6,8 @@
 #include <stdexcept>
 #include <string>
 
-#include <boost/asio/system_timer.hpp>
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 
@@ -33,7 +34,7 @@ namespace robotutor {
 			ScriptEngine & engine_;
 			
 			/// Timer to wait random periods.
-			boost::asio::system_timer timer_;
+			boost::asio::deadline_timer timer_;
 			
 			/// True if the engine was started.
 			std::atomic_flag started_;
@@ -46,7 +47,7 @@ namespace robotutor {
 			 * \param min The minimum time in milliseconds between two random poses.
 			 * \param max The maximum time in milliseconds between two random poses.
 			 */
-			PoseChanger(ScriptEngine & engine, std::string prefix, unsigned int min = 1000, unsigned int max = 4000) :
+			PoseChanger(ScriptEngine & engine, std::string prefix, unsigned int min = 2000, unsigned int max = 8000) :
 				prefix(prefix),
 				min(min),
 				max(max),
@@ -58,7 +59,9 @@ namespace robotutor {
 			
 			/// Start executing random behaviors.
 			void start() {
-				asyncWaitRandom_();
+				if (!started_.test_and_set()) {
+					asyncWaitRandom_();
+				}
 			}
 			
 			/// Stop executing random behaviors.
@@ -70,12 +73,10 @@ namespace robotutor {
 		protected:
 			/// Wait a random period before calling the timeout function.
 			void asyncWaitRandom_() {
-				if (!started_.test_and_set()) {
-					boost::random::uniform_int_distribution<unsigned int> distribution(min, max);
-					unsigned int timeout = distribution(engine_.random);
-					timer_.expires_from_now(std::chrono::milliseconds(timeout));
-					timer_.async_wait(std::bind(&PoseChanger::handleTimeout_, this, std::placeholders::_1));
-				}
+				boost::random::uniform_int_distribution<unsigned int> distribution(min, max);
+				unsigned int timeout = distribution(engine_.random);
+				timer_.expires_from_now(boost::posix_time::milliseconds(timeout));
+				timer_.async_wait(std::bind(&PoseChanger::handleTimeout_, this, std::placeholders::_1));
 			}
 			
 			/// Handle a timeout.
