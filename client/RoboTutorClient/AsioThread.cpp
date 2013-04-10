@@ -23,7 +23,7 @@ void AsioThread::quit() {
 	ios_.stop();
 }
 
-void AsioThread::parseTpXml(ClientMessage & message) {
+void AsioThread::parseTpXml() {
 	QString filename("TPSession.xml");
 	int errorLine, errorColumn;
 	QString errorMsg;
@@ -54,10 +54,12 @@ void AsioThread::parseTpXml(ClientMessage & message) {
 		responses[element.text().toInt() - 1].second++;
 	}
 
+	ClientMessage message;
 	for (int i = 0; i < responses.size(); i++) {
 		message.mutable_turningpoint()->add_answers(responses[i].first.toStdString());
 		message.mutable_turningpoint()->add_votes(responses[i].second);
 	}
+	client_->sendMessage(message);
 
 	file.close();
 }
@@ -72,9 +74,7 @@ void AsioThread::handleServerMessage(std::shared_ptr<ascf::Client<Protocol>> con
 	}
 
 	if (message.has_fetch_turningpoint()) {
-		ClientMessage message;
-		message.mutable_turningpoint();
-		parseTpXml(message);
+		parseTpXml();
 	}
 }
 

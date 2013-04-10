@@ -39,7 +39,7 @@ private:
 	QString turning_point_path_;
 
 private:
-	void parseTpXml(ClientMessage & message);
+	void parseTpXml();
 
 signals:
 	void setStatus(QString status);
