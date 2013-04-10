@@ -25,14 +25,11 @@ private:
 
 	QString script_path_;
 	QLabel status_label_;
-	QString turning_point_path_;
 
 	ScriptHighlighter *highlighter_;
 
 	void setScriptPath(QString path);
 	void saveScript(QString fileName);
-
-	void parseTpXml();
 
 public slots:
 	void setStatus(QString status);
@@ -43,7 +40,6 @@ private slots:
 	void on_openScript_triggered();
 	void on_saveScript_triggered();
 	void on_saveScriptAs_triggered();
-	void on_presentationButton_clicked();
 	void on_connectButton_clicked();
 	void on_runButton_clicked();
 	void on_pauseButton_clicked();

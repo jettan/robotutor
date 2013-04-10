@@ -36,6 +36,10 @@ private:
 	std::string host_;
 	int port_;
 	std::shared_ptr<ascf::Client<Protocol>> client_;
+	QString turning_point_path_;
+
+private:
+	void parseTpXml(ClientMessage & message);
 
 signals:
 	void setStatus(QString status);

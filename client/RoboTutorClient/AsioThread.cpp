@@ -8,6 +8,8 @@ AsioThread::AsioThread(boost::asio::io_service & ios) :
 {
 	client_->message_handler = std::bind(&AsioThread::handleServerMessage, this, std::placeholders::_1, std::placeholders::_2);
 	client_->connect_handler = std::bind(&AsioThread::handleConnect, this, std::placeholders::_1, std::placeholders::_2);
+
+	turning_point_path_ = QString(getenv("APPDATA")) + QString("\\Turning Technologies\\TurningPoint\\Current Session\\");
 }
 
 void AsioThread::connectSlots(RoboTutorClient & gui) {
@@ -21,6 +23,45 @@ void AsioThread::quit() {
 	ios_.stop();
 }
 
+void AsioThread::parseTpXml(ClientMessage & message) {
+	QString filename("TPSession.xml");
+	int errorLine, errorColumn;
+	QString errorMsg;
+	QFile file(turning_point_path_ + filename);
+	QDomDocument document;
+
+	if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
+		QString error("Syntax error line %1, column %2:\n%3");
+		error = error.arg(errorLine).arg(errorColumn).arg(errorMsg);
+		log(error);
+		return;
+	}
+
+	QDomElement lastQuestionNode = document.firstChild().firstChild().lastChild().toElement();
+	QDomElement responsesNode = lastQuestionNode.lastChild().toElement();
+	QDomElement answersNode = responsesNode.previousSibling().toElement();
+	
+	int participants = document.firstChild().lastChild().lastChild().toElement().attribute("count").toInt();
+
+	std::vector<std::pair<QString, int>> responses;
+	for (QDomNode node = answersNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
+		responses.push_back(std::make_pair(node.firstChild().toElement().text(), 0));
+	}
+
+	for (QDomNode node = responsesNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
+		QDomElement element = node.toElement();
+		QString test = element.text();
+		responses[element.text().toInt() - 1].second++;
+	}
+
+	for (int i = 0; i < responses.size(); i++) {
+		message.mutable_turningpoint()->add_answers(responses[i].first.toStdString());
+		message.mutable_turningpoint()->add_votes(responses[i].second);
+	}
+
+	file.close();
+}
+
 void AsioThread::handleServerMessage(std::shared_ptr<ascf::Client<Protocol>> connection, RobotMessage const & message) {
 	if (message.has_slide()) {// && ppt_controller_ != NULL) {
 		ppt_controller_.setSlide(message.slide().offset(), message.slide().relative());
@@ -28,6 +69,12 @@ void AsioThread::handleServerMessage(std::shared_ptr<ascf::Client<Protocol>> con
 	
 	if (message.has_show_image()) {
 		ppt_controller_.createSlide("http://" + host_ + "/capture.jpg");
+	}
+
+	if (message.has_fetch_turningpoint()) {
+		ClientMessage message;
+		message.mutable_turningpoint();
+		parseTpXml(message);
 	}
 }
 

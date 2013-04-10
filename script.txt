@@ -1,3 +1,5 @@
+{pose prefix|robotutor/generic/}
+{enable pose changer}
 {behavior|robotutor/specific/HelloEverybody}
 \rspd=85\\vct=88\
 Hello everyone, good afternoon.

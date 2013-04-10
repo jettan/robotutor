@@ -13,7 +13,10 @@ public:
 
 private:
 	PowerPoint::_ApplicationPtr ppt_;
-	PowerPoint::_PresentationPtr pres_;
+	//PowerPoint::_PresentationPtr pres_;
 	PowerPoint::SlideShowViewPtr show_;
+
+private:
+	bool getPresentation(PowerPoint::_PresentationPtr & pres);
 };
 

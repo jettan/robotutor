@@ -9,58 +9,14 @@ RoboTutorClient::RoboTutorClient(AsioThread & io, QWidget *parent) :
 
 	ui_.statusBar->addWidget(&status_label_);
 	highlighter_ = new ScriptHighlighter(ui_.scriptEditor->document());
-
-	turning_point_path_ = QString(getenv("APPDATA")) + QString("\\Turning Technologies\\TurningPoint\\Current Session\\");
 }
 
 RoboTutorClient::~RoboTutorClient() {
 	delete highlighter_;
 }
 
-void RoboTutorClient::parseTpXml() {
-	QString filename("TPSession.xml");
-	int errorLine, errorColumn;
-	QString errorMsg;
-	QFile file(turning_point_path_ + filename);
-	QDomDocument document;
-
-	if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-		QString error("Syntax error line %1, column %2:\n%3");
-		error = error.arg(errorLine).arg(errorColumn).arg(errorMsg);
-		log(error);
-		return;
-	}
-
-	QDomElement lastQuestionNode = document.firstChild().firstChild().lastChild().toElement();
-	QDomElement responsesNode = lastQuestionNode.lastChild().toElement();
-	QDomElement answersNode = responsesNode.previousSibling().toElement();
-	
-	int participants = document.firstChild().lastChild().lastChild().toElement().attribute("count").toInt();
-
-	std::vector<std::pair<QString, int>> responses;
-	for (QDomNode node = answersNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
-		responses.push_back(std::make_pair(node.firstChild().toElement().text(), 0));
-	}
-
-	for (QDomNode node = responsesNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
-		QDomElement element = node.toElement();
-		QString test = element.text();
-		responses[element.text().toInt() - 1].second++;
-	}
-
-	file.close();
-}
-
 void RoboTutorClient::log(QString info) {
 	ui_.logEdit->append(info);
-}
-
-void RoboTutorClient::on_presentationButton_clicked() {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Choose Presentation"), "", tr("Powerpoint Files (*.ppt *.pptx);;All files (*.*)"));
-	if (fileName != "") {
-		ui_.presentationEdit->setText(fileName);
-		io_.getIos().post(std::bind(&AsioThread::openPresentation, &io_, fileName));
-	}
 }
 
 void RoboTutorClient::on_openScript_triggered() {
