@@ -1,0 +1,19 @@
+{pose prefix|robotutor/generic/}
+{enable pose changer}
+{behavior|robotutor/specific/HelloEverybody}
+\rspd=85\\vct=88\
+Hello everyone, good afternoon.
+\pau=1000\
+
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+Quiz time!
+\pau=10000\
+{slide}
+\pau=2000\
+Sending back results.
+{turningpoint choice | Ok who said 10 is stupid | Ok | Apples are healthy | Growl} 
+{disable pose changer}
+Boe.
