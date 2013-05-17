@@ -2,8 +2,71 @@
 {enable pose changer}
 {behavior|robotutor/specific/HelloEverybody}
 \rspd=85\\vct=88\
-Hello everyone, good afternoon.
+Hello everyone, good afternoon. My name is RoboTutor.
 \pau=2000\
+
+Today I will be taking over the lecture for a short while.
+Throughout this presentation I will show you some of my skills!
+I will start by showing you my body and talk a little bit about my hardware.
+We will end this presentation with some trivia questions.
+
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+{behavior|robotutor/specific/PointOutCameras}
+I have two cameras with which {behavior|robotutor/specific/Look} I can see everything in high definition.
+This allows me to see the world around me and even recognize people and objects!
+I can even see all of you here right now.
+
+{show image}
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+\pau=2000\
+Hummm, interesting.
+\pau=1000\
+{behavior|robotutor/specific/Twinkle}
+You there, on the front, you weren't sleeping were you?
+\pau=1000\
+
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+{behavior|robotutor/specific/PointOutMicrophones}
+Using my four microphones I can recognize the location of where sound is coming from.
+If I try my best, I can even recognize the words that you say.
+Insert microphone demo for me please. Anass is going to do something awesome for the microphones!
+
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+As you can see, unlike many robots, I can walk with my two legs {behavior|robotutor/specific/Balance} and grab objects with two arms {behavior|robotutor/specific/Flex}, just like you can.
+I can even sit down if I feel tired and stand up again, but I am not as good at this as you are.
+
+In fact if I am in a good mood, I can even dance a little.
+{behavior|robotutor/specific/Dance}
+
+Alright, that is enough exercise for now.
+
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+Ah yes, time for a little quiz.
+
+<
+  Wat kost ik? ($16.000)
+  Welke vogel kan als enige achteruit vliegen? (Kolibrie)
+  Uit hoeveel procent zand bestaat de Sahara? (20%)
+  Wat bevriest eerder, koud water of warm water?
+>
+
+
+
 
 Today I will be presenting to you about me and my family.
 First, I will talk about my history.
