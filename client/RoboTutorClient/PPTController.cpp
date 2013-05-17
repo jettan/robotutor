@@ -152,12 +152,20 @@ void PptController::createSlide(std::string pictureFile)
 
 		PowerPoint::_SlidePtr current_slide = pres->Slides->Add(curr_slide_nr + 1, PowerPoint::ppLayoutPictureWithCaption);
 
-		current_slide->Shapes->AddPicture(_bstr_t(pictureFile.c_str()),
+		try
+		{
+			current_slide->Shapes->AddPicture(_bstr_t(pictureFile.c_str()),
 										  Office::MsoTriState::msoFalse, 
 										  Office::MsoTriState::msoTrue, 
 										  200, 
 										  100, 
 										  320, 
 										  240);
+		}
+		catch (_com_error &err)
+		{
+			wprintf(L"PowerPoint throws the error: %s\n", err.ErrorMessage());
+			wprintf(L"Description: %s\n", (LPCWSTR) err.Description());
+		}
 	}
 }

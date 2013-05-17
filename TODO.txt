@@ -1,0 +1,11 @@
+Behaviors:
+Facepalm
+Point forward
+Balance on one foot
+Flex (bodybuilder)
+Dance
+
+Commands:
+Play mp3
+Transport sound level
+

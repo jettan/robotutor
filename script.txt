@@ -57,42 +57,30 @@ Alright, that is enough exercise for now.
 {slide}
 
 Ah yes, time for a little quiz.
-
-<
-  Wat kost ik? ($16.000)
-  Welke vogel kan als enige achteruit vliegen? (Kolibrie)
-  Uit hoeveel procent zand bestaat de Sahara? (20%)
-  Wat bevriest eerder, koud water of warm water?
->
-
-
-
-
-Today I will be presenting to you about me and my family.
-First, I will talk about my history.
-Then, I will tell something about myself.
-{behavior|robotutor/specific/Twinkle}{slide}
-
-My ancestors are created by Al-de-ba-ran Robotics.
-Most of my brothers are playing soccer, while others are into dancing.
-{behavior|robotutor/specific/Me}
-Me? I am a presenter.
-
-{behavior|robotutor/specific/Twinkle}{slide}
-Although I am not a living being, I can still sense the world like every body here.
-I can see in color through my two high definition cameras. \pau=300\
-If I try my best, I could even recognize some faces and remember them.
-\pau=300\
-
-I can hear by using four microphones.
-I understand many program languages like C++, Java and Python, but also human languages like English and French.
-Normally, I can stay awake for 90 minutes without recharging my batteries.
-{behavior|robotutor/specific/ShowRight}{slide}
-
-My future is very bright.
-I can be used in lab as an assistant, for research and for entertainment.
+How much do I cost?
+\pau=10000\
 {slide}
+\pau=2000\
+{turningpoint choice | Ok who said 10 is stupid | Ok | Apples are healthy | Growl} 
+
+What is the only bird that can fly backwards?\pau=10000\
+{slide}
+\pau=2000\
+{turningpoint choice | Ok who said 10 is stupid | Ok | Apples are healthy | Growl} 
+
+How much sand does the Sahara  desert consists of?\pau=10000\
+{slide}
+\pau=2000\
+{turningpoint choice | Ok who said 10 is stupid | Ok | Apples are healthy | Growl} 
+
+What freezes faster?
+\pau=10000\
+{slide}
+\pau=2000\
+{turningpoint choice | Ok who said 10 is stupid | Ok | Apples are healthy | Growl} 
 
 Thank you for your attention!
 \pau=300\
 I will now let the professor take over.
+
+{disable pose changer}
