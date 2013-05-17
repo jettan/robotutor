@@ -1,0 +1,24 @@
+Microfoon feedback (wachten tot geluid / geluidsniveau)
+Camera feedback (als plaatje op slide)
+
+Bewegingen
+  Balanceren
+  Zitten/opstaan
+  Facepalm when question wrong
+
+Demonstreer ultrasone sensors
+Eventueel speech recognition
+TurningPoint
+  Wat kost ik? ($16.000)
+  Welke vogel kan als enige achteruit vliegen? (Kolibrie)
+  Uit hoeveel procent zand bestaat de Sahara? (20%)
+  Wat bevriest eerder, koud water of warm water?
+
+Knop op hoofd om te pauzeren
+Winnaar van de test mag naar voren komen om de robot uit te zetten
+
+Balance
+Flex
+PointForward
+Dance
+Look
