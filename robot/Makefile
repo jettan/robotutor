@@ -75,8 +75,13 @@ posechanger_bin   = lib/posechanger.so
 
 # TurningPoint plugin.
 turningpoint_src  = plugins/turningpoint.cpp
-turningpoint_lib += robotutor
+turningpoint_lib += robotutor alcommon alaudio
 turningpoint_bin  = lib/turningpoint.so
+
+# Sound plugin.
+sound_src  = plugins/sound.cpp
+sound_lib += robotutor
+sound_bin  = lib/sound.so
 
 -include Makefile.local
 
@@ -90,6 +95,7 @@ $(call define_library,behavior)
 $(call define_library,presentation)
 $(call define_library,posechanger)
 $(call define_library,turningpoint)
+$(call define_library,sound)
 
 default: $(source_dir)/messages.pb.h all
 
