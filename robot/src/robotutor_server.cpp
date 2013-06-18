@@ -14,11 +14,36 @@
 
 using namespace robotutor;
 
+void help() {
+	std::cout << "Robotutor server v0.7b\n";
+	std::cout << "Usage: robotutor-server <options>\n";
+	std::cout << "Options:\n";
+	std::cout << "-h Print this help message.\n";
+	std::cout << "-a <address> The address to bind the server to.\n";
+}
 
 int main(int argc, char ** argv) {
 	// Get nao host from command line.
 	std::string nao_host = "localhost";
-	if (argc > 1) nao_host = argv[1];
+	
+	if (argc == 1) {
+		help();
+		return 1;
+	}
+	int i = 1;
+	while (i < argc && (argv[i][0] == '-')) {
+		switch (argv[i][1]) {
+			case 'h':
+			case 'H':
+				help();
+				return 1;
+			case 'a':
+			case 'A':
+				nao_host = argv[++i];
+				break;
+		}
+		i++;
+	}
 	
 	// The main IO service.
 	boost::asio::io_service ios;
