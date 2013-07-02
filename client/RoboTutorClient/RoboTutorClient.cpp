@@ -112,6 +112,8 @@ void RoboTutorClient::setConnect(bool status) {
 	ui_.runButton->setEnabled(status);
 	ui_.serverEdit->setEnabled(!status);
 	ui_.portSpinBox->setEnabled(!status);
+	ui_.pauseButton->setEnabled(status);
+	ui_.stopButton->setEnabled(status);
 }
 
 void RoboTutorClient::on_pauseButton_clicked() {

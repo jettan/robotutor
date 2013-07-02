@@ -129,8 +129,13 @@ void PptController::setSlide(int nr, bool relative)
 
 			slide += nr;
 
-			if (slide > pres->GetSlides()->Count)
-				show_->Next();
+			if (relative || slide > pres->GetSlides()->Count)
+			{
+				if (nr > 0)
+					show_->Next();
+				else
+					show_->Previous();
+			}
 			else
 				show_->GotoSlide(slide, Office::MsoTriState::msoTrue);
 		}

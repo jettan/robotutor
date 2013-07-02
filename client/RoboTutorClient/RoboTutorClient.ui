@@ -159,6 +159,9 @@
           </item>
           <item row="3" column="3">
            <widget class="QPushButton" name="stopButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Stop Script</string>
             </property>
@@ -166,6 +169,9 @@
           </item>
           <item row="3" column="2">
            <widget class="QPushButton" name="pauseButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Pause</string>
             </property>

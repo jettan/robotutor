@@ -9,7 +9,7 @@ AsioThread::AsioThread(boost::asio::io_service & ios) :
 	client_->message_handler = std::bind(&AsioThread::handleServerMessage, this, std::placeholders::_1, std::placeholders::_2);
 	client_->connect_handler = std::bind(&AsioThread::handleConnect, this, std::placeholders::_1, std::placeholders::_2);
 
-	turning_point_path_ = QString(getenv("APPDATA")) + QString("\\Turning Technologies\\TurningPoint\\Current Session\\");
+	turning_point_path_ = QString(getenv("APPDATA")) + QString("\\TTRepository\\ActiveSession\\");
 }
 
 void AsioThread::connectSlots(RoboTutorClient & gui) {
@@ -24,7 +24,7 @@ void AsioThread::quit() {
 }
 
 void AsioThread::parseTpXml() {
-	QString filename("TPSession.xml");
+	QString filename("TTSession.xml");
 	int errorLine, errorColumn;
 	QString errorMsg;
 	QFile file(turning_point_path_ + filename);
@@ -37,20 +37,19 @@ void AsioThread::parseTpXml() {
 		return;
 	}
 
-	QDomElement lastQuestionNode = document.firstChild().firstChild().lastChild().toElement();
-	QDomElement responsesNode = lastQuestionNode.lastChild().toElement();
-	QDomElement answersNode = responsesNode.previousSibling().toElement();
-	
-	int participants = document.firstChild().lastChild().lastChild().toElement().attribute("count").toInt();
+	QDomElement sessionNode = document.firstChildElement("session");
+	QDomElement questionListNode = sessionNode.firstChildElement("questionlist");
+	QDomElement questionNode = questionListNode.firstChildElement("questions");
+	QDomElement answersNode = questionNode.lastChild().firstChildElement("answers");
+	QDomElement responsesNode = questionNode.lastChild().firstChildElement("responses");
 
 	std::vector<std::pair<QString, int>> responses;
 	for (QDomNode node = answersNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
-		responses.push_back(std::make_pair(node.firstChild().toElement().text(), 0));
+		responses.push_back(std::make_pair(node.firstChildElement("answertext").text(), 0));
 	}
 
 	for (QDomNode node = responsesNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
-		QDomElement element = node.toElement();
-		QString test = element.text();
+		QDomElement element = node.firstChildElement("responsestring");
 		responses[element.text().toInt() - 1].second++;
 	}
 
