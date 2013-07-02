@@ -1,0 +1,55 @@
+{pose prefix|robotutor/generic/}
+{enable pose changer}
+{behavior|robotutor/specific/HelloEverybody}
+\rspd=85\\vct=88\
+
+Ah yes, time for a little quiz.
+How much do I cost?
+{slide}
+\pau=10000\
+{slide}
+\pau=2000\
+Hum, let's see.
+{turningpoint choice | I am not that cheap, I cost 16000 dollar | Almost, but I cost somewhat more, 10 times more | Exactly, that is correct | For that money I can buy myself a whole family guys, I cost only 16000 dollar} 
+
+\pau=2000\
+{slide}
+
+What is the only bird that can fly backwards?
+{slide}
+\pau=10000\
+{slide}
+\pau=2000\
+Let's see what you thought.
+{turningpoint choice | Penguins can't even fly, it was the hummingbird | Yes exactly, very good | They can dig their heads in the ground, that's it. It was the hummingbird. | How much wood would a woodchuck chuck if a woodchuck could chuck wood? It was the hummingbird.} 
+
+\pau=2000\
+{slide}
+
+How much sand does the Sahara  desert consist of?
+{slide}
+\pau=10000\
+{slide}
+\pau=2000\
+This is a trick question, let's see.
+{turningpoint choice | That is correct, who knew | Try the beach. It was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent.} 
+
+\pau=2000\
+{slide}
+
+What freezes faster?
+{slide}
+\pau=10000\
+{slide}
+\pau=2000\
+This is another trick question.
+{turningpoint choice | That is incorrect, it is a weird phenomenon called the Mpemba  effect | Exactly, it is a weird phenomenon called the Mpemba  effect} 
+
+\pau=2000\
+{slide}
+
+Thank you for your attention!
+\pau=300\
+I will now let the professor take over.
+
+{disable pose changer}
