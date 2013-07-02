@@ -1,0 +1,77 @@
+The first step in creating a robotutor presentation is creating a regular slideshow in Microsoft PowerPoint. It can also include polling sildes made by the Turning Point software. The robot will later use this slideshow in his presentation. The next step is to create an presentation script. This is a text file in wich the robots behavior is described. Most importantly it contains the text that the robot will speak. Within this text commands can be embedded.
+
+
+\section{Commands}
+\subsection{slide}
+The command "slide" can be used to control the slideshow. This command has 3 modes; it can be used without argument to go to the next slide, it can be used with a number to go to a specific slide, or it can be used with an +/- sign followed by a number to go to a slide relative to the current slide. See the following examples.
+
+
+\begin{table}[h!]
+\begin{tabular}{|l|l|}
+\hline
+Command & Result\\ \hline
+\{slide\}& Go to the next slide\\ 
+\{slide|1\}  & Go to slide 1\\ 
+\{slide|7\}  & Go to slide 7\\ 
+\{slide|+1\} & Skip 1 slide ahead/Go to the next slide \\ 
+\{slide|+8\} & Skip 8 slides ahead\\ 
+\{slide|-5\} & Skip 5 slides backward\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Behaviors}
+
+
+\begin{table}[h!]
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Directory} &\textbf{Name} &\textbf{Description} \\ 
+\hline
+special     &StandUp        &The NAO moves to his default \\
+            &               &standing position from any starting point.  \\[0.4cm]
+
+special     &SitDownAndDie  &The NAO goes to a safe sitting position and it's motors \\
+            &               &are turned off. \\[0.2cm]
+      
+generic & Capisce & The Nao makes a small Italian gesture.  \\[0.4cm]
+      
+generic       &ConvergeHands       & The NAO converge his hands.  \\[0.4cm]
+
+generic & HandOverLeft & The NAO makes a gesture as if it is  \\
+&& handing over something with his left hand.  \\[0.4cm]
+generic & HandOverRight & The NAO makes a gesture as if it is  \\
+&& handing over something with his right hand.  \\[0.4cm]
+
+generic & PushAsideBoth & The NAO makes a gesture as if it is. \\
+&& pushing something aside with his both his hands.  \\[0.4cm]
+
+generic & PushAsideLeft & The NAO makes a gesture as if it is.  \\
+&& pushing something aside with the back of his left hand.  \\[0.4cm]
+
+generic & PushAsideRight & The NAO makes a gesture as if it is. \\
+&& pushing something aside with his right hand.  \\[0.4cm]
+
+generic & SpreadBoth & Makes the NAO spread both his hands. \\[0.4cm]
+
+generic & SpreadLeft & Makes the NAO spread his left hand. \\[0.4cm]
+
+generic & SpreadBoth & Makes the NAO spread his right hand. \\[0.4cm]
+
+
+
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Play a sound}
+
+
+\subsection{Do a Quiz}
+
+
+%Make a presentation in powerpoint
+%Make a script
+% Commands

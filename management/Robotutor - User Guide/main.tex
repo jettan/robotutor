@@ -1,0 +1,135 @@
+\documentclass[a4paper, 10pt, twoside]{report}
+\usepackage{a4wide}             % voor wat beter gevulde a4-tjes
+%\usepackage[dutch]{babel}       % voor Nederlandse woordafbreking
+\usepackage{amsmath,xfrac}
+\usepackage{SIunits}
+\DeclareMathOperator{\sgn}{sign}
+\usepackage[T1]{fontenc}
+
+ \renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+\makeatother
+
+
+\usepackage{cancel}             % voor het `wegstrepen' van tekst (bijv. in formules)
+\usepackage{graphicx} 		    % voor afbeeldingen in pixelformaat (bmp, jpg enz.)
+\usepackage{subfig}             % om plaatjes naast elkaar te kunnen zetten
+\usepackage[utf8]{inputenc}
+%\usepackage[small, bf, hang]{caption} % Voor netter onderschrift bij o.a. afbeeldignen.
+\usepackage{fancyhdr}           % voor kop- en voettekst
+\usepackage{rotating}           % voor het schuin zetten van teksten (bruikbaar bij bijvoorbeeld tabellen
+\usepackage{wrapfig}
+\usepackage{eso-pic}
+\usepackage{colortbl}	        % Voor gekleurde tabellen							
+\usepackage{color}		        % Voor gekleurde tekst
+\usepackage{eurosym}
+\usepackage{latexsym}
+\usepackage[pagebackref=true]{hyperref}
+\usepackage{verbatim}	        % Voor comment env!
+
+% Shit voor Listings
+\usepackage{listings}
+\definecolor{dkgreen}{rgb}{0, 0.6, 0}
+\definecolor{blue}{rgb}{0, 0, 1}
+
+\lstset{
+language=Matlab,
+basicstyle=\small\ttfamily,
+numbers=left,                       
+numberstyle=\small\ttfamily,                            
+showspaces=false,                  
+showstringspaces=false,             
+showtabs=false,                     
+tabsize=2,                          
+captionpos=b,                      
+breaklines=true,                    
+breakatwhitespace=false,            
+title=\lstname,                    
+keywordstyle=\color{blue},
+commentstyle=\color{dkgreen},
+flexiblecolumns=true,
+}
+
+% Configuratie voor TiKZ en PGFPlots
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata, shapes}
+\tikzstyle{vertex}=[circle]
+\usepackage{pgfplots}
+
+
+% Headers instellen.
+\pagestyle{fancy} 				        % Voor de opmaak van kop- en voetteksten.
+\setlength{\headheight}{0pt}		% Zoals: paginanummers, hoofdstukken enz.  
+\fancyhf{}
+\fancyfoot[C,R,L]{}				        % De plekken waar geen tekst moet staan eerst leegmaken
+\fancyhead[OR]{\slshape\rightmark}		% \rightmark = Paragraaftitel
+\fancyhead[EL]{\slshape\leftmark}		% \leftmark = Hoofdstuktitel
+\fancyfoot[C]{\thepage}				    % \thepage = paginanummering
+\renewcommand{\headrulewidth}{0,4pt}
+\renewcommand{\thetag}{\nonumber}
+
+\setlength{\parindent}{0pt}             %geen identatie bij nieuwe paragrafen
+
+\usepackage{pifont} 
+\newcommand{\tick}{\ding{52}}
+
+\hypersetup{pdftitle=Robotutor - User guide, pdfauthor=Robotutor Group, colorlinks=true}
+\graphicspath{{images/}}
+
+\makeindex
+
+\newcommand{\us}{\,$\mu$s\xspace}
+%\usepackage{cmbright} %andere font
+\newcommand\BackgroundPic{\put(-5,0){\parbox[b][\paperheight]{\paperwidth}{\vfill \raggedright \includegraphics[width=1.05\paperwidth,height=\paperheight]{images/front.pdf}}}}
+
+\begin{document}
+
+\begin{titlepage}
+
+\AddToShipoutPicture*{\BackgroundPic}
+{\color{white}\ \\[.5cm]
+\begin{Huge}Robotutor\\[.8cm] \end{Huge}
+\begin{huge}User Guide\end{huge}\\[1.6cm]
+\begin{large}\color{cyan}\today \end{large}}\\[3cm]
+\begin{tabbing}
+\hspace*{5cm}\= \kill
+
+Anass Drif\\
+Hans Gaiser\\
+Jethro Tan\\
+Maarten de Vries\\
+Pim Veldhuisen\\ 
+
+\end{tabbing}
+
+\vspace{3 cm}
+
+\end{titlepage}
+%\input{versieoverzicht}
+\setcounter{tocdepth}{3}
+\tableofcontents
+
+\chapter*{Introduction} 
+\input{inleiding}
+\chapter{Required Hardware}
+\input{hardware}
+\chapter{Installing Robotutor}
+\input{install}
+\chapter{Preparing A Presentation}
+\input{presentation}
+\chapter{Running A Presentation}
+\input{run}
+
+
+%\nocite{*}
+%\bibliographystyle{IEEEtran}
+%\bibliography{Bibliography}
+%\addcontentsline{toc}{chapter}{Bibliography}
+
+%\appendix
+%\input{appendix.tex}
+
+\end{document}
