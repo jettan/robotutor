@@ -39,6 +39,7 @@ namespace robotutor {
 	 */
 	void BehaviorEngine::enqueue(BehaviorJob const & job) {
 		queue_.push_back(job);
+		//std::cout << "Enqueing job " << job.name_ << ", size " << queue_.size() << std::endl;
 		if (queue_.size() == 1) {
 			unqueue_();
 		}
@@ -83,6 +84,7 @@ namespace robotutor {
 		if (job.on_start_) job.on_start_();
 		
 		// If the behavior can be found, execute it.
+		//std::cerr << "Trying to execute " << job.name_ << "." << std::endl;
 		if (bm_.isBehaviorInstalled(job.name_)) {
 			job.id_ = bm_.post.runBehavior(job.name_);
 			
@@ -92,7 +94,9 @@ namespace robotutor {
 		
 		// Otherwise, immediately call the done handler.
 		} else {
-			if (job.on_done_) job.on_done_();
+			//if (job.on_done_) job.on_done_();
+			//std::cout << "Immediately call the done handler because behavior was not found." << std::endl;
+			onJobDone_();
 		}
 	}
 	
@@ -102,6 +106,8 @@ namespace robotutor {
 		BehaviorJob & job = queue_.front();
 		if (job.on_done_) job.on_done_();
 		queue_.pop_front();
+		
+		//std::cout << "Dequeing job " << job.name_ << ", size " << queue_.size() << std::endl;
 		
 		// Process the rest of the queue.
 		if (queue_.size()) {
