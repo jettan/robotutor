@@ -2,8 +2,8 @@
 {enable pose changer}
 {behavior|robotutor/specific/HelloEverybody}
 \rspd=85\\vct=88\
-Hello everyone, good afternoon. My name is RoboTutor.
-\pau=2000\
+Hello everyone, good afternoon. My name is Robo Tutor.
+\pau=1000\
 
 Today I will be taking over the lecture for a short while.
 Throughout this presentation I will show you some of my skills!
@@ -16,18 +16,19 @@ We will end this presentation with some trivia questions.
 
 {behavior|robotutor/specific/PointOutCameras}
 I have two cameras with which {behavior|robotutor/specific/Look} I can see everything in high definition.
+{show image}
 This allows me to see the world around me and even recognize people and objects!
 I can even see all of you here right now.
 
-{show image}
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
 \pau=2000\
 Hummm, interesting.
-\pau=1000\
+\pau=500\
 {behavior|robotutor/specific/Twinkle}
+{behavior|robotutor/specific/PointForward}
 You there, on the front, you weren't sleeping were you?
 \pau=1000\
 
@@ -38,7 +39,6 @@ You there, on the front, you weren't sleeping were you?
 {behavior|robotutor/specific/PointOutMicrophones}
 Using my four microphones I can recognize the location of where sound is coming from.
 If I try my best, I can even recognize the words that you say.
-Insert microphone demo for me please. Anass is going to do something awesome for the microphones!
 
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
@@ -47,9 +47,9 @@ Insert microphone demo for me please. Anass is going to do something awesome for
 As you can see, unlike many robots, I can walk with my two legs {behavior|robotutor/specific/Balance} and grab objects with two arms {behavior|robotutor/specific/Flex}, just like you can.
 I can even sit down if I feel tired and stand up again, but I am not as good at this as you are.
 
-In fact if I am in a good mood, I can even dance a little.
 {behavior|robotutor/specific/Dance}
-
+In fact if I am in a good mood, I can even dance a little.
+\pau=1000\
 Alright, that is enough exercise for now.
 
 {behavior|robotutor/specific/Twinkle}
@@ -58,8 +58,15 @@ Alright, that is enough exercise for now.
 
 Ah yes, time for a little quiz.
 How much do I cost?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
 {slide}
 \pau=10000\
+
+{enable pose changer}
+
 {slide}
 \pau=2000\
 Hum, let's see.
@@ -69,8 +76,15 @@ Hum, let's see.
 {slide}
 
 What is the only bird that can fly backwards?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
 {slide}
 \pau=10000\
+
+{enable pose changer}
+
 {slide}
 \pau=2000\
 Let's see what you thought.
@@ -80,19 +94,33 @@ Let's see what you thought.
 {slide}
 
 How much sand does the Sahara  desert consist of?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
 {slide}
 \pau=10000\
+
+{enable pose changer}
+
 {slide}
 \pau=2000\
 This is a trick question, let's see.
-{turningpoint choice | That is correct, who knew | Try the beach. It was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent.} 
+{turningpoint choice | That is correct, who knew | Try the beach, 50 percent is incorrect. It was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent.} 
 
 \pau=2000\
 {slide}
 
 What freezes faster?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
 {slide}
 \pau=10000\
+
+{enable pose changer}
+
 {slide}
 \pau=2000\
 This is another trick question.
@@ -103,6 +131,7 @@ This is another trick question.
 
 Thank you for your attention!
 \pau=300\
-I will now let the professor take over.
+I will now let the professor continue.
+{behavior|robotutor/specific/Bow}
 
 {disable pose changer}
