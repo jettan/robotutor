@@ -60,6 +60,8 @@ int main(int argc, char ** argv) {
 		return -2;
 	}
 	
+	boost::shared_ptr<NoiseDetector> noise_detector(NoiseDetector::create(ios, broker, "NoiseDetector"));
+	
 	// Initialize the script engine.
 	ScriptEngine engine(ios, broker);
 	
@@ -69,6 +71,11 @@ int main(int argc, char ** argv) {
 	// Register accept handler.
 	engine.server.on_accept = [&engine] (SharedServerConnection connection) {
 		std::cout << connection->socket().remote_endpoint() << ": Connection accepted." << std::endl;
+	};
+	
+	// Function that deals with a noisy classroom.
+	auto onNoise = [&engine] (int level) {
+		std::cout << "Noise detected." << std::endl;
 	};
 	
 	// Run the IO service.
