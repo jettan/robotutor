@@ -89,10 +89,22 @@ namespace robotutor {
 	 */
 	bool ScriptParser::consume(char c) {
 		switch (state_) {
+			// Parsing comments.
+			case State::comment:
+				// Read endline to end comment state.
+				if (c == '\n')
+					state_ = State::text;
+				return false;
+				
 			// Parsing normal text.
 			case State::text:
+				// A hashtag starts a comment line.
+				if (c == '#') {
+					state_ = State::comment;
+					return false;
+					
 				// An opening curly bracket starts a command.
-				if (c == '{') {
+				} else if (c == '{') {
 					state_ = State::command_name;
 					return false;
 					

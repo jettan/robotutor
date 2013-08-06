@@ -23,6 +23,7 @@ namespace robotutor {
 				text,
 				command_name,
 				command_args,
+				comment,
 			} state_;
 			
 			/// Script engine to create commands for.
