@@ -8,136 +8,232 @@
 # Greetings to everyone.
 {behavior|robotutor/specific/HelloEverybody}
 
+# Slide 1.
 Hello everyone, good afternoon. My name is Robo Tutor.
 \pau=1000\
 
 Today I will be taking over the lecture for a short while.
-Throughout this presentation I will show you some of my skills!
-I will start by showing you my body and talk a little bit about my hardware.
-We will end this presentation with some trivia questions.
+Throughout this presentation I will give you an introduction to robotics.
 
+# Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
-{behavior|robotutor/specific/PointOutCameras}
-I have two cameras with which {behavior|robotutor/specific/Look} I can see everything in high definition.
-{show image}
-This allows me to see the world around me and even recognize people and objects!
-I can even see all of you here right now.
+First, I will tell you about who we are.
+After that, I will show why you need us and what kind of jobs we do.
+Finally, I will explain you more in depth about how we work.
 
+Throughout this presentation, I will ask you some questions to test how well you are paying attention.
+Please answer them by picking the answer on your clicker.
+
+# Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
-\pau=2000\
-Hummm, interesting.
+As I mentioned earlier, I will start by defining what a robot is.
+
+For starters I am, as you might have noticed, a robot.
+But the actual definition of a robot is somewhat less interesting.
+Technically it is an embodiment of an electro mechanical machine with sensors and actuators that acts in real time.
+This means however that some appliances that you might not consider as robots, technically are.
+Imagine for example your home thermostat, it contains sensors and actuators and acts in real time, but would you really consider that a real robot like me?
+
+# Go to next slide.
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+Is this true or false?
 \pau=500\
-{behavior|robotutor/specific/Twinkle}
-{behavior|robotutor/specific/PointForward}
-You there, on the front, you weren't sleeping were you?
-\pau=1000\
-
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-{behavior|robotutor/specific/PointOutMicrophones}
-Using my four microphones I can recognize the location of where sound is coming from.
-If I try my best, I can even recognize the words that you say.
-
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-As you can see, unlike many robots, I can walk with my two legs {behavior|robotutor/specific/Balance} and grab objects with two arms {behavior|robotutor/specific/Flex}, just like you can.
-I can even sit down if I feel tired and stand up again, but I am not as good at this as you are.
-
-{behavior|robotutor/specific/Dance}
-In fact if I am in a good mood, I can even dance a little.
-\pau=1000\
-Alright, that is enough exercise for now.
-
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-Ah yes, time for a little quiz.
-How much do I cost?
+The word robot is derived from a slavonic word, which means servitude.
 
 {disable pose changer}
 {behavior|robotutor/specific/Quiz}
 
+# Start timer
 {slide}
+
+# Wait for 10 seconds.
 \pau=10000\
 
+# Re-enable pose changer.
 {enable pose changer}
 
+# Get results.
 {slide}
 \pau=2000\
+
+# Hackfix to trigger the turningpoint choice command.
 Hum, let's see.
-{turningpoint choice | I am not that cheap, I cost 16000 dollar | Almost, but I cost somewhat more, 10 times more | Exactly, that is correct | For that money I can buy myself a whole family guys, I cost only 16000 dollar} 
+{turningpoint choice | You are correct! | That is incorrect.}
 
+# Show correct answer.
+{slide}
+\pau=500\
+
+The word robot is derived from the slavonic word robota which means drudgery or servitude.
+It was first used in a science fiction play in 1921.
+
+# Go to next slide.
 \pau=2000\
 {slide}
 
-What is the only bird that can fly backwards?
+Let's see if you have paid attention earlier.
+\pau=500\
+Which of the following is according to the previously given definition not a robot?
 
 {disable pose changer}
 {behavior|robotutor/specific/Quiz}
 
+# Start timer
 {slide}
+
+# Wait for 10 seconds.
 \pau=10000\
 
+# Re-enable pose changer.
 {enable pose changer}
 
+# Get results.
 {slide}
 \pau=2000\
-Let's see what you thought.
-{turningpoint choice | Penguins can't even fly, it was the hummingbird | Yes exactly, very good | They can dig their heads in the ground, that's it. It was the hummingbird. | How much wood would a woodchuck chuck if a woodchuck could chuck wood? It was the hummingbird.} 
 
-\pau=2000\
+# Hackfix to trigger the turningpoint choice command.
+Hum, let's see.
+{turningpoint choice | I told you I am a robot. | That is correct. | You might think so, but a cruise control also has sensors and actuators that work in real time. | You can tele operate the mars rover, but it can also work autonomously }
+
+# Show correct answer.
 {slide}
+\pau=500\
 
-How much sand does the Sahara  desert consist of?
+The correct answer was the vacuum cleaner.
+It does have actuators, however it does not have any sensors.
 
-{disable pose changer}
-{behavior|robotutor/specific/Quiz}
-
-{slide}
-\pau=10000\
-
-{enable pose changer}
-
-{slide}
-\pau=2000\
-This is a trick question, let's see.
-{turningpoint choice | That is correct, who knew | Try the beach, 50 percent is incorrect. It was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent.} 
-
+# Go to next slide.
 \pau=2000\
 {slide}
 
-What freezes faster?
 
-{disable pose changer}
-{behavior|robotutor/specific/Quiz}
+#{behavior|robotutor/specific/PointOutCameras}
+#I have two cameras with which {behavior|robotutor/specific/Look} I can see everything in high definition.
+#{show image}
+#This allows me to see the world around me and even recognize people and objects!
+#I can even see all of you here right now.
 
-{slide}
-\pau=10000\
+#{behavior|robotutor/specific/Twinkle}
+#\pau=1000\
+#{slide}
 
-{enable pose changer}
+#\pau=2000\
+#Hummm, interesting.
+#\pau=500\
+#{behavior|robotutor/specific/Twinkle}
+#{behavior|robotutor/specific/PointForward}
+#You there, on the front, you weren't sleeping were you?
+#\pau=1000\
 
-{slide}
-\pau=2000\
-This is another trick question.
-{turningpoint choice | That is incorrect, it is a weird phenomenon called the Mpemba  effect | Exactly, it is a weird phenomenon called the Mpemba  effect} 
+#{behavior|robotutor/specific/Twinkle}
+#\pau=1000\
+#{slide}
 
-\pau=2000\
-{slide}
+#{behavior|robotutor/specific/PointOutMicrophones}
+#Using my four microphones I can recognize the location of where sound is coming from.
+#If I try my best, I can even recognize the words that you say.
 
-Thank you for your attention!
-\pau=300\
-I will now let the professor continue.
-{behavior|robotutor/specific/Bow}
+#{behavior|robotutor/specific/Twinkle}
+#\pau=1000\
+#{slide}
+
+#As you can see, unlike many robots, I can walk with my two legs {behavior|robotutor/specific/Balance} and grab objects with two arms {behavior|robotutor/specific/Flex}, just like you can.
+#I can even sit down if I feel tired and stand up again, but I am not as good at this as you are.
+
+#{behavior|robotutor/specific/Dance}
+#In fact if I am in a good mood, I can even dance a little.
+#\pau=1000\
+#Alright, that is enough exercise for now.
+
+#{behavior|robotutor/specific/Twinkle}
+#\pau=1000\
+#{slide}
+
+#Ah yes, time for a little quiz.
+#How much do I cost?
+
+#{disable pose changer}
+#{behavior|robotutor/specific/Quiz}
+
+#{slide}
+#\pau=10000\
+
+#{enable pose changer}
+
+#{slide}
+#\pau=2000\
+#Hum, let's see.
+#{turningpoint choice | I am not that cheap, I cost 16000 dollar | Almost, but I cost somewhat more, 10 times more | Exactly, that is correct | For that money I can buy myself a whole family guys, I cost only 16000 dollar} 
+
+#\pau=2000\
+#{slide}
+
+#What is the only bird that can fly backwards?
+
+#{disable pose changer}
+#{behavior|robotutor/specific/Quiz}
+
+#{slide}
+#\pau=10000\
+
+#{enable pose changer}
+
+#{slide}
+#\pau=2000\
+#Let's see what you thought.
+#{turningpoint choice | Penguins can't even fly, it was the hummingbird | Yes exactly, very good | They can dig their heads in the ground, that's it. It was the hummingbird. | How much wood would a woodchuck chuck if a woodchuck could chuck wood? It was the hummingbird.} 
+
+#\pau=2000\
+#{slide}
+
+#How much sand does the Sahara  desert consist of?
+
+#{disable pose changer}
+#{behavior|robotutor/specific/Quiz}
+
+#{slide}
+#\pau=10000\
+
+#{enable pose changer}
+
+#{slide}
+#\pau=2000\
+#This is a trick question, let's see.
+#{turningpoint choice | That is correct, who knew | Try the beach, 50 percent is incorrect. It was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent.} 
+
+#\pau=2000\
+#{slide}
+
+#What freezes faster?
+
+#{disable pose changer}
+#{behavior|robotutor/specific/Quiz}
+
+#{slide}
+#\pau=10000\
+
+#{enable pose changer}
+
+#{slide}
+#\pau=2000\
+#This is another trick question.
+#{turningpoint choice | That is incorrect, it is a weird phenomenon called the Mpemba  effect | Exactly, it is a weird phenomenon called the Mpemba  effect} 
+
+#\pau=2000\
+#{slide}
+
+#Thank you for your attention!
+#\pau=300\
+#I will now let the professor continue.
+#{behavior|robotutor/specific/Bow}
 
 {disable pose changer}
