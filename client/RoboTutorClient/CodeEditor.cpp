@@ -64,10 +64,11 @@ void CodeEditor::comment() {
 	cursor.setPosition(end);
 	end = cursor.blockNumber();
 
+	int pos = document()->findBlockByLineNumber(start).position();
+	cursor.setPosition(pos);
 	for (int i = start; i <= end; i++) {
-		int pos = document()->findBlockByLineNumber(i).position();
-		cursor.setPosition(pos);
 		cursor.insertText("# ");
+		cursor.movePosition(QTextCursor::NextBlock);
 	}
 }
 
@@ -81,17 +82,18 @@ void CodeEditor::uncomment() {
 	cursor.setPosition(end);
 	end = cursor.blockNumber();
 
+	int pos = document()->findBlockByLineNumber(start).position();
+	cursor.setPosition(pos);
 	for (int i = start; i <= end; i++) {
-		int pos = document()->findBlockByLineNumber(i).position();
-		cursor.setPosition(pos);
 		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 2);
 		if (cursor.selectedText() == "# ")
 			cursor.removeSelectedText();
 		else {
-			cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, -1);
+			cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, 1);
 			if (cursor.selectedText() == "#")
 				cursor.removeSelectedText();
 		}
+		cursor.movePosition(QTextCursor::NextBlock);
 	}
 }
 

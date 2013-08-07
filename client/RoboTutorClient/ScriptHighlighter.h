@@ -14,6 +14,4 @@ public:
 
 private:
 	QVector<HighlightingRule> highlighting_rules_;
-
-	QTextCharFormat behaviour_format_;
 };

@@ -1,18 +1,19 @@
 #include "StdAfx.h"
 
 ScriptHighlighter::ScriptHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent) {
-	behaviour_format_.setForeground(Qt::blue);
-	behaviour_format_.setFontWeight(QFont::Bold);
+	QTextCharFormat behaviour_format;
+	behaviour_format.setForeground(Qt::blue);
+	behaviour_format.setFontWeight(QFont::Bold);
 	HighlightingRule command_rule;
 	command_rule.pattern = QRegExp("\\{[^}]+\\}");
-	command_rule.format = behaviour_format_;
+	command_rule.format = behaviour_format;
 	highlighting_rules_.append(command_rule);
 
-	behaviour_format_.setForeground(Qt::darkGreen);
-	//behaviour_format_.setFontWeight(QFont::Bold);
+	behaviour_format.setForeground(Qt::darkGreen);
+	behaviour_format.setFontWeight(QFont::Normal);
 	HighlightingRule comment_rule;
 	comment_rule.pattern = QRegExp("#[^\n]*(\n|$)");
-	comment_rule.format = behaviour_format_;
+	comment_rule.format = behaviour_format;
 	highlighting_rules_.append(comment_rule);
 }
 
