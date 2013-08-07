@@ -60,7 +60,7 @@ int main(int argc, char ** argv) {
 		return -2;
 	}
 	
-	boost::shared_ptr<NoiseDetector> noise_detector(NoiseDetector::create(ios, broker, "NoiseDetector"));
+	//boost::shared_ptr<NoiseDetector> noise_detector(NoiseDetector::create(ios, broker, "NoiseDetector"));
 	
 	// Initialize the script engine.
 	ScriptEngine engine(ios, broker);

@@ -94,12 +94,15 @@ namespace robotutor {
 			 * \param results The results.
 			 */
 			void processResults(TurningPointResults const & results) {
-				int max = 0;
+				bool tie = false;
+				int max  = 0;
 				for (int i = 1; i < results.votes().size(); ++i) {
+					if (results.votes().Get(i) == results.votes().Get(max)) tie = true;
 					if (results.votes().Get(i) > results.votes().Get(max)) max = i;
 				}
-				branch_ = max;
 				
+				// If the result is a tie, branch to the alternative branch.
+				branch_ = tie ? results.votes().size() : max;
 				continue_();
 			}
 			
