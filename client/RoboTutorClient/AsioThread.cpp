@@ -29,11 +29,14 @@ void AsioThread::parseTpXml() {
 	QString errorMsg;
 	QFile file(turning_point_path_ + filename);
 	QDomDocument document;
+	ClientMessage message;
 
 	if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
 		QString error("Syntax error line %1, column %2:\n%3");
 		error = error.arg(errorLine).arg(errorColumn).arg(errorMsg);
 		log(error);
+		message.mutable_turningpoint();
+		client_->sendMessage(message);
 		return;
 	}
 
@@ -53,7 +56,6 @@ void AsioThread::parseTpXml() {
 		responses[element.text().toInt() - 1].second++;
 	}
 
-	ClientMessage message;
 	for (int i = 0; i < responses.size(); i++) {
 		message.mutable_turningpoint()->add_answers(responses[i].first.toStdString());
 		message.mutable_turningpoint()->add_votes(responses[i].second);
