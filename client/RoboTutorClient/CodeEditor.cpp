@@ -49,6 +49,50 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
 
 	updateLineNumberAreaWidth(0);
 	highlightCurrentLine();
+
+	new QShortcut(QKeySequence("Ctrl+K"), this, SLOT(comment()));
+	new QShortcut(QKeySequence("Ctrl+L"), this, SLOT(uncomment()));
+}
+
+void CodeEditor::comment() {
+	QTextCursor cursor = textCursor();
+	int start = cursor.selectionStart();
+	int end = cursor.selectionEnd();
+
+	cursor.setPosition(start);
+	start = cursor.blockNumber();
+	cursor.setPosition(end);
+	end = cursor.blockNumber();
+
+	for (int i = start; i <= end; i++) {
+		int pos = document()->findBlockByLineNumber(i).position();
+		cursor.setPosition(pos);
+		cursor.insertText("# ");
+	}
+}
+
+void CodeEditor::uncomment() {
+	QTextCursor cursor = textCursor();
+	int start = cursor.selectionStart();
+	int end = cursor.selectionEnd();
+
+	cursor.setPosition(start);
+	start = cursor.blockNumber();
+	cursor.setPosition(end);
+	end = cursor.blockNumber();
+
+	for (int i = start; i <= end; i++) {
+		int pos = document()->findBlockByLineNumber(i).position();
+		cursor.setPosition(pos);
+		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 2);
+		if (cursor.selectedText() == "# ")
+			cursor.removeSelectedText();
+		else {
+			cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, -1);
+			if (cursor.selectedText() == "#")
+				cursor.removeSelectedText();
+		}
+	}
 }
 
 int CodeEditor::lineNumberAreaWidth() {
