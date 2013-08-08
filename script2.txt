@@ -7,56 +7,289 @@
 
 # Initialize voice.
 \rspd=85\\vct=88\
+Anass is dom.
 
-# Slide 1.
-Hello everyone, good afternoon. My name is Robo Tutor.
-\pau=500\
-
-Today I will be taking over the lecture for a short while.
-Throughout this presentation I will give you an introduction to robotics.
-The goal of this presentation is to give you a general overview about robots and how we work.
+# # Slide 1.
+# Hello everyone, good afternoon. My name is Robo Tutor.
+# \pau=500\
+# 
+# Today I will be taking over the lecture for a short while.
+# Throughout this presentation I will give you an introduction to robotics.
+# The goal of this presentation is to give you a general overview about robots and how we work.
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# First, I will tell you about who we are.
+# After that, I will show why you need us and what kind of jobs we can do.
+# Finally, I will explain how we generally work.
+# 
+# Throughout this presentation, I will ask you some questions to test how well you are paying attention.
+# You should all have a turning point clicker, please use this to answer the questions I present on the slides.
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# As I mentioned earlier, I will start by defining what a robot is.
+# 
+# For starters I am, as you might have noticed, a robot.
+# But the actual definition of a robot is somewhat less interesting.
+# Technically, it is an embodiment of an electro mechanical machine with sensors and actuators that acts in real time.
+# This means however that some appliances that you might not consider as robots, technically are.
+# Imagine for example your home thermostat, it contains sensors and actuators and acts in real time, but would you really consider that a real robot like me?
+# \pau=200\
+# The definition I mentioned earlier is just one of many used to determine what a robot is, and it is perhaps a bit outdated.
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# Let us start with a trivia question.
+# Do you think this is true or false?
+# \pau=500\
+# The word robot is derived from a slavonic word, which means servitude.
+# 
+# {disable pose changer}
+# {behavior|robotutor/specific/Quiz}
+# 
+# I give you 10 seconds to answer this question, then we will discuss the answers.
+# # Start timer
+# {slide}
+# 
+# # Wait for 10 seconds.
+# \pau=10000\
+# 
+# # Re-enable pose changer.
+# {enable pose changer}
+# 
+# # Get results.
+# {slide}
+# \pau=2000\
+# 
+# # Hackfix to trigger the turningpoint choice command.
+# Hum, let's see.
+# {turningpoint choice | You are correct! | That is incorrect. | Well, that is inconclusive! }
+# 
+# # Show correct answer.
+# {slide}
+# \pau=500\
+# 
+# The word robot is derived from the slavonic word robota which means drudgery or servitude.
+# It was first used in a science fiction play in 1921, meaning the origin of the word robot is a little more than 90 years old.
+# 
+# # Go to next slide.
+# \pau=2000\
+# {slide}
+# 
+# Let's see if you have paid attention earlier.
+# \pau=500\
+# Which of the following is, according to the previously given definition, not a robot?
+# 
+# {disable pose changer}
+# {behavior|robotutor/specific/Quiz}
+# 
+# # Start timer
+# {slide}
+# 
+# # Wait for 10 seconds.
+# \pau=10000\
+# 
+# # Re-enable pose changer.
+# {enable pose changer}
+# 
+# # Get results.
+# {slide}
+# \pau=2000\
+# 
+# # Hackfix to trigger the turningpoint choice command.
+# Hum, let's see.
+# {turningpoint choice | I told you I am a robot. | That is correct. | You might think so, but a cruise control also has sensors and actuators that work in real time. | You can tele operate the mars rover, but it can also work autonomously | Well, it seems I have not been clear enough before. }
+# 
+# # Show correct answer.
+# {slide}
+# \pau=500\
+# 
+# The correct answer was the vacuum cleaner.
+# It does have actuators, however it does not have any sensors.
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# Yes, why would you need us? I should make a good argument here or else you can throw me away.
+# While humans get scared sometimes, we robots do not have feelings and feel no pain, so we are fit to do certain tasks you can't do. Take for example the nuclear disaster in Fukushima, robots were widely used to clean up because they are unaffected by the radiation.
+# 
+# Unlike humans, we robots love repetitive tasks like boxing items and putting things together. For example, if there were no robots, there would be hardly any cars on the street. Prices would rise because they would need to be assembled manually. You are welcome.
+# 
+# Sometimes there just aren't enough humans to perform certain tasks.
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# I would like to show you, my somewhat distant family.
+# On the left, you see the doctor of the family. He is often working together with a human doctor or surgeon to perform many difficult surgeries. This makes operating a lot easier for many doctors.
+# \pau=500\
+# Above doctor bot, there is the vacuum bot.\pau=500\ This robot is programmed to clean the house and it can even detect filthy areas which needs more cleaning. This is an example of a more practical, every day use of robots.
+# \pau=500\
+# Below the vacuum bot there is a robot dog. This dog is meant for research in interacting with robots and for entertainment. Before I was created, this dog used to play football in the robocup league. For the last few years, I have been doing this instead.
+# \pau=500\
+# To the right, at the bottom, you see the Mars rover that landed on Mars in 2004. The Mars rover can be used manually, but it can also perform certain tasks autonomously and it is much cheaper than having people being send to Mars.
+# \pau=500\
+# Just above the Mars rover, you see a typical assembly robot. These robots help assemble many items, from cars to computers. They do not have much intelligence, they just do as they are told through some sort of script.
+# \pau=500\
+# To the right of the assembly robot you see Asimo. Asimo is a research project at Honda and is widely known for its abilities to walk up stairs and perform many jobs around the house.
+# \pau=500\
+# These are just some of the many examples of robots in every day life.
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# Now, I will try to explain you how we work.
+# \pau=500\
+# Although I can not explain how we work exactly, I will give you an overview of what we do to function.
+# \pau=400\
+# In general, we robots are equipped with several sensors that can sense the world around us.
+# \pau=400\
+# All information gathered by our sensors is then processed \pau=70\  by our processing units to decide what to do next.
+# 
+# Based on this decision, we then use our actuators to manipulate objects.
+# The decisions are based on the architecture that was defined for our behavior.
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# All robots need some type of sensors to observe the world around us.
+# \pau=200\
+# Some robots need more sensors than others.
+# \pau=200\
+# For example, the assembly robot of several slides ago barely needs any sensors at all.
+# 
+# Humans however, already have more than 700 sensors in one square inch of skin.
+# 
+# To the right, you can see what kind of sensors I need to function properly.
+# For example, I need pressure sensors to check whether my feet are positioned correctly, and collision sensors to check if I bumped into something.
+# There are tactile sensors all over my body to detect if someone is touching me.
+# On my chest, I have several sonar sensors to approximate the distance between me and some object in front of me.
+# \pau=200\
+# Like how you use your ears to listen, I have multiple microphones to do the same.
+# Similarly to how you use your eyes to see, I use two cameras which I can use to see you.
+# 
+# {behavior|robotutor/specific/PointOutCameras}
+# {behavior|robotutor/specific/Look}
+# {show image}
+# 
+# {slide}
+# You there, on the front, you weren't sleeping were you?
+# 
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# I have just told you what kind of sensors I have.
+# But how many sensors do you think I have in total?
+# 
+# {disable pose changer}
+# {behavior|robotutor/specific/Quiz}
+# 
+# # Start timer
+# {slide}
+# 
+# # Wait for 10 seconds.
+# \pau=10000\
+# 
+# # Re-enable pose changer.
+# {enable pose changer}
+# 
+# # Get results.
+# {slide}
+# \pau=2000\
+# 
+# # Hackfix to trigger the turningpoint choice command.
+# Hum, let's see.
+# {turningpoint choice | You might think so, but it's a lot more than that | Getting close, but it's a little bit more than that. |  | Getting close, but it's somewhat less than that. | Well, it seems that your opinions are divided. }
+# 
+# # Show correct answer.
+# {slide}
+# \pau=500\
+# 
+# The correct answer was C, I have 61 sensors in total.
 
 # Go to next slide.
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-First, I will tell you about who we are.
-After that, I will show why you need us and what kind of jobs we can do.
-Finally, I will explain how we generally work.
-
-Throughout this presentation, I will ask you some questions to test how well you are paying attention.
-You should all have a turning point clicker, please use this to answer the questions I present on the slides.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# Sensors give you, and me, a lot of information about our surroundings, but we need to determine what we do with this information. The rules that map input \pau=70\ to output will be discussed later, but the hardware that does this mapping is called, the processing unit.
+# Processing units are helpful for determining states in the world, for example, my exact location and how I should navigate through a map, to get from one point to another.
+# Processing units also help me understand the images I receive from my cameras to detect things like faces and objects nearby. Or for example sensor fusion, which combines the input from a gyroscope, accelerometer and compass in to one better orientation value, which helps me dexermine where I am, and how I am moving.
 
 # Go to next slide.
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-As I mentioned earlier, I will start by defining what a robot is.
-
-For starters I am, as you might have noticed, a robot.
-But the actual definition of a robot is somewhat less interesting.
-Technically, it is an embodiment of an electro mechanical machine with sensors and actuators that acts in real time.
-This means however that some appliances that you might not consider as robots, technically are.
-Imagine for example your home thermostat, it contains sensors and actuators and acts in real time, but would you really consider that a real robot like me?
-\pau=200\
-The definition I mentioned earlier is just one of many used to determine what a robot is, and it is perhaps a bit outdated.
-
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# When the processing unit has processed the input, a decision follows, which could mean I have to move parts of my body. This is done using actuators. An actuator is basically anything to manipulate our world, for example my arms, my legs, etcetera.
+# My arms, and yours too, are limited by what we call degrees of freedom. When a joint can rotate around one axis or move along that axis, that gives you one degree of freedom. If you can rotate around multiple axes, you get multiple degrees of freedom. Take your wrist for example. You can rotate it up and down, left and right, and twist it, giving it three degrees of freedom.
+# 
 # Go to next slide.
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
+# 
+# Let's see if you can now understand this somewhat more difficult example. How many degrees of freedom does your head have? Remember that your wrist can roll, pitch, and yaw. Your head can do this too, but can it do more? Every axis it can rotate or move along, counts as one degree of freedom. I give you again 10 seconds to think about it, so be quick.
+# 
+# {disable pose changer}
+# {behavior|robotutor/specific/Quiz}
+# 
+# # Start timer
+# {slide}
+# 
+# # Wait for 10 seconds.
+# \pau=10000\
+# 
+# # Re-enable pose changer.
+# {enable pose changer}
+# 
+# # Get results.
+# {slide}
+# \pau=2000\
+# 
+# # Hackfix to trigger the turningpoint choice command.
+# Hum, let's see.
+# {turningpoint choice | That would mean your head has the same freedom as your wrist, this is not true. | Not exactly. |  | Not exactly. | Yes, very good! | Well it seems there is no conclusive answer. I do admit, it is a difficult subject. }
+# 
+# # Show correct answer.
+# {slide}
+# \pau=500\
+# 
+# The correct answer was D, since your head can roll, pitch, and jaw, just like your wrist, but it can also move along the ex, y, and z \pau=70\ axes. This gives it a total of 6 degrees of freedom.
+# 
+# # Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# \pau=1000\
+# {slide}
 
-Let us start with a trivia question.
-Do you think this is true or false?
-\pau=500\
-The word robot is derived from a slavonic word, which means servitude.
+{slide | 14}
+
+Let us look at another example of degrees of freedom. Can you count the degrees of freedom on this entire robot \pau=70\ arm? The arm has multiple joints, and the number of degrees of freedom for the entire arm, is simply the sum of the degrees of freedom of all joints. Take a few seconds to think about it.
 
 {disable pose changer}
 {behavior|robotutor/specific/Quiz}
 
-I give you 10 seconds to answer this question, then we will discuss the answers.
 # Start timer
 {slide}
 
@@ -72,160 +305,35 @@ I give you 10 seconds to answer this question, then we will discuss the answers.
 
 # Hackfix to trigger the turningpoint choice command.
 Hum, let's see.
-{turningpoint choice | You are correct! | That is incorrect. | Well, that is inconclusive! }
+{turningpoint choice | Yes, that is correct. | Not exactly. | Not exactly. | Not exactly. | Well it seems there is no conclusive answer. I do admit, it is a difficult subject. }
 
 # Show correct answer.
 {slide}
 \pau=500\
 
-The word robot is derived from the slavonic word robota which means drudgery or servitude.
-It was first used in a science fiction play in 1921, meaning the origin of the word robot is a little more than 90 years old.
-
-# Go to next slide.
-\pau=2000\
-{slide}
-
-Let's see if you have paid attention earlier.
-\pau=500\
-Which of the following is, according to the previously given definition, not a robot?
-
-{disable pose changer}
-{behavior|robotutor/specific/Quiz}
-
-# Start timer
-{slide}
-
-# Wait for 10 seconds.
-\pau=10000\
-
-# Re-enable pose changer.
-{enable pose changer}
-
-# Get results.
-{slide}
-\pau=2000\
-
-# Hackfix to trigger the turningpoint choice command.
-Hum, let's see.
-{turningpoint choice | I told you I am a robot. | That is correct. | You might think so, but a cruise control also has sensors and actuators that work in real time. | You can tele operate the mars rover, but it can also work autonomously | Well, it seems I have not been clear enough before. }
-
-# Show correct answer.
-{slide}
-\pau=500\
-
-The correct answer was the vacuum cleaner.
-It does have actuators, however it does not have any sensors.
+The correct answer was 4 degrees of freedom, which I will show you now.
 
 # Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
-Yes, why would you need us? I should make a good argument here or else you can throw me away.
-While humans get scared sometimes, we robots do not have feelings and feel no pain, so we are fit to do certain tasks you can't do. Take for example the nuclear disaster in Fukushima, robots were widely used to clean up because they are unaffected by the radiation.
+Here you see a red circle around each joint of the robot arm. Each of these joints can rotate around one axis. Since there are 4 joints, the entire arm has 4 degrees of freedom.
 
-Unlike humans, we robots love repetitive tasks like boxing items and putting things together. For example, if there were no robots, there would be hardly any cars on the street. Prices would rise because they would need to be assembled manually. You are welcome.
-
-Sometimes there just aren't enough humans to perform certain tasks.
+\pau=1000\
 
 # Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
-I would like to show you, my somewhat distant family.
-On the left, you see the doctor of the family. He is often working together with a human doctor or surgeon to perform many difficult surgeries. This makes operating a lot easier for many doctors.
-\pau=500\
-Above doctor bot, there is the vacuum bot.\pau=500\ This robot is programmed to clean the house and it can even detect filthy areas which needs more cleaning. This is an example of a more practical, every day use of robots.
-\pau=500\
-Below the vacuum bot there is a robot dog. This dog is meant for research in interacting with robots and for entertainment. Before I was created, this dog used to play football in the robocup league. For the last few years, I have been doing this instead.
-\pau=500\
-To the right, at the bottom, you see the Mars rover that landed on Mars in 2004. The Mars rover can be used manually, but it can also perform certain tasks autonomously and it is much cheaper than having people being send to Mars.
-\pau=500\
-Just above the Mars rover, you see a typical assembly robot. These robots help assemble many items, from cars to computers. They do not have much intelligence, they just do as they are told through some sort of script.
-\pau=500\
-To the right of the assembly robot you see Asimo. Asimo is a research project at Honda and is widely known for its abilities to walk up stairs and perform many jobs around the house.
-\pau=500\
-These are just some of the many examples of robots in every day life.
+Now that you know how degrees of freedom work, let's have a short look on what we can actually do with actuators. With actuators, I can grab objects around me, or move around if needed. If my friends were here, I could even play soccer or dance together. There are even robots that can juggle or play ping pong.
 
-# Go to next slide.
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-Now, I will try to explain you how we work.
-\pau=500\
-Although I can not explain how we work exactly, I will give you an overview of what we do to function.
-\pau=400\
-In general, we robots are equipped with several sensors that can sense the world around us.
-\pau=400\
-All information gathered by our sensors is then processed \pau=70\  by our processing units to decide what to do next.
-
-Based on this decision, we then use our actuators to manipulate objects.
-The decisions are based on the architecture that was defined for our behavior.
-
-# Go to next slide.
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-All robots need some type of sensors to observe the world around us.
-\pau=200\
-Some robots need more sensors than others.
-\pau=200\
-For example, the assembly robot of several slides ago barely needs any sensors at all.
-
-Humans however, already have more than 700 sensors in one square inch of skin.
-
-To the right, you can see what kind of sensors I need to function properly.
-For example, I need pressure sensors to check whether my feet are positioned correctly, and collision sensors to check if I bumped into something.
-There are tactile sensors all over my body to detect if someone is touching me.
-On my chest, I have several sonar sensors to approximate the distance between me and some object in front of me.
-\pau=200\
-Like how you use your ears to listen, I have multiple microphones to do the same.
-Similarly to how you use your eyes to see, I use two cameras which I can use to see you.
-
-{behavior|robotutor/specific/PointOutCameras}
-{behavior|robotutor/specific/Look}
-{show image}
+# More DEMO shizzle.
 
 {slide}
-You there, on the front, you weren't sleeping were you?
 
-
-# Go to next slide.
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-I have just told you what kind of sensors I have.
-But how many sensors do you think I have in total?
-
-{disable pose changer}
-{behavior|robotutor/specific/Quiz}
-
-# Start timer
-{slide}
-
-# Wait for 10 seconds.
-\pau=10000\
-
-# Re-enable pose changer.
-{enable pose changer}
-
-# Get results.
-{slide}
-\pau=2000\
-
-# Hackfix to trigger the turningpoint choice command.
-Hum, let's see.
-{turningpoint choice | You might think so, but it's a lot more than that | Getting close, but it's a little bit more than that. |  | Getting close, but it's somewhat less than that. | Well, it seems that your opinions are divided. }
-
-# Show correct answer.
-{slide}
-\pau=500\
-
-The correct answer was C, I have 61 sensors in total.
+To summarize the last few slides, robot control consists of getting input data from sensors as part of the sensing step. The data is then processed in the planning step to make decisions. Finally, actuators are activated to execute the planned action in the final step. These three steps are repeated.
 
 # Go to next slide.
 #\pau=2000\
