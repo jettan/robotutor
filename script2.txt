@@ -335,125 +335,223 @@ Now that you know how degrees of freedom work, let's have a short look on what w
 
 To summarize the last few slides, robot control consists of getting input data from sensors as part of the sensing step. The data is then processed in the planning step to make decisions. Finally, actuators are activated to execute the planned action in the final step. These three steps are repeated.
 
-# Go to next slide.
-#\pau=2000\
-#{slide}
+#19-20
 
-#This allows me to see the world around me and even recognize people and objects!
-#I can even see all of you here right now.
+{slide}
 
-#{behavior|robotutor/specific/Twinkle}
-#\pau=1000\
-#{slide}
-
-#\pau=2000\
-#Hummm, interesting.
-#\pau=500\
-#{behavior|robotutor/specific/Twinkle}
-#{behavior|robotutor/specific/PointForward}
-#
-#\pau=1000\
-
-#{behavior|robotutor/specific/Twinkle}
-#\pau=1000\
-#{slide}
-
-#{behavior|robotutor/specific/PointOutMicrophones}
-#Using my four microphones I can recognize the location of where sound is coming from.
-#If I try my best, I can even recognize the words that you say.
-
-#{behavior|robotutor/specific/Twinkle}
-#\pau=1000\
-#{slide}
-
-#As you can see, unlike many robots, I can walk with my two legs {behavior|robotutor/specific/Balance} and grab objects with two arms {behavior|robotutor/specific/Flex}, just like you can.
-#I can even sit down if I feel tired and stand up again, but I am not as good at this as you are.
-
-#{behavior|robotutor/specific/Dance}
-#In fact if I am in a good mood, I can even dance a little.
-#\pau=1000\
-#Alright, that is enough exercise for now.
-
-#{behavior|robotutor/specific/Twinkle}
-#\pau=1000\
-#{slide}
-
-#Ah yes, time for a little quiz.
-#How much do I cost?
-
-#{disable pose changer}
-#{behavior|robotutor/specific/Quiz}
-
-#{slide}
-#\pau=10000\
-
-#{enable pose changer}
-
-#{slide}
-#\pau=2000\
-#Hum, let's see.
-#{turningpoint choice | I am not that cheap, I cost 16000 dollar | Almost, but I cost somewhat more, 10 times more | Exactly, that is correct | For that money I can buy myself a whole family guys, I cost only 16000 dollar} 
-
-#\pau=2000\
-#{slide}
-
-#What is the only bird that can fly backwards?
-
-#{disable pose changer}
-#{behavior|robotutor/specific/Quiz}
-
-#{slide}
-#\pau=10000\
-
-#{enable pose changer}
-
-#{slide}
-#\pau=2000\
-#Let's see what you thought.
-#{turningpoint choice | Penguins can't even fly, it was the hummingbird | Yes exactly, very good | They can dig their heads in the ground, that's it. It was the hummingbird. | How much wood would a woodchuck chuck if a woodchuck could chuck wood? It was the hummingbird.} 
-
-#\pau=2000\
-#{slide}
-
-#How much sand does the Sahara  desert consist of?
-
-#{disable pose changer}
-#{behavior|robotutor/specific/Quiz}
-
-#{slide}
-#\pau=10000\
-
-#{enable pose changer}
-
-#{slide}
-#\pau=2000\
-#This is a trick question, let's see.
-#{turningpoint choice | That is correct, who knew | Try the beach, 50 percent is incorrect. It was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent. | Sounds logical, but it is mostly rock. The correct answer was 20 percent.} 
-
-#\pau=2000\
-#{slide}
-
-#What freezes faster?
-
-#{disable pose changer}
-#{behavior|robotutor/specific/Quiz}
-
-#{slide}
-#\pau=10000\
-
-#{enable pose changer}
-
-#{slide}
-#\pau=2000\
-#This is another trick question.
-#{turningpoint choice | That is incorrect, it is a weird phenomenon called the Mpemba  effect | Exactly, it is a weird phenomenon called the Mpemba  effect} 
-
-#\pau=2000\
-#{slide}
-
-#Thank you for your attention!
-#\pau=300\
-#I will now let the professor continue.
-#{behavior|robotutor/specific/Bow}
+We have now reviewed two types of architecture for robot control.
+Which architecture do you think I am using right now? Please think about it for a while.
 
 {disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
+# Start timer
+{slide}
+
+# Wait for 10 seconds.
+\pau=10000\
+
+# Re-enable pose changer.
+{enable pose changer}
+
+# Get results.
+{slide}
+\pau=2000\
+
+# Hackfix to trigger the turningpoint choice command.
+Hum, let's see.
+{turningpoint choice | I see why you would think so, but that is not correct. | I see why you would think so, but that is not correct. | That is correct. | Well it seems there is no conclusive answer. I do admit, it is a difficult subject. }
+
+# Show correct answer.
+{slide}
+\pau=500\
+
+The truth is that I am not using either subumption or the layered approach.
+
+# Go to next slide.
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+# Add closing words...
+
+To finish this presentation, I have prepared a little questionnaire.
+Please answer the questions in the next few slides honestly about what you think of me so I can improve myself.
+
+# Start questionnaire
+# Go to next slide.
+\pau=1000\
+{slide}
+
+Were the slides interesting?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
+# Start timer
+{slide}
+
+# Wait for 10 seconds.
+\pau=10000\
+
+# Re-enable pose changer.
+{enable pose changer}
+
+# Get results.
+{slide}
+\pau=2000\
+
+# Hackfix to trigger the turningpoint choice command.
+Hum, let's see.
+{turningpoint choice | | | | | }
+
+# Show correct answer.
+{slide}
+\pau=500\
+
+On to the next question.
+
+# Go to next slide.
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+
+Do you think the whole presentation was interesting?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
+# Start timer
+{slide}
+
+# Wait for 10 seconds.
+\pau=10000\
+
+# Re-enable pose changer.
+{enable pose changer}
+
+# Get results.
+{slide}
+\pau=2000\
+
+# Hackfix to trigger the turningpoint choice command.
+Hum, let's see.
+{turningpoint choice | | | | | }
+
+# Show correct answer.
+{slide}
+\pau=500\
+
+On to the next question.
+
+# Go to next slide.
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+
+Did I talk clear enough for everybody to understand?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
+# Start timer
+{slide}
+
+# Wait for 10 seconds.
+\pau=10000\
+
+# Re-enable pose changer.
+{enable pose changer}
+
+# Get results.
+{slide}
+\pau=2000\
+
+# Hackfix to trigger the turningpoint choice command.
+Hum, let's see.
+{turningpoint choice | | | | | }
+
+# Show correct answer.
+{slide}
+\pau=500\
+
+On to the next question.
+
+# Go to next slide.
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+Was the way I moved my body natural?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
+# Start timer
+{slide}
+
+# Wait for 10 seconds.
+\pau=10000\
+
+# Re-enable pose changer.
+{enable pose changer}
+
+# Get results.
+{slide}
+\pau=2000\
+
+# Hackfix to trigger the turningpoint choice command.
+Hum, let's see.
+{turningpoint choice | | | | | }
+
+# Show correct answer.
+{slide}
+\pau=500\
+
+On to the next question.
+
+# Go to next slide.
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+Did you enjoy the presentation?
+
+{disable pose changer}
+{behavior|robotutor/specific/Quiz}
+
+# Start timer
+{slide}
+
+# Wait for 10 seconds.
+\pau=10000\
+
+# Re-enable pose changer.
+{enable pose changer}
+
+# Get results.
+{slide}
+\pau=2000\
+
+# Hackfix to trigger the turningpoint choice command.
+Hum, let's see.
+{turningpoint choice | | | | | }
+
+# Show correct answer.
+{slide}
+\pau=500\
+
+On to the next question.
+
+# Go to next slide.
+{behavior|robotutor/specific/Twinkle}
+\pau=1000\
+{slide}
+
+Thank you for your attention!
+{behavior|robotutor/specific/Bow}
+
+{disable pose changer}
+
