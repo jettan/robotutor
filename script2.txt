@@ -341,14 +341,14 @@ To summarize the last few slides, robot control generally consists of getting in
 \pau=1000\
 {slide}
 
-One of these methods is the subsumption architecture. The idea of this architecture is that you define the difficult behaviour in multiple simple behaviour layers. Each of these layers focuses on a certain goal of the agent and higher layers are increasingly abstract. Each layer's goal subsumes that of the underlying layers. For example, the decision to move forward by the eat food layer takes into account the decision of the lowest layer to avoid obstacles.
+One of these methods is the subsumption architecture. The idea of this architecture is that you define the difficult behaviour in multiple simple behaviour layers. Each of these layers focuses on a certain goal of the agent and higher layers are increasingly abstract. Each layer's goal subsumes that of the underlying layers. Meaning for example, the decision to move forward by the eat food layer takes into account the decision of the lowest layer to avoid obstacles. In this architecture the higher levels do not need to worry about goals that are the focus of lower levels.
 
 # Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
-
+Another architecture is called the layered approach. This architecture looks very similar to the subsumption architecture, but the main difference is that behaviors are organized in layers of abstraction. This way you have for example a reactive layer that handles all navigation tasks or a reflective layer that handles all the planning.
 
 # Go to next slide.
 {behavior|robotutor/specific/Twinkle}
@@ -356,7 +356,7 @@ One of these methods is the subsumption architecture. The idea of this architect
 {slide}
 
 We have now reviewed two types of architecture for robot control.
-Which architecture do you think I am using right now? Please think about it for a while.
+Which architecture do you think I am using right now? Think about it for a while.
 
 {disable pose changer}
 {behavior|robotutor/specific/Quiz}
@@ -382,7 +382,7 @@ Hum, let's see.
 {slide}
 \pau=500\
 
-The truth is that I am not using any architecture at all. I am currently running a script.
+The truth is that I am not using any architecture at all. I am currently running a script. Perhaps one of you can program me with a more sophisticated architecture so I can handle this world better.
 
 # Go to next slide.
 {behavior|robotutor/specific/Twinkle}
@@ -400,7 +400,7 @@ Please answer the questions in the next few slides about what you think of me an
 \pau=1000\
 {slide}
 
-Were the slides interesting?
+Do you think the slides were interesting?
 
 {disable pose changer}
 {behavior|robotutor/specific/Quiz}
@@ -429,6 +429,7 @@ On to the next question.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
+
 Do you think the whole presentation was interesting?
 
 {disable pose changer}
@@ -459,7 +460,7 @@ Alright, let's go to the next question.
 \pau=1000\
 {slide}
 
-Did you think I talked clearly enough for everybody to understand?
+Did you think I talked clearly enough for everyone to understand?
 
 {disable pose changer}
 {behavior|robotutor/specific/Quiz}
@@ -482,14 +483,14 @@ Hum, let's see.
 {turningpoint choice | Well I am sad to see you say that. | I will try to improve myself. | Well there is always room for improvement. | Well, thank you. | I am happy to hear you say that. | I see you are divided. }
 
 \pau=500\
-On to the next question.
+Let's see, just two more questions.
 
 # Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
-Was the way I moved my body natural?
+Was the way I moved my body natural? Or did I appear robotic?
 
 {disable pose changer}
 {behavior|robotutor/specific/Quiz}
@@ -512,14 +513,14 @@ Hum, let's see.
 {turningpoint choice | Well I am sad to see you say that. | I will try to improve myself. | Well there is always room for improvement. | Well, thank you. | I am happy to hear you say that. | I see you are divided. }
 
 \pau=500\
-On to the next question.
+Only one more question.
 
 # Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
-Did you enjoy the presentation?
+Did you enjoy this presentation overall?
 
 {disable pose changer}
 {behavior|robotutor/specific/Quiz}
@@ -546,7 +547,10 @@ Hum, let's see.
 \pau=1000\
 {slide}
 
-Thank you for your attention!
+Alright, that was all.
+
 {behavior|robotutor/specific/Bow}
 
-{disable pose changer}
+Thank you for your attention and I hope you enjoyed my lecture. I will now let the professor continue with his lecture.
+
+{disable pose changer}s
