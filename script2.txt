@@ -1,40 +1,63 @@
 # Initialize poses and whatever.
-{pose prefix|robotutor/generic/}
-{enable pose changer}
+# {pose prefix|robotutor/generic/}
+# {enable pose changer}
 
 # Greetings to everyone.
-{behavior|robotutor/specific/HelloEverybody}
+# {behavior|robotutor/specific/HelloEverybody}
+# 
+# \pau=1000\
 
 # Initialize voice.
-\rspd=85\\vct=88\
-Anass is dom.
+\rspd=95\
+# \vct=88\
 
 # Slide 1.
-Hello everyone, good afternoon. My name is Robo Tutor.
-\pau=500\
+Hello everyone.
+# 
+# {behavior|robotutor/specific/Intro}
+# Good afternoon. My name is Robo Tutor.
+# 
+# {behavior|robotutor/specific/HandOverLeft}
+# \pau=300\
+# Today I will be taking over the lecture for a short while.
+# 
+# {behavior|robotutor/specific/SpreadBoth}
+# Throughout this presentation I will give you an introduction to robotics.
+# 
+# {behavior|robotutor/specific/Capisce}
+# The goal of this presentation is to give you a general overview about robots and how we work.
+# 
+# Go to next slide.
+# {behavior|robotutor/specific/Twinkle}
+# 
+# {behavior|robotutor/specific/First}
+# \pau=1000\
+# {slide}
+# 
+# First, I will tell you about who we are.
+# 
+# {behavior|robotutor/specific/SpreadBoth}
+# After that, I will show why you need us and what kind of jobs we can do.
+# 
+# {behavior|robotutor/specific/ShowBiceps}
+# Finally, I will explain how we generally work.
+# 
+# {behavior|robotutor/specific/PointForward}
+# Throughout this presentation, I will ask you some questions to test how well you are paying attention.
 
-Today I will be taking over the lecture for a short while.
-Throughout this presentation I will give you an introduction to robotics.
-The goal of this presentation is to give you a general overview about robots and how we work.
+# {behavior|robotutor/specific/Capisce}
+# You should all have a turning point clicker.
+# 
+# {behavior|robotutor/specific/ShowRight}
+# Please use this to answer the questions I present on the slides.
+# 
 
 # Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
 
-First, I will tell you about who we are.
-After that, I will show why you need us and what kind of jobs we can do.
-Finally, I will explain how we generally work.
-
-Throughout this presentation, I will ask you some questions to test how well you are paying attention.
-You should all have a turning point clicker, please use this to answer the questions I present on the slides.
-
-# Go to next slide.
-{behavior|robotutor/specific/Twinkle}
-\pau=1000\
-{slide}
-
-As I mentioned earlier, I will start by defining what a robot is.
+ßAs I mentioned earlier, I will start by defining what a robot is.
 
 For starters I am, as you might have noticed, a robot.
 But the actual definition of a robot is somewhat less interesting.
@@ -49,23 +72,28 @@ The definition I mentioned earlier is just one of many used to determine what a 
 \pau=1000\
 {slide}
 
+
+{slide | 4}
+
 Let us start with a trivia question.
 Do you think this is true or false?
 \pau=500\
 The word robot is derived from a slavonic word, which means servitude.
 
 {disable pose changer}
-{behavior|robotutor/specific/Quiz}
 
 I give you 10 seconds to answer this question, then we will discuss the answers.
+
 # Start timer
 {slide}
+
+{behavior|robotutor/specific/Quiz}
 
 # Wait for 10 seconds.
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -100,7 +128,7 @@ Which of the following is, according to the previously given definition, not a r
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -212,7 +240,7 @@ But how many sensors do you think I have in total?
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -245,7 +273,7 @@ Processing units also help me understand the images I receive from my cameras to
 When the processing unit has processed the input, a decision follows, which could mean I have to move parts of my body. This is done using actuators. An actuator is basically anything to manipulate our world, for example my arms, my legs, etcetera.
 My arms, and yours too, are limited by what we call degrees of freedom. When a joint can rotate around one axis or move along that axis, that gives you one degree of freedom. If you can rotate around multiple axes, you get multiple degrees of freedom. Take your wrist for example. You can rotate it up and down, left and right, and twist it, giving it three degrees of freedom.
 
-Go to next slide.
+# Go to next slide.
 {behavior|robotutor/specific/Twinkle}
 \pau=1000\
 {slide}
@@ -262,7 +290,7 @@ Let's see if you can now understand this somewhat more difficult example. How ma
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -295,7 +323,7 @@ Let us look at another example of degrees of freedom. Can you count the degrees 
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -368,7 +396,7 @@ Which architecture do you think I am using right now? Think about it for a while
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -412,7 +440,7 @@ Do you think the slides were interesting?
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -442,7 +470,7 @@ Do you think the whole presentation was interesting?
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -472,7 +500,7 @@ Did you think I talked clearly enough for everyone to understand?
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -502,7 +530,7 @@ Was the way I moved my body natural? Or did I appear robotic?
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -532,7 +560,7 @@ Did you enjoy this presentation overall?
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
@@ -543,7 +571,7 @@ Hum, let's see.
 {turningpoint choice | Well I am sad to see you say that. | I will try to improve myself. | Well there is always room for improvement. | Well, thank you. | I am happy to hear you say that. | I see you are divided. }
 
 # Go to next slide.
-{behavior|robotutor/specific/Twinkle}
+{behavior|robotutor/specific/Twinkle}?
 \pau=1000\
 {slide}
 
@@ -553,4 +581,4 @@ Alright, that was all.
 
 Thank you for your attention and I hope you enjoyed my lecture. I will now let the professor continue with his lecture.
 
-{disable pose changer}s
+{disable pose changer}
