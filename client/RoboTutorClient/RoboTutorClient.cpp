@@ -9,6 +9,9 @@ RoboTutorClient::RoboTutorClient(AsioThread & io, QWidget *parent) :
 
 	ui_.statusBar->addWidget(&status_label_);
 	highlighter_ = new ScriptHighlighter(ui_.scriptEditor->document());
+
+	new QShortcut(QKeySequence("Ctrl+R"), this, SLOT(on_runButton_clicked()));
+	new QShortcut(QKeySequence("Ctrl+T"), this, SLOT(on_stopButton_clicked()));
 }
 
 RoboTutorClient::~RoboTutorClient() {
@@ -73,7 +76,8 @@ void RoboTutorClient::on_connectButton_clicked() {
 }
 
 void RoboTutorClient::on_runButton_clicked() {
-	io_.getIos().post(std::bind(&AsioThread::sendScript, &io_, ui_.scriptEditor->toPlainText()));
+	if (ui_.runButton->isEnabled())
+		io_.getIos().post(std::bind(&AsioThread::sendScript, &io_, ui_.scriptEditor->toPlainText()));
 }
 
 void RoboTutorClient::saveScript(QString fileName) {
@@ -123,7 +127,8 @@ void RoboTutorClient::on_pauseButton_clicked() {
 }
 
 void RoboTutorClient::on_stopButton_clicked() {
-	io_.getIos().post(std::bind(&AsioThread::stopScript, &io_));
+	if (ui_.stopButton->isEnabled())
+		io_.getIos().post(std::bind(&AsioThread::stopScript, &io_));
 }
 
 }
