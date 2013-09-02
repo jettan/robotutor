@@ -174,3 +174,42 @@ void PptController::createSlide(std::string pictureFile)
 		}
 	}
 }
+
+void PptController::createBar()
+{
+	PowerPoint::_PresentationPtr pres = NULL;
+	if (getPresentation(pres))
+	{
+		int curr_slide_nr = show_->Slide->GetSlideNumber();
+		PowerPoint::_SlidePtr current_slide = pres->Slides->Add(curr_slide_nr + 1, PowerPoint::ppLayoutBlank);
+
+		soundBar = current_slide->Shapes->AddShape(Office::MsoAutoShapeType::msoShapeRectangle, 300, 200, 100, 240);
+		soundBar->ScaleHeight(1.1, Office::MsoTriState::msoFalse, Office::MsoScaleFrom::msoScaleFromTopLeft);
+		soundBar->PutShapeStyle(Office::msoShapeStylePreset32);
+	}
+}
+
+void PptController::colorBar(char color)
+{
+	switch (color)
+	{
+		case 'R':
+			soundBar->PutShapeStyle(Office::msoShapeStylePreset31);
+		case 'O':
+			soundBar->PutShapeStyle(Office::msoShapeStylePreset35);
+		case 'G':
+			soundBar->PutShapeStyle(Office::msoShapeStylePreset32);
+	}
+
+}
+
+void PptController::resizeBar(char scale)
+{
+	switch (scale)
+	{
+		case 'I':
+			soundBar->ScaleHeight(1.1, Office::MsoTriState::msoFalse, Office::MsoScaleFrom::msoScaleFromBottomRight);
+		case 'D':
+			soundBar->ScaleHeight(0.9, Office::MsoTriState::msoFalse, Office::MsoScaleFrom::msoScaleFromBottomRight);
+	}
+}
