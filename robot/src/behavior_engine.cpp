@@ -120,7 +120,13 @@ namespace robotutor {
 	
 	/// Wait for the current job to finish.
 	void BehaviorEngine::wait_() {
-		bm_.wait(queue_.front().id_, 0);
+		
+		// If timeout is reached, then stop the behavior and drop the rest of the queue.
+		if (bm_.wait(queue_.front().id_, BEHAVIOR_TIMEOUT)) {
+			std::cerr << "Behavior timeout reached! Dropping queue." << std::endl;
+			bm_.stop(queue_.front().id_);
+			queue_.clear();
+		}
 		ios_.post(std::bind(&BehaviorEngine::onJobDone_, this));
 	}
 }

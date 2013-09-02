@@ -10,6 +10,7 @@
 
 #include <alproxies/albehaviormanagerproxy.h>
 
+#define BEHAVIOR_TIMEOUT 10000
 
 namespace boost {
 	namespace asio {
