@@ -672,7 +672,7 @@ Do you think the slides were interesting?
 \pau=10000\
 
 # Re-enable pose changer.
-{enable pose changer}
+# {enable pose changer}
 
 # Get results.
 {slide}
