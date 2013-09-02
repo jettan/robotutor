@@ -125,9 +125,11 @@ namespace robotutor {
 		if (bm_.wait(queue_.front().id_, BEHAVIOR_TIMEOUT)) {
 			std::cerr << "Behavior timeout reached! Dropping queue." << std::endl;
 			bm_.stop(queue_.front().id_);
+			std::cerr << "Clearing queue!" << std::endl;
 			queue_.clear();
+		} else {
+			ios_.post(std::bind(&BehaviorEngine::onJobDone_, this));
 		}
-		ios_.post(std::bind(&BehaviorEngine::onJobDone_, this));
 	}
 }
 
