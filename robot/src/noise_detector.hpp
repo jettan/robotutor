@@ -57,6 +57,9 @@ namespace robotutor {
 			/// Deconstructor.
 			~NoiseDetector();
 			
+			/// Deleter.
+			void unsubscribe() {stopDetection();}
+			
 			/// Initialize the audio device and start detection.
 			void init();
 			

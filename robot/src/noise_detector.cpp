@@ -54,6 +54,8 @@ namespace robotutor {
 			if (buffer[i] > max) max = buffer[i];
 		}
 		
+		std::cout << max << std::endl;
+		
 		// Emit the signal if the noise level exceeds the threshold.
 		if(max >= threshold) ios_->post([this, max] () {
 			on_noise(max);
