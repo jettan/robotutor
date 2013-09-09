@@ -45,7 +45,7 @@ Finally, I will explain how we generally work.
 {behavior|robotutor/specific/PointForward}
 Throughout this presentation, I will ask you some questions to test how well you are paying attention.
 
-# {behavior|robotutor/specific/Capisce}
+{behavior|robotutor/specific/Capisce}
 You should all have a turning point clicker.
 
 {behavior|robotutor/specific/ShowRight}
@@ -125,7 +125,7 @@ Hum, let's see.
 {slide}
 \pau=500\
 
-# {behavior|robotutor/specific/Convince}
+{behavior|robotutor/specific/Convince}
 The word robot is derived from the slavonic word robota which means drudgery or servitude.
 
 {behavior|robotutor/specific/First}
@@ -178,7 +178,7 @@ It does have actuators, however it does not have any sensors.
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/Capisce}
+{behavior|robotutor/specific/Capisce}
 Yes, why would you need us?
 {behavior|robotutor/specific/Balance}
 I should make a good argument here or else you can throw me away.
@@ -206,7 +206,7 @@ Sometimes there just aren't enough humans to perform certain tasks.
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/Me}
+{behavior|robotutor/specific/Me}
 I would like to show you, my somewhat distant family.
 {behavior|robotutor/specific/PointLeft}
 On the left, you see the doctor of the family.
@@ -265,7 +265,7 @@ These are just some of the many examples of robots in every day life.
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/Me}
+{behavior|robotutor/specific/Me}
 Now, I will try to explain you how we work.
 \pau=500\
 {behavior|robotutor/specific/No}
@@ -290,7 +290,7 @@ The decisions are based on the architecture that was defined for our behavior.
 \pau=1000\
 {slide} 
 
-# {behavior|robotutor/specific/PushAsideBoth}
+{behavior|robotutor/specific/PushAsideBoth}
 All robots need some type of sensors to observe the world around us.
 \pau=200\
 {behavior|robotutor/specific/ShakeHands}
@@ -360,7 +360,7 @@ Hum, let's see.
 {slide}
 \pau=500\
 
-# {behavior|robotutor/specific/SpreadRight}
+{behavior|robotutor/specific/SpreadRight}
 {behavior|robotutor/specific/ShowBody}
 The correct answer was C, I have 61 sensors in total.
 
@@ -391,7 +391,7 @@ Or for example sensor fusion, which combines the input from a gyroscope, acceler
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/ReverseCapisce}
+{behavior|robotutor/specific/ReverseCapisce}
 {behavior|robotutor/specific/SpreadRight}
 When the processing unit has processed the input, a decision follows, which could mean I have to move parts of my body.
 {behavior|robotutor/specific/Clap}
@@ -415,7 +415,7 @@ You can rotate it up and down, left and right, and twist it, giving it three deg
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/ShakeHands}
+{behavior|robotutor/specific/ShakeHands}
 Let's see if you can now understand this somewhat more difficult example.
 {behavior|robotutor/specific/PointForward}
 How many degrees of freedom does your head have?
@@ -451,7 +451,7 @@ Hum, let's see.
 {slide}
 \pau=500\
 
-# {behavior|robotutor/specific/ReverseCapisce}
+{behavior|robotutor/specific/ReverseCapisce}
 {behavior|robotutor/specific/Balance}
 {behavior|robotutor/specific/SpreadRight}
 The correct answer was D, since your head can roll, pitch, and jaw, just like your wrist, but it can also move along the ex, y, and z \pau=70\ axes.
@@ -463,7 +463,7 @@ This gives it a total of 6 degrees of freedom.
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/Me}
+{behavior|robotutor/specific/Me}
 Let us look at another example of degrees of freedom.
 {behavior|robotutor/specific/PointForward}
 Can you count the degrees of freedom on this entire robot \pau=70\ arm?
@@ -497,7 +497,7 @@ Hum, let's see.
 {slide}
 \pau=500\
 
-# {behavior|robotutor/specific/Convince}
+{behavior|robotutor/specific/Convince}
 {behavior|robotutor/specific/Me}
 The correct answer was 4 degrees of freedom, which I will show you now.
 
@@ -520,7 +520,7 @@ Since there are 4 joints, the entire arm has 4 degrees of freedom.
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/PushAsideBoth}
+{behavior|robotutor/specific/PushAsideBoth}
 {behavior|robotutor/specific/SpreadBoth}
 Now that you know how degrees of freedom work, let's have a short look on what we can actually do with actuators.
 {behavior|robotutor/specific/Me}
@@ -543,7 +543,7 @@ Of course motors are not the only actuators that exist, but for me and most robo
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/ReverseCapisce}
+{behavior|robotutor/specific/ReverseCapisce}
 {behavior|robotutor/specific/ShowChest}
 To summarize the last few slides, robot control generally consists of getting input data from sensors.
 {behavior|robotutor/specific/ShowMic}
@@ -564,7 +564,7 @@ There are multiple approaches that allow robots to think in a simple manner.
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/First}
+{behavior|robotutor/specific/First}
 One of these methods is the subsumption architecture.
 {behavior|robotutor/specific/Convince}
 {behavior|robotutor/specific/SpreadRight}
@@ -586,7 +586,7 @@ In this architecture the higher levels do not need to worry about goals that are
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/RotatingCapisce}
+{behavior|robotutor/specific/RotatingCapisce}
 Another architecture is called the layered approach.
 {behavior|robotutor/specific/PushAsideBoth}
 {behavior|robotutor/specific/Convince}
@@ -600,7 +600,7 @@ This way you have for example a reactive layer that handles all navigation tasks
 \pau=1000\
 {slide}
 
-# {behavior|robotutor/specific/YouAndMe}
+{behavior|robotutor/specific/YouAndMe}
 We have now reviewed two types of architecture for robot control.
 {behavior|robotutor/specific/SpreadBoth}
 {behavior|robotutor/specific/Think}
@@ -631,7 +631,7 @@ Hum, let's see.
 {slide}
 \pau=500\
 
-# {behavior|robotutor/specific/No}
+{behavior|robotutor/specific/No}
 The truth is that I am not using any architecture at all.
 {behavior|robotutor/specific/Me}
 I am currently running a script.
@@ -646,7 +646,7 @@ Perhaps one of you can program me with a more sophisticated architecture so I ca
 
 # Add closing words...
 
-# {behavior|robotutor/specific/SpreadRight}
+{behavior|robotutor/specific/SpreadRight}
 {behavior|robotutor/specific/Me}
 To finish this presentation, I have prepared a little questionnaire.
 {behavior|robotutor/specific/SmallBow}
