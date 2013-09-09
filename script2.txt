@@ -3,7 +3,7 @@
 # {enable pose changer}
 
 # Greetings to everyone.
-# {behavior|robotutor/specific/HelloEverybody}
+{behavior|robotutor/specific/HelloEverybody}
 # 
 # \pau=1000\
 
