@@ -1,14 +1,14 @@
 \subsection{Architecture}
-The Robotutors presentations are based on scripts. These are human made files containting the text of the presentation. This text is synthesised to to speech by the NAO's engine during the presenation. Additonally the text also contains a number of commands. These are actions the robot will perform during the lecture, such as its movements. The pacing of the slideshow is also controlled using these commands.\\
-During the presentation, two pieces of software facilitate the execution of the script. One part runs on the NAO itself, another on the computer that is used for the presentation. The computer is connected to the beamer or screen and runs the slideshow. This computer is also used to load, start and pause the script.\\
+The Robotutors presentations are based on scripts. These are human made files containting the text of the presentation. This text is synthesised to speech by the NAO's engine during the presenation. Additonally the text also contains a number of commands. These are actions the robot will perform during the lecture, such as its movements. The pacing of the slideshow is also controlled using these commands.\\
+During the presentation, two pieces of software facilitate the execution of the script. One part runs on the NAO itself, another on the computer that is used for the presentation. The computer is connected to the beamer or screen and runs the slideshow.\\
 
-% C++, gui made using...  can do this and this
+The application that is executed on the computer that runs the slideshow is created using the Qt-toolkit, which is a graphical toolkit written in C++ and is commonly used for cross platform applications. Through this application the user can control the Robotutor application running on the robot. These controls include connecting to the robot, running a script, pausing a script and stopping a script. When this application is launched, it will automatically also launch a Powerpoint instance with which it maintains a communication link. This allows the application to control the Powerpoint application, by for example triggering a next slide event or even adding slides. When the user closes the application, the Powerpoing application is also automatically closed. In addition, this application contains a simple text editor which the user can use to create a script. This text editor has some simple highlighting to indicate which parts are text that the NAO will speak out, which parts are behaviours the NAO will perform and which parts have been commented out and will be ignorred.
 
-On the NAO, the script is interpreted, the text is being synthesized and the commands are being executed.
+When the user decides it is time to start the script, the script is sent to the robot. The application running on the robot receives this messages in plain text and interprets the message to determine what to do. This will mean certain blocks of text are send to the speech engine running on the NAO and the behaviours are stored in a queue and will be executed when the speech engine notifies it is time for that behaviour to be executed.
 
-%C++, our own Script Engine
+The two applications talk to eachother through a protocol called Google Protocol Buffers. Protocol buffers is a method to serialize structured data to allow for easy sending over a network channel. In this case it is used to send a script or commands from one application to the other.
 
-% The two pieces of software communicate using protobuf, this solution was being chosen becase..
+% The two pieces of software communicate using protobuf, this solution was being chosen because..
 
 \subsection{Features}
 \subsubsection{Powerpoint}
