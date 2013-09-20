@@ -1,24 +1,37 @@
 \subsection{Architecture}
-The Robotutors presentations are based on scripts. These are human made files containting the text of the presentation. This text is synthesised to speech by the NAO's engine during the presenation. Additonally the text also contains a number of commands. These are actions the robot will perform during the lecture, such as its movements. The pacing of the slideshow is also controlled using these commands.\\
-During the presentation, two pieces of software facilitate the execution of the script. One part runs on the NAO itself, another on the computer that is used for the presentation. The computer is connected to the beamer or screen and runs the slideshow.\\
+The Robotutor's presentations are based on scripts. These are human made files containing the text of the presentation. This text is synthesized to speech by the NAO's engine during the presentation. Additionally the text also contains a number of commands. These are actions the robot will perform during the lecture, such as its movements. The pacing of the slideshow is also controlled using these commands.\\
+During the presentation, two pieces of software facilitate the execution of the script. The first part runs on the computer that is used for the presentation. This computer is connected to the beamer or screen and runs the slideshow. Another part runs on the NAO, controlling the execution of the script, the speech synthesis and the robot's behaviour.\\
 
-The application that is executed on the computer that runs the slideshow is created using the Qt-toolkit, which is a graphical toolkit written in C++ and is commonly used for cross platform applications. Through this application the user can control the Robotutor application running on the robot. These controls include connecting to the robot, running a script, pausing a script and stopping a script. When this application is launched, it will automatically also launch a Powerpoint instance with which it maintains a communication link. This allows the application to control the Powerpoint application, by for example triggering a next slide event or even adding slides. When the user closes the application, the Powerpoing application is also automatically closed. In addition, this application contains a simple text editor which the user can use to create a script. This text editor has some simple highlighting to indicate which parts are text that the NAO will speak out, which parts are behaviours the NAO will perform and which parts have been commented out and will be ignorred.
+The application executed on the computer that runs the slideshow is created using the Qt-toolkit, which is a graphical toolkit written in C++ and is commonly used for cross platform applications. Through this application the user can control the Robotutor application running on the robot. These controls include connecting to the robot, running a script, pausing a script and stopping a script. When this application is launched, it will automatically also launch a Powerpoint instance with which it maintains a communication link. This allows the application to control the Powerpoint application, by for example triggering a next slide event or even adding slides. When the user closes the application, the Powerpoint application is also automatically closed. In addition, this application contains a simple text editor which the user can use to create a script. This text editor has some simple highlighting to indicate which parts are text that the NAO will speak out, which parts are behaviours the NAO will perform and which parts have been commented out and will be ignored.\
 
-When the user decides it is time to start the script, the script is sent to the robot. The application running on the robot receives this messages in plain text and interprets the message to determine what to do. This will mean certain blocks of text are send to the speech engine running on the NAO and the behaviours are stored in a queue and will be executed when the speech engine notifies it is time for that behaviour to be executed.
+When the user decides it is time to start the script, the script is sent to the robot. The application running on the robot receives this message in plain text and interprets the script to determine what to do. For this purpose a custom script parser has been written in C++, which executes the script in real time. Blocks of text are send to the speech engine running on the NAO and the commands are being handled in the appropriate ways. In the case of a command to run a behaviour, it is added to a queue and will be executed when the speech engine notifies it is time for that behaviour to be executed. Commands to change a slide are send back to the computer side when it is time to execute them. The computer side then forwards this to Powerpoint.\
 
-The two applications talk to eachother through a protocol called Google Protocol Buffers. Protocol buffers is a method to serialize structured data to allow for easy sending over a network channel. In this case it is used to send a script or commands from one application to the other.
+The two applications talk to each other through a protocol called Google Protocol Buffers. Protocol buffers is a method to serialize structured data to allow for easy sending over a network channel. In this case it is used to send a script or commands from one application to the other. The use of  Google Protocol Buffers provides a language-neutral, platform-neutral, extensible way to send the required data. \
 
-% The two pieces of software communicate using protobuf, this solution was being chosen because..
+\begin{figure}
+	\includegraphics[scale=0.1]{images/system_overview_sober.png}
+	\caption{A schematic overview of the system. Red arrows indicate control flow, black arrows indicate data flow.}
+\end{figure}
 
-\subsection{Features}
+\subsection{Special Features}
 \subsubsection{Powerpoint}
-The robot can go to the next slide, step back or forward a specific number of slide, or go to a certain slide. Additonally, slide with new content can be dynamically created.
-
-\subsubsection{Noise level}
-The system can monitor the noise level in the room, and respond accordingly if there is to much noise. Additonally the noise level can be visualized live on a Powerpoint slide.
+The robot can go to the next slide, step back or forward a specific number of slides, or go to a certain slide. Additionally, slides with new content can be dynamically created.
 
 \subsubsection{Turningpoint}
 The Turningpoint system consists of a number of response cards, small electronic devices, connected to a computer. The response card are handed out to people in the audience, who can use them to digitally respond to a question. Turningpoint then aggregates and presents the results. This can be used by a lecturer to check the audiences opinon or knowledge. The use of this technology is integrated into the Robotutor system. Using it, the NAO can ask questions and interpret the results. This provides a great method for interaction with the audience.
+The system can also be used to present a choice to the audience. For example, the robot could ask is a certain concept is clear to the audience or is more explanation is necessary. Here the robot could again make a decision based on the results.\\
+
+Turningpoint questions are started by a command in the script. The script engine then asks the local engine to initiate a Turningpoint session through Powerpoint. When the polling is done, the local engine reads an XML-file containing the results of the quiz. The results of the quiz are then send to the script engine, which then decides what to do with them.
 
 \subsubsection{Pulse Audio}
-In large rooms or lecture halls, the NAO's internal speakers might not have enough volume to server the audience properly. For these kind of situations audio streaming has been implemented. Using pulse audio, the NAO's sound can be redirected to a different set of speakers.
+In large rooms or lecture halls, the NAO's internal speakers might not have enough volume to serve the audience properly. For these kind of situations audio streaming has been implemented. Using pulse audio, the NAO's sound can be redirected to a different set of speakers.
+
+\subsubsection{Taking Pictures}
+A command is available to take a picture using one of the NAO's cameras. This picture is then displayed on a new Powerpoint slide. This usually means the audience can see itself, creating a humorous moment, but also confirming that the presentation is happening in real time.
+
+\subsubsection{Teacher Interruption}
+At any moment the teacher can pause the execution of the script using the graphical interface or by touching the head of the NAO.
+
+\subsubsection{Noise level}
+The system can monitor the noise level in the room, and respond accordingly if there is too much noise. Additionally the noise level can be visualized live on a Powerpoint slide.
+
