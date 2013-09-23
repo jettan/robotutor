@@ -94,17 +94,21 @@ namespace robotutor {
 			 * \param results The results.
 			 */
 			void processResults(TurningPointResults const & results) {
-				bool tie = false;
 				int max  = 0;
-				for (int i = 0; i < results.votes().size(); ++i) {
-					std::cout << "Vote " << results.votes().Get(i) << std::endl;
-					if ( i > 0 && results.votes().Get(i) == results.votes().Get(max)) tie = true;
+				for (int i = 1; i < results.votes().size(); ++i) {
 					if (results.votes().Get(i) > results.votes().Get(max)) {
 						max = i;
-						tie = false;
 					}
 				}
 				
+				bool tie = false;
+				for (int i = 0; i < results.votes().size(); ++i) {
+					if (i!=max && results.votes().Get(i) == results.votes().Get(max)) {
+						tie=true;
+						break;
+					}
+				}
+		
 				// If the result is a tie, branch to the alternative branch.
 				branch_ = tie ? results.votes().size() : max;
 				std::cout << "Branch: " << branch_ << " taken." << std::endl;
