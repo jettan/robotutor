@@ -1,4 +1,3 @@
-\section{Aquiring the Robotutor software}
 
 \section{Preparing the robot}
 Note: If a there is a NAO available which has the robotutor software already installed, preparing the NAO might not be necessary.
@@ -8,11 +7,12 @@ To install the software on the robot we must first connect with it. Two types of
 
 \subsection{Installing software on the robot}
 
-%schrijven naar var\www dus moet writeable zijn robotutor-server. 
-
 Copy the robotutor tar file \emph{robotutor-setup.tar} to the NAO  (Using scp/WinSCP) and run the command "\emph{tar -xvzf robotutor-setup.tar}" (Using ssh/PuTTY)
+Additionally, if you want to take pictures with the robot, these are stored in \\var\\www. This requires that this directory is writeable.
+%This tar should contain the behaviors.
 
 \section{Preparing the local computer}
+If you want to playback the NAO's voice and sound via the local computer instead of the NAO's interal loudspeakers, you will need to install pulse audio on the local computer. The robotutor .tar file contains pulse audio for the NAO. You will need to connect the NAO to the computer's pulse audio server. As said earlier, the computer must run Powerpoint and, if used, Turingpoint 5.1.
 
 %Local engine
 %Turning point - if nessesacry

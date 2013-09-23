@@ -22,54 +22,17 @@ Command & Result\\ \hline
 
 
 \subsection{Behaviors}
-
-
-\begin{table}[h!]
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Directory} &\textbf{Name} &\textbf{Description} \\ 
-\hline
-special     &StandUp        &The NAO moves to his default \\
-            &               &standing position from any starting point.  \\[0.4cm]
-
-special     &SitDownAndDie  &The NAO goes to a safe sitting position and it's motors \\
-            &               &are turned off. \\[0.2cm]
-      
-generic & Capisce & The Nao makes a small Italian gesture.  \\[0.4cm]
-      
-generic       &ConvergeHands       & The NAO converge his hands.  \\[0.4cm]
-
-generic & HandOverLeft & The NAO makes a gesture as if it is  \\
-&& handing over something with his left hand.  \\[0.4cm]
-generic & HandOverRight & The NAO makes a gesture as if it is  \\
-&& handing over something with his right hand.  \\[0.4cm]
-
-generic & PushAsideBoth & The NAO makes a gesture as if it is. \\
-&& pushing something aside with his both his hands.  \\[0.4cm]
-
-generic & PushAsideLeft & The NAO makes a gesture as if it is.  \\
-&& pushing something aside with the back of his left hand.  \\[0.4cm]
-
-generic & PushAsideRight & The NAO makes a gesture as if it is. \\
-&& pushing something aside with his right hand.  \\[0.4cm]
-
-generic & SpreadBoth & Makes the NAO spread both his hands. \\[0.4cm]
-
-generic & SpreadLeft & Makes the NAO spread his left hand. \\[0.4cm]
-
-generic & SpreadBoth & Makes the NAO spread his right hand. \\[0.4cm]
-
-
-
-\hline
-\end{tabular}
-\end{table}
+There are three types of behaviors that the Robotutor uses. The first type consists of special behaviours that are not meant to be used during the presentation, but to start or stop the robot.
+The second type consists of specific behaviours. These are behaviours that contain specific gestures that may be used in the presentation, such as point to the left or the right, the NAO introducing itself, and the NAO indicating the position of it's sensors. In the script, these behaviours can be exectuted as in the following example: "{behavior|robotutor/specific/Me}".
+The third and last type of behaviours are the generic ones. The are small body movements that can be exectuted randomly throughout the presentation to make the robot look more lively.
 
 
 \subsection{Play a sound}
-
+The Robotutor can play wav files from it's internal memory using the command
 
 \subsection{Do a Quiz}
+
+\subsection{Take an Image}
 
 
 %Make a presentation in powerpoint
