@@ -23,16 +23,82 @@ Command & Result\\ \hline
 
 \subsection{Behaviors}
 There are three types of behaviors that the Robotutor uses. The first type consists of special behaviours that are not meant to be used during the presentation, but to start or stop the robot.
-The second type consists of specific behaviours. These are behaviours that contain specific gestures that may be used in the presentation, such as point to the left or the right, the NAO introducing itself, and the NAO indicating the position of it's sensors. In the script, these behaviours can be exectuted as in the following example: "{behavior|robotutor/specific/Me}".
+The second type consists of specific behaviours. These are behaviours that contain specific gestures that may be used in the presentation, such as point to the left or the right, the NAO introducing itself, and the NAO indicating the position of it's sensors. In the script, these behaviours can be exectuted as in the following example: "\{behavior|robotutor/specific/Me\}".
 The third and last type of behaviours are the generic ones. The are small body movements that can be exectuted randomly throughout the presentation to make the robot look more lively.
+The RoboTutor comes with a number of behaviors that can be used. Additonal behaviors can be created using Choreographe. These behaviors must then be uploaded to the behaviors folder on the robot. After restarting the robot, the new behaviors can be used in the script. The same method can be used for third party behaviors.
 
+The following behaviors are included with the RoboTutor. %Todo: explain what they do
+\begin{itemize}
+\itemsep0em 
+\item generic - Capisce
+\item generic - ConvergeHands
+\item generic - HandOverLeft
+\item generic - HandOverRight
+\item generic - PushAsideBoth
+\item generic - PushAsideLeft
+\item generic - PushAsideRight
+\item generic - SpreadBoth
+\item generic - SpreadLeft
+\item generic - SpreadRight
+\item special - MotorOn
+\item special - RaiseHandSitting
+\item special - SitDown
+\item special - SitDownAndDie
+\item special - Squat
+\item special - SquatAndDie
+\item special - StandUp
+\item specific - BodyBuilder
+\item specific - Bow
+\item specific - Dance
+\item specific - Facepalm
+\item specific - HelloEverybody
+\item specific - Me
+\item specific - PointForward
+\item specific - PointOutCameras
+\item specific - Quiet
+\item specific - Quiz
+\item specific - RandomNo
+\item specific - RandomYes
+\item specific - ShowBiceps
+\item specific - ShowLeft
+\item specific - ShowRight
+\item specific - SideStepRight
+\item specific - SoccerKick
+\item specific - Twinkle
+\end{itemize}
 
 \subsection{Play a sound}
-The Robotutor can play wav files from it's internal memory using the command
+The Robotutor can play wav files from it's internal memory using the command \begin{verbatim} {sound|file.mp3} \end{verbatim}. The sound file must be present on the NAO's internal memory.
+\subsection{Turning Point}
+Support for the Turning Point system is incorporated into the RoboTutor software. Two commands are used to implement it's usage. The first is the Turning Point Choice. The syntax is as follows: \begin{verbatim} {TurningPointChoice |branch 1 |branch 2 ... | branch n-1 | branch n | tie branch} \end{verbatim} and corresponds to a question with n answers. The Turning Point Choice command checks which answer receives the most votes and executes the corresponding branch. In the case of a tie, the tie branch is executed. Note that these branches can contain anything that a script can contain, including further commands.
+The practical use of Turning Point in scripts is somewhat more complex due to the fact that the Turning Point Software is closed source and provides no way of interacting with it directly. Therefore, voting must be triggered through Powerpoint. The Turning Point commands then process the results. An example script is provided below.
+\begin{verbatim}
+Would you like me to do a dance or a soccer kick?
 
-\subsection{Do a Quiz}
+# Start timer
+{slide}
+
+# Wait for 10 seconds.
+\pau=10000\
+
+# Get results.
+{slide}
+\pau=2000\
+
+Hum, let's see.
+{turningpoint choice | Okay, I will do a soccer kick {behavior|robotutor/specific/SoccerKick}
+			 | Okay, I will do a little dance {behavior|robotutor/specific/Dance}
+			 | It seems you can't decide  }
+\end{verbatim}
+.
+The second command that is available is the Turning Point Quiz. It is used for questions that have only one correct answer. It checks wheter the majority of the audience chose the right answer.
+\begin{verbatim} 
+{TurningPointQuiz | <correct answer> | audience correct branch | audience incorrect branch>
+\end{verbatim}
 
 \subsection{Take an Image}
+It is possible to use the NAO's camera to take a picture. This is done using the command \begin{verbatim} {show image} \end{verbatim} 
+A picture is then taken en inserted on a new slide. The slide command can then be used to view the image.
 
 
 %Make a presentation in powerpoint

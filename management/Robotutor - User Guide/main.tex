@@ -84,6 +84,11 @@ flexiblecolumns=true,
 \newcommand{\us}{\,$\mu$s\xspace}
 %\usepackage{cmbright} %andere font
 \newcommand\BackgroundPic{\put(-5,0){\parbox[b][\paperheight]{\paperwidth}{\vfill \raggedright \includegraphics[width=1.05\paperwidth,height=\paperheight]{images/front.pdf}}}}
+	
+\usepackage{etoolbox}
+\makeatletter
+\preto{\@verbatim}{\topsep=0pt \partopsep=0pt }
+\makeatother
 
 \begin{document}
 
