@@ -2,7 +2,13 @@
 
 //DWORD WINAPI AutomatePowerPointByImport(LPVOID lpParam);
 
+//void PptController::connectSlots(robotutor::RoboTutorClient & gui) {
+//	connect(this, SIGNAL(powerpointDisconnect()), &gui, SLOT(powerpointDisconnect()));
+//	connect(this, SIGNAL(log(QString)), &gui, SLOT(log(QString)));
+//}
+
 void PptController::init() {
+//	emit log("initalizing");
 	try
 	{
 		// CreateInstance
@@ -16,6 +22,7 @@ void PptController::init() {
 		_putws(L"PowerPoint.Application is started");
 
 		ppt_->put_Visible(Office::MsoTriState::msoTrue);
+		init_done = true;
 	}
 	catch (_com_error &err)
 	{
@@ -23,6 +30,26 @@ void PptController::init() {
 		wprintf(L"Description: %s\n", (LPCWSTR) err.Description());
 	}
 }
+
+int PptController::monitor(){
+
+
+	if (ppt_ == NULL)
+	{
+			return 100;
+	}
+	else
+	{return 200;}
+	//try{
+	//int temp = ppt_->Presentations->GetCount();
+	//}
+	//catch(_com_error &err)
+	//{
+	//return false;
+	//}
+	//return true;
+}
+
 
 void PptController::closePowerpoint()
 {

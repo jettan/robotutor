@@ -8,8 +8,9 @@ int main(int argc, char *argv[])
 	robotutor::AsioThread io(ios);
 	robotutor::RoboTutorClient gui(io);
 
-	io.connectSlots(gui);
 
+
+	io.connectSlots(gui);
 	boost::thread ios_thread(std::bind(&robotutor::AsioThread::run, &io));
 
 	gui.show();

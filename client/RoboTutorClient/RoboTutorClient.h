@@ -14,6 +14,7 @@ class RoboTutorClient : public QMainWindow
 public:
 	RoboTutorClient(AsioThread & io, QWidget *parent = 0);
 	~RoboTutorClient();
+	QTimer *timer;
 
 private:
 	Ui::RoboTutorClientClass ui_;
@@ -35,6 +36,9 @@ public slots:
 	void setStatus(QString status);
 	void setConnect(bool status);
 	void log(QString info);
+	void powerpointDisconnect();
+	void PPmonitor();
+
 
 private slots:
 	void on_openScript_triggered();
@@ -44,6 +48,8 @@ private slots:
 	void on_runButton_clicked();
 	void on_pauseButton_clicked();
 	void on_stopButton_clicked();
+
+
 };
 
 }

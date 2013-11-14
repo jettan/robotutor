@@ -12,6 +12,11 @@ RoboTutorClient::RoboTutorClient(AsioThread & io, QWidget *parent) :
 
 	new QShortcut(QKeySequence("Ctrl+R"), this, SLOT(on_runButton_clicked()));
 	new QShortcut(QKeySequence("Ctrl+T"), this, SLOT(on_stopButton_clicked()));
+
+	 timer = new QTimer(this);
+     bool ba = connect(timer, SIGNAL(timeout()), this, SLOT(PPmonitor()));
+     timer->start(10000);
+
 }
 
 RoboTutorClient::~RoboTutorClient() {
@@ -73,7 +78,46 @@ void RoboTutorClient::on_connectButton_clicked() {
 		//QMessageBox::critical(this, tr("Cannot connect"), QString("Failed to connect to the server: ") + QString(e.what()));
 		log(QString("Failed to connect to the server: ") + QString(e.what()));
 	}
+
+
+
+	//---------
+	/*
+	 QPalette* palette = new QPalette;
+	 
+
+	if(ui_.powerpointIndicator->text() == "Powerpoint Status: Linked")
+	{ui_.powerpointIndicator->setText("Powerpoint Status: Link Broken!");
+	palette->setColor(QPalette::ColorRole::WindowText, Qt::red);
+	ui_.powerpointIndicator->setPalette(*palette);}
+
+	else
+	{ui_.powerpointIndicator->setText("Powerpoint Status: Linked");
+	palette->setColor(QPalette::ColorRole::WindowText, Qt::darkGreen);
+	ui_.powerpointIndicator->setPalette(*palette);
+
+	
+	}
+	*/
 }
+
+void RoboTutorClient::powerpointDisconnect()
+{
+	QPalette* palette = new QPalette;
+	ui_.powerpointIndicator->setText("Powerpoint Status: Link Broken!");
+	palette->setColor(QPalette::ColorRole::WindowText, Qt::red);
+	ui_.powerpointIndicator->setPalette(*palette);
+}
+
+
+void RoboTutorClient::PPmonitor()
+{
+
+	log("timer triggered");
+	io_.monitor();
+
+}
+
 
 void RoboTutorClient::on_runButton_clicked() {
 	if (ui_.runButton->isEnabled())

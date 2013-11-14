@@ -16,6 +16,7 @@ void AsioThread::connectSlots(RoboTutorClient & gui) {
 	connect(this, SIGNAL(setStatus(QString)), &gui, SLOT(setStatus(QString)));
 	connect(this, SIGNAL(setConnect(bool)), &gui, SLOT(setConnect(bool)));
 	connect(this, SIGNAL(log(QString)), &gui, SLOT(log(QString)));
+	connect(this, SIGNAL(powerpointDisconnect()), &gui, SLOT(powerpointDisconnect()));
 }
 
 void AsioThread::quit() {
@@ -94,11 +95,11 @@ void AsioThread::run() {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	ppt_controller_.init();
-
 	while (running_) {
 		try {
 			boost::asio::io_service::work work(ios_);
 			ios_.run();
+			
 		} catch (std::exception &e) {
 			ios_.reset();
 			client_->close();
@@ -111,6 +112,22 @@ void AsioThread::run() {
 
 	ppt_controller_.closePowerpoint();
 }
+
+void AsioThread::monitor()
+{
+			emit log("Trying to monitor");
+			//bool status = ppt_controller_.monitor();
+		//	if(status)
+		//	{emit log("Monitor returned: True");}
+		//	else
+		//	{emit log("Monitor returned: False");}
+			if (ppt_controller_.monitor() == 100)
+			{emit log("100");}
+			else {if(ppt_controller_.monitor() == 200)
+			{emit log("200");}}
+		//	if(!ppt_controller_.monitor())
+		//	{emit powerpointDisconnect();}
+};
 
 void AsioThread::connectRobot(QString host, int port) {
 	host_  = host.toStdString();;

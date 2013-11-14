@@ -89,6 +89,9 @@
     <ClCompile Include="StdAfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PptController.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RoboTutorClient.h">
@@ -109,6 +112,9 @@
     <CustomBuild Include="protocol\messages.proto">
       <Filter>Messages</Filter>
     </CustomBuild>
+    <CustomBuild Include="PptController.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_RoboTutorClient.h">
@@ -121,9 +127,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="connection.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PptController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScriptHighlighter.h">

@@ -26,6 +26,7 @@ public:
 	void openPresentation(QString file);
 	void pauseScript(bool pause);
 	void stopScript();
+	void monitor();
 
 	boost::asio::io_service & getIos() { return ios_; }
 
@@ -45,6 +46,10 @@ signals:
 	void setStatus(QString status);
 	void setConnect(bool status);
 	void log(QString info);
+	void powerpointDisconnect();
+
+//public slots:
+//	void monitor();
 };
 
 }
