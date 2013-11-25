@@ -24,21 +24,21 @@ void help() {
 
 boost::shared_ptr<NoiseDetector> noise_detector;
 
-void my_handler(int s) {
-	noise_detector->unsubscribe();
-	exit(0);
-}
+//void my_handler(int s) {
+//	noise_detector->unsubscribe();
+//	exit(0);
+//}
 
 int main(int argc, char ** argv) {
 	// Get nao host from command line.
 	std::string nao_host = "localhost";
 	
-	struct sigaction sigint_handler;
-	sigint_handler.sa_handler = my_handler;
-	sigemptyset(&sigint_handler.sa_mask);
-	sigint_handler.sa_flags = 0;
+//	struct sigaction sigint_handler;
+//	sigint_handler.sa_handler = my_handler;
+//	sigemptyset(&sigint_handler.sa_mask);
+//	sigint_handler.sa_flags = 0;
 	
-	sigaction(SIGINT, &sigint_handler, NULL);
+//	sigaction(SIGINT, &sigint_handler, NULL);
 	
 	if (argc == 1) {
 		help();
@@ -74,7 +74,7 @@ int main(int argc, char ** argv) {
 		return -2;
 	}
 	
-	noise_detector = NoiseDetector::create(ios, broker, "NoiseDetector");
+//	noise_detector = NoiseDetector::create(ios, broker, "NoiseDetector");
 	
 	// Initialize the script engine.
 	ScriptEngine engine(ios, broker);
