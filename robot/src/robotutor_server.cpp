@@ -88,9 +88,9 @@ int main(int argc, char ** argv) {
 	};
 	
 	// Function that deals with a noisy classroom.
-	auto onNoise = [&engine] (int level) {
-		std::cout << "Noise detected." << std::endl;
-	};
+	//auto onNoise = [&engine] (int level) {
+	//	std::cout << "Noise detected." << std::endl;
+	//};
 	
 	// Run the IO service.
 	while (true) {

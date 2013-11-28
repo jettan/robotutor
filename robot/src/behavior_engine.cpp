@@ -6,6 +6,8 @@
 #include <boost/asio/io_service.hpp>
 
 #include "behavior_engine.hpp"
+#include "script_engine.hpp"
+#include "robotutor_protocol.hpp"
 
 
 namespace robotutor {
@@ -27,7 +29,8 @@ namespace robotutor {
 	 * \param broker The ALBroker to use for communicating with naoqi.
 	 * \param random Random number generator to use.
 	 */
-	BehaviorEngine::BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, boost::random::mt19937 & random) :
+	BehaviorEngine::BehaviorEngine(ScriptEngine * engine, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, boost::random::mt19937 & random) :
+		engine(engine),
 		ios_(ios),
 		bm_(broker),
 		random_(random) {}
@@ -83,21 +86,25 @@ namespace robotutor {
 		// Call the start handler.
 		if (job.on_start_) job.on_start_();
 		
+		RobotMessage message;
+		message.mutable_behaviorcmd()->set_behaviorname(job.name_);
+		engine->server.sendMessage(message);
+		
+		
 		// If the behavior can be found, execute it.
 		//std::cerr << "Trying to execute " << job.name_ << "." << std::endl;
-		if (bm_.isBehaviorInstalled(job.name_)) {
-			job.id_ = bm_.post.runBehavior(job.name_);
+		//if (bm_.isBehaviorInstalled(job.name_)) {
+		//	job.id_ = bm_.post.runBehavior(job.name_);
 			
 			// Start a new wait thread.
 			join();
 			wait_thread_ = std::thread(std::bind(&BehaviorEngine::wait_, this));
 		
 		// Otherwise, immediately call the done handler.
-		} else {
+		//} else {
 			//if (job.on_done_) job.on_done_();
 			//std::cout << "Immediately call the done handler because behavior was not found." << std::endl;
-			onJobDone_();
-		}
+		//	onJobDone_();
 	}
 	
 	/// Called when a job finished.
@@ -120,17 +127,20 @@ namespace robotutor {
 	
 	/// Wait for the current job to finish.
 	void BehaviorEngine::wait_() {
+		while (!engine->behavior_done) {
+		}
+		engine->behavior_done = false;
+		ios_.post(std::bind(&BehaviorEngine::onJobDone_, this));
 		
 		// If timeout is reached, then stop the behavior and drop the rest of the queue.
-		if (bm_.wait(queue_.front().id_, BEHAVIOR_TIMEOUT)) {
+		/*if (bm_.wait(queue_.front().id_, BEHAVIOR_TIMEOUT)) {
 			std::cerr << "Behavior timeout reached! Dropping queue." << std::endl;
 			bm_.stop(queue_.front().id_);
 			std::cerr << "Clearing queue!" << std::endl;
 			queue_.clear();
 		}
-		else {
-			ios_.post(std::bind(&BehaviorEngine::onJobDone_, this));
-		}
+		else {*/
+		//}
 	}
 }
 
