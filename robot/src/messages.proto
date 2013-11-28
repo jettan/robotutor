@@ -16,6 +16,7 @@ message RobotMessage {
 	optional Slide     slide              = 2;
 	optional ShowImage show_image         = 3;
 	optional bool      fetch_turningpoint = 4;
+	optional BehaviorCommand     behaviorCmd  = 5;
 }
 
 message Run {

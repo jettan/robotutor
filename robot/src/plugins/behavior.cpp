@@ -29,7 +29,10 @@ namespace robotutor {
 			std::string name() const { return static_name(); }
 			
 			bool step() {
-				engine.behavior.enqueue(behavior);
+				//engine.behavior.enqueue(behavior);
+				RobotMessage message;
+				message.mutable_behaviorcmd()->set_behaviorname(behavior);
+				engine.server.sendMessage(message);
 				return done_();
 			}
 		};

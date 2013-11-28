@@ -127,7 +127,8 @@ namespace robotutor {
 			bm_.stop(queue_.front().id_);
 			std::cerr << "Clearing queue!" << std::endl;
 			queue_.clear();
-		} else {
+		}
+		else {
 			ios_.post(std::bind(&BehaviorEngine::onJobDone_, this));
 		}
 	}
