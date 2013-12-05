@@ -75,6 +75,9 @@ namespace robotutor {
 				engine.join();
 			} else if (message.has_resume()) {
 				engine.start();
+			} else if (message.has_behaviorcmd()) {
+				std::cout << "We received from Junchao: " << message.behaviorcmd().succes() << std::endl;
+				engine.behavior_done = true;
 			}
 		}
 		

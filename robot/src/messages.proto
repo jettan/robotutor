@@ -16,6 +16,7 @@ message RobotMessage {
 	optional Slide     slide              = 2;
 	optional ShowImage show_image         = 3;
 	optional bool      fetch_turningpoint = 4;
+	optional BehaviorCommand     behaviorCmd  = 5;
 }
 
 message Run {
@@ -32,11 +33,17 @@ message TurningPointResults {
 	repeated int32  votes   = 2;
 }
 
+message BehaviorCommand {
+	required string behaviorName = 1;
+	optional string succes       = 2;
+}
+
 message ClientMessage {
 	optional Run                 run          = 1;
 	optional Stop                stop         = 2;
 	optional Pause               pause        = 3;
 	optional Resume              resume       = 4;
 	optional TurningPointResults turningpoint = 5;
+	optional BehaviorCommand     behaviorCmd  = 6;
 }
 

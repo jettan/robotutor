@@ -43,6 +43,7 @@ namespace robotutor {
 			/// Random number generator.
 			boost::random::mt19937 random;
 			
+			bool behavior_done;
 		protected:
 			/// The IO service to use.
 			boost::asio::io_service & ios_;

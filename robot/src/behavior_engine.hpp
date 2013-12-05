@@ -62,6 +62,9 @@ namespace robotutor {
 			/// Signal invoked when the engine finished all queued jobs.
 			boost::signal<void ()> on_done;
 			
+			/// The associated script engine.
+			ScriptEngine * engine;
+			
 		protected:
 			/// IO service to perform asynchronous work.
 			boost::asio::io_service & ios_;
@@ -85,7 +88,7 @@ namespace robotutor {
 			 * \param broker The ALBroker to use for communicating with naoqi.
 			 * \param random Random number generator to use.
 			 */
-			BehaviorEngine(boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, boost::random::mt19937 & random);
+			BehaviorEngine(ScriptEngine * engine, boost::asio::io_service & ios, boost::shared_ptr<AL::ALBroker> broker, boost::random::mt19937 & random);
 			
 			/// Get the number of queued jobs.
 			unsigned int queued() { return queue_.size(); }
