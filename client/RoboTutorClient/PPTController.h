@@ -3,11 +3,10 @@ namespace robotutor{
 class RoboTutorClient;
 }
 
-class PptController{ //: public QObject {
-	//Q_OBJECT
+class PptController{ 
 
 public:
-	//void connectSlots(robotutor::RoboTutorClient & gui);
+
 	void init();
 	int monitor();
 	void openPresentation(std::string fileName);
@@ -20,8 +19,6 @@ public:
 	void colorBar(char color);
 	void resizeBar(char scale);
 
-
-
 private:
 	PowerPoint::_ApplicationPtr ppt_;
 	//PowerPoint::_PresentationPtr pres_;
@@ -33,7 +30,4 @@ private:
 	bool getPresentation(PowerPoint::_PresentationPtr & pres);
 	bool init_done;
 
-//signals:
-//	void powerpointDisconnect();
-//	void log(QString info);
 };

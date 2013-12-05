@@ -48,6 +48,7 @@ private slots:
 	void on_runButton_clicked();
 	void on_pauseButton_clicked();
 	void on_stopButton_clicked();
+	void on_insertBehaviorButton_clicked();
 
 
 };

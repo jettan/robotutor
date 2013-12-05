@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="contentTabs">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -52,7 +52,7 @@
           <item row="2" column="3">
            <widget class="QPushButton" name="runButton">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>Run Script</string>
@@ -257,20 +257,253 @@
        <attribute name="title">
         <string>Script</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_6">
-        <item row="0" column="0">
-         <widget class="QGroupBox" name="scriptEditorBox">
-          <property name="title">
-           <string>Script editor</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
-            <widget class="CodeEditor" name="scriptEditor"/>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>1</y>
+          <width>481</width>
+          <height>381</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,1,10">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Skip the first:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="lineSkipSpinBox"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>lines.</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
-         </widget>
-        </item>
-       </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Insert Behavior:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="behaviorComboBox">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
+             </property>
+             <item>
+              <property name="text">
+               <string>generic - Capisce</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - ConvergeHands</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - HandOverLeft</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - HandOverRight</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - PushAsideBoth</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - PushAsideLeft</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - PushAsideRight</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - SpreadBoth</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - SpreadLeft</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>generic - SpreadRight</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - BodyBuilder</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - Bow</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - Dance</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - Facepalm</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - HelloEverybody</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - Me</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - PointForward</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - PointOutCameras</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - Quiet</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - Quiz</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - RandomNo</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - RandomYes</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - ShowBiceps</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - ShowLeft</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - ShowRight</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - SideStepRight</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>specific - SoccerKick</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string comment="{behavior|robotutor/specifc/Twinkle}">specific - Twinkle</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="insertBehaviorButton">
+             <property name="text">
+              <string>Insert</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="scriptEditorBox">
+           <property name="title">
+            <string>Script editor</string>
+           </property>
+           <widget class="CodeEditor" name="scriptEditor">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>23</y>
+              <width>461</width>
+              <height>331</height>
+             </rect>
+            </property>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>

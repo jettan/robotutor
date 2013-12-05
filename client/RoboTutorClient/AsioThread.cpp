@@ -115,19 +115,10 @@ void AsioThread::run() {
 
 void AsioThread::monitor()
 {
-			emit log("Trying to monitor");
-			//bool status = ppt_controller_.monitor();
-		//	if(status)
-		//	{emit log("Monitor returned: True");}
-		//	else
-		//	{emit log("Monitor returned: False");}
-			if (ppt_controller_.monitor() == 100)
-			{emit log("100");}
-			else {if(ppt_controller_.monitor() == 200)
-			{emit log("200");}}
-		//	if(!ppt_controller_.monitor())
-		//	{emit powerpointDisconnect();}
-};
+			//emit log("Trying to monitor");
+			if (ppt_controller_.monitor()==400) // 400 means Powerpoint is disconnected
+				emit powerpointDisconnect();
+}
 
 void AsioThread::connectRobot(QString host, int port) {
 	host_  = host.toStdString();;

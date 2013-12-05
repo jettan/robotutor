@@ -15,7 +15,7 @@ RoboTutorClient::RoboTutorClient(AsioThread & io, QWidget *parent) :
 
 	 timer = new QTimer(this);
      bool ba = connect(timer, SIGNAL(timeout()), this, SLOT(PPmonitor()));
-     timer->start(10000);
+     timer->start(1000);
 
 }
 
@@ -113,15 +113,25 @@ void RoboTutorClient::powerpointDisconnect()
 void RoboTutorClient::PPmonitor()
 {
 
-	log("timer triggered");
-	io_.monitor();
+//	log("timer triggered");
+	io_.getIos().post(std::bind(&AsioThread::monitor, &io_));
 
 }
 
 
 void RoboTutorClient::on_runButton_clicked() {
-	if (ui_.runButton->isEnabled())
-		io_.getIos().post(std::bind(&AsioThread::sendScript, &io_, ui_.scriptEditor->toPlainText()));
+	if (ui_.runButton->isEnabled()){
+		QString script = ui_.scriptEditor->toPlainText();
+	
+		for(int i=0;i<ui_.lineSkipSpinBox->value();i++)
+		{
+			//iterator start = script.begin();
+			int line_end = script.indexOf(QRegExp("[\r\n]"));
+			script.remove(0,line_end+1);
+		}
+		io_.getIos().post(std::bind(&AsioThread::sendScript, &io_, script));
+
+	}
 }
 
 void RoboTutorClient::saveScript(QString fileName) {
@@ -173,6 +183,17 @@ void RoboTutorClient::on_pauseButton_clicked() {
 void RoboTutorClient::on_stopButton_clicked() {
 	if (ui_.stopButton->isEnabled())
 		io_.getIos().post(std::bind(&AsioThread::stopScript, &io_));
+}
+
+
+void RoboTutorClient::on_insertBehaviorButton_clicked(){
+
+	QString behavior = ui_.behaviorComboBox->currentText();
+	behavior.replace(QString(" - "), QString("/"));
+	behavior.prepend(QString("{behavior|robotutor/"));
+	behavior.append(QString("}"));
+	ui_.scriptEditor->textCursor().insertText(behavior);
+
 }
 
 }

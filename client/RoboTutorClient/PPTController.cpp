@@ -2,13 +2,7 @@
 
 //DWORD WINAPI AutomatePowerPointByImport(LPVOID lpParam);
 
-//void PptController::connectSlots(robotutor::RoboTutorClient & gui) {
-//	connect(this, SIGNAL(powerpointDisconnect()), &gui, SLOT(powerpointDisconnect()));
-//	connect(this, SIGNAL(log(QString)), &gui, SLOT(log(QString)));
-//}
-
 void PptController::init() {
-//	emit log("initalizing");
 	try
 	{
 		// CreateInstance
@@ -33,21 +27,21 @@ void PptController::init() {
 
 int PptController::monitor(){
 
-
-	if (ppt_ == NULL)
-	{
-			return 100;
-	}
+if(init_done){
+	try{
+	if(ppt_->Presentations->GetCount()<8)
+		return 200; //Everything seems fine
 	else
-	{return 200;}
-	//try{
-	//int temp = ppt_->Presentations->GetCount();
-	//}
-	//catch(_com_error &err)
-	//{
-	//return false;
-	//}
-	//return true;
+		return 100; //Either there are more than 7 open presentations, or ppt_->Presentations->GetCount() returned garbage
+	}
+	catch(_com_error &err)
+	{ 
+		wprintf(L"PowerPoint throws the error: %s\n", err.ErrorMessage());
+		wprintf(L"Description: %s\n", (LPCWSTR) err.Description());
+		return 400;} // com error => powerpoint no longer connected
+}
+else
+{return 300;} // Not yet initalized
 }
 
 
