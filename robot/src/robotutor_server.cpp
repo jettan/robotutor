@@ -98,7 +98,7 @@ int main(int argc, char ** argv) {
 			ios.run();
 			
 		} catch (ServerError const & e) {
-			std::cout << e.connection->socket().remote_endpoint() << ": " << e.what() << std::endl;
+			std::cout << "Remote endpoint shutdown." << std::endl;
 			e.connection->close();
 			
 		} catch (std::exception const & e) {
