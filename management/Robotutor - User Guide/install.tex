@@ -7,16 +7,19 @@ To install the software on the robot we must first connect with it. Two types of
 
 \subsection{Installing software on the robot}
 
-Copy the distibuted files to the root directory of the NAO (Using scp/WinSCP), then run the following commands:(Using ssh/PuTTY)
+Copy the distibuted files to the home directory(\texttt{/home/nao}) of the NAO (Using scp/WinSCP), then run the following command to give the executable sufficient permissions:(Using ssh/PuTTY)
 \begin{verbatim}
-. .bashrc
-./robotutor-server -a localhost
+chmod +x ./robotutor-server
 \end{verbatim}
-Additionally, if you want to take pictures with the robot, these are stored in \textbackslash\textbackslash var\textbackslash\textbackslash www. This requires that this directory is writeable.
-%This tar should contain the behaviors.
+Additionally, if you want to take pictures with the robot, these are stored in \texttt{/var/www}. This requires that this directory is writeable. If this if not yet the case, this can be achieved by running the following command as a superuser:
+Use \texttt{su} to become superuser. The default password can be \texttt{root} or \texttt{nao}. Then run the following command:
+\begin{verbatim}
+chmod -R 777 /var/www 
+\end{verbatim}
+
 
 \section{Preparing the local computer}
-If you want to playback the NAO's voice and sound via the local computer instead of the NAO's interal loudspeakers, you will need to install pulse audio on the local computer. The robotutor .tar file contains pulse audio for the NAO. You will need to connect the NAO to the computer's pulse audio server. As said earlier, the computer must run Powerpoint and, if used, Turingpoint 5.1. Note that Turningpoint must be configured to start with PowerPoint. To ensure this happens, tick the checkbox during the installation of Turningpoint. The RoboTutor software can be used without installation, as long as the files are available on the presentation computer.
+If you want to playback the NAO's voice and sound via the local computer instead of the NAO's interal loudspeakers, you will need to install pulse audio on the local computer. The robotutor .tar file contains pulse audio for the NAO. You will need to connect the NAO to the computer's pulse audio server. As said earlier, the computer must run Powerpoint 2007 and, if used, Turingpoint 5.1. Note that Turningpoint must be configured to start with PowerPoint. To ensure this happens, tick the checkbox during the installation of Turningpoint. The RoboTutor software can be used without installation, as long as the files are available on the presentation computer.
 
 %Local engine
 %Turning point - if nessesacry
