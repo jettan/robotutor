@@ -8,14 +8,14 @@ To install the software on the robot we must first connect with it. Two types of
 \subsection{Installing software on the robot}
 
 Copy the distibuted files to the home directory(\texttt{/home/nao}) of the NAO (Using scp/WinSCP), then run the following command to give the executable sufficient permissions:(Using ssh/PuTTY)
-\begin{verbatim}
-chmod +x ./robotutor-server
-\end{verbatim}
+
+\textbf{chmod +x ./robotutor-server}
+
 Additionally, if you want to take pictures with the robot, these are stored in \texttt{/var/www}. This requires that this directory is writeable. If this if not yet the case, this can be achieved by running the following command as a superuser:
 Use \texttt{su} to become superuser. The default password can be \texttt{root} or \texttt{nao}. Then run the following command:
-\begin{verbatim}
-chmod -R 777 /var/www 
-\end{verbatim}
+
+\textbf{chmod -R 777 /var/www }
+
 
 
 \section{Preparing the local computer}
