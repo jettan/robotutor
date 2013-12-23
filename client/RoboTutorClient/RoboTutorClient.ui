@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="contentTabs">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -49,6 +49,26 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_8">
+          <item row="2" column="2">
+           <widget class="QPushButton" name="connectButton">
+            <property name="text">
+             <string>Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item row="2" column="3">
            <widget class="QPushButton" name="runButton">
             <property name="enabled">
@@ -105,42 +125,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
-           <widget class="QLineEdit" name="serverEdit">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="inputMask">
-             <string>000.000.000.000</string>
-            </property>
-            <property name="text">
-             <string>127.0.0.1</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="2">
-           <widget class="QPushButton" name="connectButton">
-            <property name="text">
-             <string>Connect</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="3">
            <widget class="QSpinBox" name="portSpinBox">
             <property name="buttonSymbols">
@@ -174,6 +158,16 @@
             </property>
             <property name="text">
              <string>Pause</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QComboBox" name="serverEdit">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="currentText">
+             <string>127.0.0.1</string>
             </property>
            </widget>
           </item>
@@ -280,7 +274,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="lineSkipSpinBox"/>
+            <widget class="QSpinBox" name="lineSkipSpinBox">
+             <property name="maximum">
+              <number>9999</number>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QLabel" name="label_4">

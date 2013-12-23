@@ -13,9 +13,12 @@ RoboTutorClient::RoboTutorClient(AsioThread & io, QWidget *parent) :
 	new QShortcut(QKeySequence("Ctrl+R"), this, SLOT(on_runButton_clicked()));
 	new QShortcut(QKeySequence("Ctrl+T"), this, SLOT(on_stopButton_clicked()));
 
-	 timer = new QTimer(this);
-     bool ba = connect(timer, SIGNAL(timeout()), this, SLOT(PPmonitor()));
-     timer->start(1000);
+    ui_.serverEdit->addItem("192.168.0.103");
+    ui_.serverEdit->addItem("127.0.0.1");
+
+	timer = new QTimer(this);
+    bool ba = connect(timer, SIGNAL(timeout()), this, SLOT(PPmonitor()));
+    timer->start(1000);
 
 }
 
@@ -70,7 +73,7 @@ void RoboTutorClient::on_connectButton_clicked() {
 			setConnect(false);
 		}
 		else {
-			io_.getIos().post(std::bind(&AsioThread::connectRobot, &io_, ui_.serverEdit->text(), ui_.portSpinBox->value()));
+			io_.getIos().post(std::bind(&AsioThread::connectRobot, &io_, ui_.serverEdit->currentText(), ui_.portSpinBox->value()));
 			ui_.connectButton->setEnabled(false);
 			setStatus("Connecting...");
 		}
