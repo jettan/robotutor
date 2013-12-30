@@ -199,4 +199,9 @@ void RoboTutorClient::on_insertBehaviorButton_clicked(){
 
 }
 
+void RoboTutorClient::on_ResetSkipLinesButton_clicked()
+{
+    ui_.lineSkipSpinBox->setValue(0);
+}
+
 }

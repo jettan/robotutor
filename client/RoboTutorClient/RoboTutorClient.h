@@ -49,7 +49,7 @@ private slots:
 	void on_pauseButton_clicked();
 	void on_stopButton_clicked();
 	void on_insertBehaviorButton_clicked();
-
+    void on_ResetSkipLinesButton_clicked();
 
 };
 

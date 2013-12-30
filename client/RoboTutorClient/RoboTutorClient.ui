@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>511</width>
-    <height>454</height>
+    <height>477</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="contentTabs">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -288,6 +288,13 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="pbtnRstSkipLines">
+             <property name="text">
+              <string>ResetLines</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="horizontalSpacer_4">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -494,7 +501,7 @@
               <x>10</x>
               <y>23</y>
               <width>461</width>
-              <height>331</height>
+              <height>271</height>
              </rect>
             </property>
            </widget>
@@ -563,5 +570,25 @@
  <resources>
   <include location="RoboTutorClient.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pbtnRstSkipLines</sender>
+   <signal>clicked()</signal>
+   <receiver>RoboTutorClientClass</receiver>
+   <slot>on_ResetSkipLinesButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>234</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>364</x>
+     <y>23</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>on_ResetSkipLinesButton_clicked()</slot>
+ </slots>
 </ui>
